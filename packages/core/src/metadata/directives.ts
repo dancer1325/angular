@@ -182,7 +182,12 @@ export interface Directive {
    * ```
    *
    */
-  inputs?: ({name: string, alias?: string, required?: boolean}|string)[];
+  inputs?: ({
+    name: string,
+    alias?: string,
+    required?: boolean,
+    transform?: (value: any) => any,
+  }|string)[];
 
   /**
    * Enumerates the set of event-bound output properties.
@@ -769,20 +774,26 @@ export interface InputDecorator {
    * one of which is given a special binding name.
    *
    * ```typescript
+   * import { Component, Input, numberAttribute, booleanAttribute } from '@angular/core';
    * @Component({
    *   selector: 'bank-account',
    *   template: `
    *     Bank Name: {{bankName}}
    *     Account Id: {{id}}
+   *     Account Status: {{status ? 'Active' : 'InActive'}}
    *   `
    * })
    * class BankAccount {
    *   // This property is bound using its original name.
-   *   @Input() bankName: string;
-   *   // this property value is bound to a different property name
+   *   // Defining argument required as true inside the Input Decorator
+   *   // makes this property deceleration as mandatory
+   *   @Input({ required: true }) bankName!: string;
+   *   // Argument alias makes this property value is bound to a different property name
    *   // when this component is instantiated in a template.
-   *   @Input('account-id') id: string;
-   *
+   *   // Argument transform convert the input value from string to number
+   *   @Input({ alias:'account-id', transform: numberAttribute }) id: number;
+   *   // Argument transform the input value from string to boolean
+   *   @Input({ transform: booleanAttribute }) status: boolean;
    *   // this property is not bound, and is not automatically updated by Angular
    *   normalizedBankName: string;
    * }
@@ -790,7 +801,7 @@ export interface InputDecorator {
    * @Component({
    *   selector: 'app',
    *   template: `
-   *     <bank-account bankName="RBC" account-id="4747"></bank-account>
+   *     <bank-account bankName="RBC" account-id="4747" status="true"></bank-account>
    *   `
    * })
    * class App {}
@@ -817,6 +828,11 @@ export interface Input {
    * Whether the input is required for the directive to function.
    */
   required?: boolean;
+
+  /**
+   * Function with which to transform the input value before assigning it to the directive instance.
+   */
+  transform?: (value: any) => any;
 }
 
 /**

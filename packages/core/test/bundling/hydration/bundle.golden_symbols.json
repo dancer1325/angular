@@ -12,6 +12,9 @@
     "name": "APP_INITIALIZER"
   },
   {
+    "name": "AfterRenderEventManager"
+  },
+  {
     "name": "AnonymousSubject"
   },
   {
@@ -31,6 +34,9 @@
   },
   {
     "name": "BROWSER_MODULE_PROVIDERS"
+  },
+  {
+    "name": "BehaviorSubject"
   },
   {
     "name": "BrowserDomAdapter"
@@ -87,16 +93,10 @@
     "name": "DEFAULT_APP_ID"
   },
   {
-    "name": "DEFAULT_LOCALE_ID"
-  },
-  {
     "name": "DEHYDRATED_VIEWS"
   },
   {
     "name": "DISCONNECTED_NODES"
-  },
-  {
-    "name": "DI_DECORATOR_FLAG"
   },
   {
     "name": "DOCUMENT"
@@ -114,7 +114,7 @@
     "name": "DefaultIfEmptySubscriber"
   },
   {
-    "name": "DoOperator"
+    "name": "DistinctUntilChangedSubscriber"
   },
   {
     "name": "DomAdapter"
@@ -136,9 +136,6 @@
   },
   {
     "name": "ENVIRONMENT_INITIALIZER"
-  },
-  {
-    "name": "ERROR_ORIGINAL_ERROR"
   },
   {
     "name": "EVENT_MANAGER_PLUGINS"
@@ -312,12 +309,6 @@
     "name": "NG_TEMPLATE_SELECTOR"
   },
   {
-    "name": "NG_TEMP_TOKEN_PATH"
-  },
-  {
-    "name": "NG_TOKEN_PATH"
-  },
-  {
     "name": "NODES"
   },
   {
@@ -334,9 +325,6 @@
   },
   {
     "name": "NO_CHANGE"
-  },
-  {
-    "name": "NO_NEW_LINE"
   },
   {
     "name": "NO_PARENT_INJECTOR"
@@ -387,13 +375,7 @@
     "name": "PLATFORM_INITIALIZER"
   },
   {
-    "name": "PLATFORM_SERVER_ID"
-  },
-  {
     "name": "PRESERVE_HOST_CONTENT"
-  },
-  {
-    "name": "PRESERVE_HOST_CONTENT_DEFAULT"
   },
   {
     "name": "R3Injector"
@@ -441,9 +423,6 @@
     "name": "SKIP_HYDRATION_ATTR_NAME"
   },
   {
-    "name": "SOURCE"
-  },
-  {
     "name": "SafeSubscriber"
   },
   {
@@ -481,6 +460,12 @@
   },
   {
     "name": "Subscription"
+  },
+  {
+    "name": "SwitchMapOperator"
+  },
+  {
+    "name": "SwitchMapSubscriber"
   },
   {
     "name": "TESTABILITY"
@@ -720,6 +705,18 @@
     "name": "detachMovedView"
   },
   {
+    "name": "detectChangesInChildComponents"
+  },
+  {
+    "name": "detectChangesInComponent"
+  },
+  {
+    "name": "detectChangesInEmbeddedViews"
+  },
+  {
+    "name": "detectChangesInView"
+  },
+  {
     "name": "detectChangesInternal"
   },
   {
@@ -771,6 +768,9 @@
     "name": "forwardRef"
   },
   {
+    "name": "from"
+  },
+  {
     "name": "fromArray"
   },
   {
@@ -787,9 +787,6 @@
   },
   {
     "name": "getComponentLViewByIndex"
-  },
-  {
-    "name": "getComponentLViewForHydration"
   },
   {
     "name": "getCurrentTNode"
@@ -826,6 +823,9 @@
   },
   {
     "name": "getInjectorIndex"
+  },
+  {
+    "name": "getLNodeForHydration"
   },
   {
     "name": "getLView"
@@ -906,6 +906,12 @@
     "name": "getTNodeFromLView"
   },
   {
+    "name": "hasInSkipHydrationBlockFlag"
+  },
+  {
+    "name": "hasSkipHydrationAttrOnRElement"
+  },
+  {
     "name": "hostReportError"
   },
   {
@@ -948,6 +954,9 @@
     "name": "injectableDefOrInjectorDefFactory"
   },
   {
+    "name": "innerSubscribe"
+  },
+  {
     "name": "insertBloom"
   },
   {
@@ -967,9 +976,6 @@
   },
   {
     "name": "isArrayLike"
-  },
-  {
-    "name": "isBrowser"
   },
   {
     "name": "isComponentDef"
@@ -1003,6 +1009,9 @@
   },
   {
     "name": "isObject"
+  },
+  {
+    "name": "isPlatformBrowser"
   },
   {
     "name": "isPlatformServer"
@@ -1068,6 +1077,9 @@
     "name": "makeRecord"
   },
   {
+    "name": "map"
+  },
+  {
     "name": "markViewDirty"
   },
   {
@@ -1075,6 +1087,9 @@
   },
   {
     "name": "maybeWrapInNotSelector"
+  },
+  {
+    "name": "mergeAll"
   },
   {
     "name": "mergeHostAttribute"
@@ -1125,6 +1140,9 @@
     "name": "observable"
   },
   {
+    "name": "of"
+  },
+  {
     "name": "onEnter"
   },
   {
@@ -1137,19 +1155,10 @@
     "name": "profiler"
   },
   {
-    "name": "promise"
-  },
-  {
     "name": "provideZoneChangeDetection"
   },
   {
     "name": "refCount"
-  },
-  {
-    "name": "refreshComponent"
-  },
-  {
-    "name": "refreshContainsDirtyView"
   },
   {
     "name": "refreshContentQueries"
@@ -1227,10 +1236,16 @@
     "name": "setInjectImplementation"
   },
   {
+    "name": "setSegmentHead"
+  },
+  {
     "name": "setSelectedIndex"
   },
   {
     "name": "setUpAttributes"
+  },
+  {
+    "name": "share"
   },
   {
     "name": "shareSubjectFactory"
@@ -1255,6 +1270,9 @@
   },
   {
     "name": "subscribeToArray"
+  },
+  {
+    "name": "switchMap"
   },
   {
     "name": "throwIfEmpty"
@@ -1282,9 +1300,6 @@
   },
   {
     "name": "urlParsingNode"
-  },
-  {
-    "name": "viewAttachedToChangeDetector"
   },
   {
     "name": "walkProviderTree"

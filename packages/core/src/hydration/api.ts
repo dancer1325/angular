@@ -9,31 +9,38 @@
 import {first} from 'rxjs/operators';
 
 import {APP_BOOTSTRAP_LISTENER, ApplicationRef} from '../application_ref';
-import {ENABLED_SSR_FEATURES, PLATFORM_ID} from '../application_tokens';
+import {ENABLED_SSR_FEATURES} from '../application_tokens';
 import {Console} from '../console';
 import {ENVIRONMENT_INITIALIZER, EnvironmentProviders, Injector, makeEnvironmentProviders} from '../di';
 import {inject} from '../di/injector_compatibility';
-import {formatRuntimeError, RuntimeErrorCode} from '../errors';
-import {InitialRenderPendingTasks} from '../initial_render_pending_tasks';
+import {formatRuntimeError, RuntimeError, RuntimeErrorCode} from '../errors';
 import {enableLocateOrCreateContainerRefImpl} from '../linker/view_container_ref';
 import {enableLocateOrCreateElementNodeImpl} from '../render3/instructions/element';
 import {enableLocateOrCreateElementContainerNodeImpl} from '../render3/instructions/element_container';
 import {enableApplyRootElementTransformImpl} from '../render3/instructions/shared';
 import {enableLocateOrCreateContainerAnchorImpl} from '../render3/instructions/template';
 import {enableLocateOrCreateTextNodeImpl} from '../render3/instructions/text';
+import {getDocument} from '../render3/interfaces/document';
+import {isPlatformBrowser} from '../render3/util/misc_utils';
 import {TransferState} from '../transfer_state';
+import {NgZone} from '../zone';
 
 import {cleanupDehydratedViews} from './cleanup';
 import {IS_HYDRATION_DOM_REUSE_ENABLED, PRESERVE_HOST_CONTENT} from './tokens';
-import {enableRetrieveHydrationInfoImpl, NGH_DATA_KEY} from './utils';
+import {enableRetrieveHydrationInfoImpl, NGH_DATA_KEY, SSR_CONTENT_INTEGRITY_MARKER} from './utils';
 import {enableFindMatchingDehydratedViewImpl} from './views';
-
 
 /**
  * Indicates whether the hydration-related code was added,
  * prevents adding it multiple times.
  */
 let isHydrationSupportEnabled = false;
+
+/**
+ * Defines a period of time that Angular waits for the `ApplicationRef.isStable` to emit `true`.
+ * If there was no event with the `true` value during this time, Angular reports a warning.
+ */
+const APPLICATION_IS_STABLE_TIMEOUT = 10_000;
 
 /**
  * Brings the necessary hydration code in tree-shakable manner.
@@ -61,15 +68,6 @@ function enableHydrationRuntimeSupport() {
 }
 
 /**
- * Detects whether the code is invoked in a browser.
- * Later on, this check should be replaced with a tree-shakable
- * flag (e.g. `!isServer`).
- */
-function isBrowser(): boolean {
-  return inject(PLATFORM_ID) === 'browser';
-}
-
-/**
  * Outputs a message with hydration stats into a console.
  */
 function printHydrationStats(injector: Injector) {
@@ -78,7 +76,7 @@ function printHydrationStats(injector: Injector) {
       `and ${ngDevMode!.hydratedNodes} node(s), ` +
       `${ngDevMode!.componentsSkippedHydration} component(s) were skipped. ` +
       `Note: this feature is in Developer Preview mode. ` +
-      `Learn more at https://next.angular.io/guide/hydration.`;
+      `Learn more at https://angular.io/guide/hydration.`;
   // tslint:disable-next-line:no-console
   console.log(message);
 }
@@ -87,11 +85,24 @@ function printHydrationStats(injector: Injector) {
 /**
  * Returns a Promise that is resolved when an application becomes stable.
  */
-function whenStable(
-    appRef: ApplicationRef, pendingTasks: InitialRenderPendingTasks): Promise<unknown> {
+function whenStable(appRef: ApplicationRef, injector: Injector): Promise<void> {
   const isStablePromise = appRef.isStable.pipe(first((isStable: boolean) => isStable)).toPromise();
-  const pendingTasksPromise = pendingTasks.whenAllTasksComplete;
-  return Promise.allSettled([isStablePromise, pendingTasksPromise]);
+  if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+    const timeoutTime = APPLICATION_IS_STABLE_TIMEOUT;
+    const console = injector.get(Console);
+    const ngZone = injector.get(NgZone);
+
+    // The following call should not and does not prevent the app to become stable
+    // We cannot use RxJS timer here because the app would remain unstable.
+    // This also avoids an extra change detection cycle.
+    const timeoutId = ngZone.runOutsideAngular(() => {
+      return setTimeout(() => logWarningOnStableTimedout(timeoutTime, console), timeoutTime);
+    });
+
+    isStablePromise.finally(() => clearTimeout(timeoutId));
+  }
+
+  return isStablePromise.then(() => {});
 }
 
 /**
@@ -110,7 +121,7 @@ export function withDomHydration(): EnvironmentProviders {
       provide: IS_HYDRATION_DOM_REUSE_ENABLED,
       useFactory: () => {
         let isEnabled = true;
-        if (isBrowser()) {
+        if (isPlatformBrowser()) {
           // On the client, verify that the server response contains
           // hydration annotations. Otherwise, keep hydration disabled.
           const transferState = inject(TransferState, {optional: true});
@@ -139,10 +150,11 @@ export function withDomHydration(): EnvironmentProviders {
       useValue: () => {
         // Since this function is used across both server and client,
         // make sure that the runtime code is only added when invoked
-        // on the client. Moving forward, the `isBrowser` check should
+        // on the client. Moving forward, the `isPlatformBrowser` check should
         // be replaced with a tree-shakable alternative (e.g. `isServer`
         // flag).
-        if (isBrowser() && inject(IS_HYDRATION_DOM_REUSE_ENABLED)) {
+        if (isPlatformBrowser() && inject(IS_HYDRATION_DOM_REUSE_ENABLED)) {
+          verifySsrContentsIntegrity();
           enableHydrationRuntimeSupport();
         }
       },
@@ -155,18 +167,17 @@ export function withDomHydration(): EnvironmentProviders {
         // environment and when hydration is configured properly.
         // On a server, an application is rendered from scratch,
         // so the host content needs to be empty.
-        return isBrowser() && inject(IS_HYDRATION_DOM_REUSE_ENABLED);
+        return isPlatformBrowser() && inject(IS_HYDRATION_DOM_REUSE_ENABLED);
       }
     },
     {
       provide: APP_BOOTSTRAP_LISTENER,
       useFactory: () => {
-        if (isBrowser() && inject(IS_HYDRATION_DOM_REUSE_ENABLED)) {
+        if (isPlatformBrowser() && inject(IS_HYDRATION_DOM_REUSE_ENABLED)) {
           const appRef = inject(ApplicationRef);
-          const pendingTasks = inject(InitialRenderPendingTasks);
           const injector = inject(Injector);
           return () => {
-            whenStable(appRef, pendingTasks).then(() => {
+            whenStable(appRef, injector).then(() => {
               // Wait until an app becomes stable and cleanup all views that
               // were not claimed during the application bootstrap process.
               // The timing is similar to when we start the serialization process
@@ -184,4 +195,49 @@ export function withDomHydration(): EnvironmentProviders {
       multi: true,
     }
   ]);
+}
+
+/**
+ *
+ * @param time The time in ms until the stable timedout warning message is logged
+ */
+function logWarningOnStableTimedout(time: number, console: Console): void {
+  const message =
+      `Angular hydration expected the ApplicationRef.isStable() to emit \`true\`, but it ` +
+      `didn't happen within ${
+          time}ms. Angular hydration logic depends on the application becoming stable ` +
+      `as a signal to complete hydration process.`;
+
+  console.warn(formatRuntimeError(RuntimeErrorCode.HYDRATION_STABLE_TIMEDOUT, message));
+}
+
+/**
+ * Verifies whether the DOM contains a special marker added during SSR time to make sure
+ * there is no SSR'ed contents transformations happen after SSR is completed. Typically that
+ * happens either by CDN or during the build process as an optimization to remove comment nodes.
+ * Hydration process requires comment nodes produced by Angular to locate correct DOM segments.
+ * When this special marker is *not* present - throw an error and do not proceed with hydration,
+ * since it will not be able to function correctly.
+ *
+ * Note: this function is invoked only on the client, so it's safe to use DOM APIs.
+ */
+function verifySsrContentsIntegrity(): void {
+  const doc = getDocument();
+  let hydrationMarker: Node|undefined;
+  for (const node of doc.body.childNodes) {
+    if (node.nodeType === Node.COMMENT_NODE &&
+        node.textContent?.trim() === SSR_CONTENT_INTEGRITY_MARKER) {
+      hydrationMarker = node;
+      break;
+    }
+  }
+  if (!hydrationMarker) {
+    throw new RuntimeError(
+        RuntimeErrorCode.MISSING_SSR_CONTENT_INTEGRITY_MARKER,
+        typeof ngDevMode !== 'undefined' && ngDevMode &&
+            'Angular hydration logic detected that HTML content of this page was modified after it ' +
+                'was produced during server side rendering. Make sure that there are no optimizations ' +
+                'that remove comment nodes from HTML are enabled on your CDN. Angular hydration ' +
+                'relies on HTML produced by the server, including whitespaces and comment nodes.');
+  }
 }

@@ -118,6 +118,7 @@ export {
   ɵɵi18nPostprocess,
   ɵɵi18nStart,
   ɵɵInheritDefinitionFeature,
+  ɵɵInputTransformsFeature,
   ɵɵinjectAttribute,
   ɵɵInjectorDeclaration,
   ɵɵinvalidFactory,
@@ -196,6 +197,7 @@ export {
   ɵɵsyntheticHostProperty,
   ɵɵtemplate,
   ɵɵtemplateRefExtractor,
+  ɵɵdefer,
   ɵɵtext,
   ɵɵtextInterpolate,
   ɵɵtextInterpolate1,
@@ -280,6 +282,6 @@ export {
 export {
   noSideEffects as ɵnoSideEffects,
 } from './util/closure';
-
+export { AfterRenderEventManager as ɵAfterRenderEventManager } from './render3/after_render_hooks';
 
 // clang-format on

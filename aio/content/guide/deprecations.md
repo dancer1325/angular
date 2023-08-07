@@ -6,7 +6,9 @@ Sometimes, APIs and features become obsolete and need to be removed or replaced 
 To make these transitions as easy as possible, APIs and features are deprecated for a period of time before they are removed.
 This gives you time to update your applications to the latest APIs and best practices.
 
-This guide contains a summary of all Angular APIs and features that are currently deprecated.
+This guide contains a summary of noteworthy Angular APIs and features that are currently deprecated.
+See the [full changelog](https://github.com/angular/angular/blob/main/CHANGELOG.md) for
+comprehensive details on deprecations and breaking changes.
 
 <div class="alert is-helpful">
 
@@ -115,10 +117,19 @@ v16 - v19
 
 | Area                                | API or Feature                                                                                             | Deprecated in | May be removed in |
 |:---                                 |:---                                                                                                        |:---           |:---               |
+| `@angular/common` | `isPlatformWorkerApp` and `isPlatformWorkerUi` | v16 | v18 |
 | `@angular/core` | `EnvironmentInjector.runInContext` | v16 | v18 |
 | `@angular/platform-server`          | [`PlatformConfig.baseUrl` and `PlatformConfig.useAbsoluteUrl` config options](api/platform-server/PlatformConfig) | v16           | v18               |
+| `@angular/platform-server`          | [`platformDynamicServer`](api/platform-server/platformDynamicServer) | v16           | v18               |
 | `@angular/platform-browser`         | [`BrowserModule.withServerTransition`](api/platform-browser/BrowserModule#withservertransition)            | v16           | v18         |
 | `@angular/platform-browser`         | [`makeStateKey`, `StateKey` and `TransferState`](#platform-browser), symbols were moved to `@angular/core`                                        | v16           | v18         |
+
+
+### Deprecated features that can be removed in v19 or later
+
+| Area                                | API or Feature                                                                                             | Deprecated in | May be removed in |
+|:---                                 |:---                                                                                                        |:---           |:---               |
+| `@angular/core` | `PACKAGE_ROOT_URL` | v17 | v19 |
 
 ### Deprecated features with no planned removal version
 
@@ -147,6 +158,7 @@ In the [API reference section](api) of this site, deprecated APIs are indicated 
 |:---                                                                                           |:---                                                 |:---                   |:---     |
 | [`NgComponentOutlet.ngComponentOutletNgModuleFactory`](api/common/NgComponentOutlet)          | `NgComponentOutlet.ngComponentOutletNgModule`       | v14                   | Use the `ngComponentOutletNgModule` input instead. This input doesn't require resolving NgModule factory. |
 | [`DatePipe` - `DATE_PIPE_DEFAULT_TIMEZONE`](api/common/DATE_PIPE_DEFAULT_TIMEZONE) |`{ provide: DATE_PIPE_DEFAULT_OPTIONS, useValue: { timezone: '-1200' }` | v15                    | Use the `DATE_PIPE_DEFAULT_OPTIONS` injection token, which can configure multiple settings at once instead. |
+| `isPlatformWorkerApp` and `isPlatformWorkerUi` | None  | v16 | These two functions have no purpose since the removal of the webworker platform (they only return `false`). They can be safely removed.
 
 <a id="core"></a>
 
@@ -223,6 +235,9 @@ In the [API reference section](api) of this site, deprecated APIs are indicated 
 |:---                                                              |:---                                                |:---                   |:---     |
 | [`ServerTransferStateModule`](api/platform-server/ServerTransferStateModule) | No replacement needed.  | v14.1                   | The `TransferState` class is available for injection without importing additional modules during server side rendering, when `ServerModule` is imported or `renderApplication` function is used for bootstrap. |
 | [`PlatformConfig.baseUrl` and `PlatformConfig.useAbsoluteUrl` config options](api/platform-server/PlatformConfig) | none                    | v16                   | This was previously unused.                   |
+| [`platformDynamicServer`](api/platform-server/platformDynamicServer) | Import `@angular/compiler` and replace the usage with `platformServer` instead. | v16                   | This is done to decrease the server bundle size for AOT builds.                   |
+
+
 <a id="forms"></a>
 
 ### &commat;angular/forms
@@ -645,8 +660,8 @@ Projects that currently have `fullTemplateTypeCheck: true` configured can migrat
 
 ## JIT API changes due to ViewEngine deprecation
 
-In ViewEngine, [JIT compilation](https://angular.io/guide/glossary#jit) required special providers \(such as `Compiler` or `CompilerFactory`\) to be injected in the app and corresponding methods to be invoked.
-With Ivy, JIT compilation takes place implicitly if the Component, NgModule, etc. have not already been [AOT compiled](https://angular.io/guide/glossary#aot).
+In ViewEngine, [JIT compilation](/guide/glossary#jit) required special providers \(such as `Compiler` or `CompilerFactory`\) to be injected in the app and corresponding methods to be invoked.
+With Ivy, JIT compilation takes place implicitly if the Component, NgModule, etc. have not already been [AOT compiled](/guide/glossary#aot).
 Those special providers were made available in Ivy for backwards-compatibility with ViewEngine to make the transition to Ivy smoother.
 Since ViewEngine is deprecated and will soon be removed, those symbols are now deprecated as well.
 
@@ -740,4 +755,4 @@ If you rely on the behavior that the same object instance should cause change de
 
 <!-- end links -->
 
-@reviewed 2022-02-28
+@reviewed 2023-05-03

@@ -72,8 +72,8 @@ export class AnimationEngine {
     this._transitionEngine.insertNode(namespaceId, element, parent, insertBefore);
   }
 
-  onRemove(namespaceId: string, element: any, context: any, isHostElement?: boolean): void {
-    this._transitionEngine.removeNode(namespaceId, element, isHostElement || false, context);
+  onRemove(namespaceId: string, element: any, context: any): void {
+    this._transitionEngine.removeNode(namespaceId, element, context);
   }
 
   disableAnimations(element: any, disable: boolean) {
@@ -106,11 +106,17 @@ export class AnimationEngine {
   }
 
   get players(): AnimationPlayer[] {
-    return (this._transitionEngine.players as AnimationPlayer[])
-        .concat(this._timelineEngine.players as AnimationPlayer[]);
+    return [
+      ...this._transitionEngine.players,
+      ...this._timelineEngine.players,
+    ];
   }
 
   whenRenderingDone(): Promise<any> {
     return this._transitionEngine.whenRenderingDone();
+  }
+
+  afterFlushAnimationsDone(cb: VoidFunction): void {
+    this._transitionEngine.afterFlushAnimationsDone(cb);
   }
 }

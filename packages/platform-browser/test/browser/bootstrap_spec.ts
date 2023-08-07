@@ -8,7 +8,7 @@
 
 import {animate, style, transition, trigger} from '@angular/animations';
 import {DOCUMENT, isPlatformBrowser, ɵgetDOM as getDOM} from '@angular/common';
-import {ANIMATION_MODULE_TYPE, APP_INITIALIZER, Compiler, Component, createPlatformFactory, CUSTOM_ELEMENTS_SCHEMA, Directive, ErrorHandler, Inject, inject as _inject, InjectionToken, Injector, LOCALE_ID, NgModule, NgModuleRef, NgZone, OnDestroy, PLATFORM_ID, PLATFORM_INITIALIZER, Provider, Sanitizer, StaticProvider, Testability, TestabilityRegistry, TransferState, Type, VERSION} from '@angular/core';
+import {ANIMATION_MODULE_TYPE, APP_INITIALIZER, Compiler, Component, createPlatformFactory, CUSTOM_ELEMENTS_SCHEMA, Directive, ErrorHandler, importProvidersFrom, Inject, inject as _inject, InjectionToken, Injector, LOCALE_ID, NgModule, NgModuleRef, NgZone, OnDestroy, PLATFORM_ID, PLATFORM_INITIALIZER, Provider, Sanitizer, StaticProvider, Testability, TestabilityRegistry, TransferState, Type, VERSION} from '@angular/core';
 import {ApplicationRef, destroyPlatform, provideZoneChangeDetection} from '@angular/core/src/application_ref';
 import {Console} from '@angular/core/src/console';
 import {ComponentRef} from '@angular/core/src/linker/component_factory';
@@ -43,16 +43,16 @@ class HelloRootCmp2 {
 
 @Component({selector: 'hello-app', template: ''})
 class HelloRootCmp3 {
-  appBinding: any /** TODO #9100 */;
+  appBinding: string;
 
-  constructor(@Inject('appBinding') appBinding: any /** TODO #9100 */) {
+  constructor(@Inject('appBinding') appBinding: string) {
     this.appBinding = appBinding;
   }
 }
 
 @Component({selector: 'hello-app', template: ''})
 class HelloRootCmp4 {
-  appRef: any /** TODO #9100 */;
+  appRef: ApplicationRef;
 
   constructor(@Inject(ApplicationRef) appRef: ApplicationRef) {
     this.appRef = appRef;
@@ -113,8 +113,7 @@ function bootstrap(
 }
 
 {
-  let el: any /** TODO #9100 */, el2: any /** TODO #9100 */, testProviders: Provider[],
-      lightDom: any /** TODO #9100 */;
+  let el: HTMLElement, el2: HTMLElement, testProviders: Provider[], lightDom: HTMLElement;
 
   describe('bootstrap factory method', () => {
     if (isNode) {
@@ -288,14 +287,22 @@ function bootstrap(
         expect(el2.innerText).toBe('Hello from Updated NonStandaloneComp!');
       });
 
-      it('should throw when trying to bootstrap a non-standalone component', () => {
+      it('should throw when trying to bootstrap a non-standalone component', async () => {
         const msg = 'NG0907: The NonStandaloneComp component is not marked as standalone, ' +
             'but Angular expects to have a standalone component here. Please make sure the ' +
             'NonStandaloneComp component has the `standalone: true` flag in the decorator.';
-        expect(() => bootstrapApplication(NonStandaloneComp)).toThrowError(msg);
+        let bootstrapError: string|null = null;
+
+        try {
+          await bootstrapApplication(NonStandaloneComp);
+        } catch (e) {
+          bootstrapError = (e as Error).message;
+        }
+
+        expect(bootstrapError).toBe(msg);
       });
 
-      it('should throw when trying to bootstrap a standalone directive', () => {
+      it('should throw when trying to bootstrap a standalone directive', async () => {
         @Directive({
           standalone: true,
           selector: '[dir]',
@@ -306,15 +313,31 @@ function bootstrap(
         const msg =  //
             'NG0906: The StandaloneDirective is not an Angular component, ' +
             'make sure it has the `@Component` decorator.';
-        expect(() => bootstrapApplication(StandaloneDirective)).toThrowError(msg);
+        let bootstrapError: string|null = null;
+
+        try {
+          await bootstrapApplication(StandaloneDirective);
+        } catch (e) {
+          bootstrapError = (e as Error).message;
+        }
+
+        expect(bootstrapError).toBe(msg);
       });
 
-      it('should throw when trying to bootstrap a non-annotated class', () => {
+      it('should throw when trying to bootstrap a non-annotated class', async () => {
         class NonAnnotatedClass {}
         const msg =  //
             'NG0906: The NonAnnotatedClass is not an Angular component, ' +
             'make sure it has the `@Component` decorator.';
-        expect(() => bootstrapApplication(NonAnnotatedClass)).toThrowError(msg);
+        let bootstrapError: string|null = null;
+
+        try {
+          await bootstrapApplication(NonAnnotatedClass);
+        } catch (e) {
+          bootstrapError = (e as Error).message;
+        }
+
+        expect(bootstrapError).toBe(msg);
       });
 
       it('should have the TransferState token available', async () => {
@@ -334,14 +357,25 @@ function bootstrap(
         expect(state).toBeInstanceOf(TransferState);
       });
 
+      it('should reject the bootstrapApplication promise if an imported module throws', (done) => {
+        @NgModule()
+        class ErrorModule {
+          constructor() {
+            throw new Error('This error should be in the promise rejection');
+          }
+        }
+
+        bootstrapApplication(SimpleComp, {
+          providers: [importProvidersFrom(ErrorModule)]
+        }).then(() => done.fail('Expected bootstrap promised to be rejected'), () => done());
+      });
+
       describe('with animations', () => {
         @Component({
           standalone: true,
           selector: 'hello-app',
-          template: `
-            <div
-              @myAnimation
-              (@myAnimation.start)="onStart($event)">Hello from AnimationCmp!</div>`,
+          template:
+              '<div @myAnimation (@myAnimation.start)="onStart($event)">Hello from AnimationCmp!</div>',
           animations: [trigger(
               'myAnimation', [transition('void => *', [style({opacity: 1}), animate(5)])])],
         })
@@ -514,7 +548,8 @@ function bootstrap(
             bootstrap(NonExistentComp, [{provide: ErrorHandler, useValue: errorHandler}]);
         refPromise.then(null, (reason) => {
           expect(logger.res[0].join('#'))
-              .toContain('ERROR#Error: The selector "non-existent" did not match any elements');
+              .toContain(
+                  'ERROR#Error: NG05104: The selector "non-existent" did not match any elements');
           done();
           return null;
         });
@@ -555,7 +590,7 @@ function bootstrap(
                return compiler.compileModuleAsync(AsyncModule).then(factory => {
                  expect(() => factory.create(ref.injector))
                      .toThrowError(
-                         'Providers from the `BrowserModule` have already been loaded. ' +
+                         'NG05100: Providers from the `BrowserModule` have already been loaded. ' +
                          'If you need access to common directives such as NgIf and NgFor, ' +
                          'import the `CommonModule` instead.');
                });
@@ -720,13 +755,13 @@ function bootstrap(
            }
            platformBrowserDynamic().bootstrapModule(TestModuleA).then((ref) => {
              log.length = 0;
-             el.querySelectorAll('#button-a')[0].click();
+             (el.querySelectorAll<HTMLElement>('#button-a')[0]).click();
              expect(log).toContain('CompA:onClick');
              expect(log).toContain('CompA:ngDoCheck');
              expect(log).toContain('CompB:ngDoCheck');
 
              log.length = 0;
-             el2.querySelectorAll('#button-b')[0].click();
+             el2.querySelectorAll<HTMLElement>('#button-b')[0].click();
              expect(log).toContain('CompB:onClick');
              expect(log).toContain('CompA:ngDoCheck');
              expect(log).toContain('CompB:ngDoCheck');
@@ -741,13 +776,13 @@ function bootstrap(
         const refPromise2 = bootstrap(CompB);
         Promise.all([refPromise1, refPromise2]).then((refs) => {
           log.length = 0;
-          el.querySelectorAll('#button-a')[0].click();
+          el.querySelectorAll<HTMLElement>('#button-a')[0].click();
           expect(log).toContain('CompA:onClick');
           expect(log).toContain('CompA:ngDoCheck');
           expect(log).not.toContain('CompB:ngDoCheck');
 
           log.length = 0;
-          el2.querySelectorAll('#button-b')[0].click();
+          el2.querySelectorAll<HTMLElement>('#button-b')[0].click();
           expect(log).toContain('CompB:onClick');
           expect(log).toContain('CompB:ngDoCheck');
           expect(log).not.toContain('CompA:ngDoCheck');

@@ -6,8 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import {DOCUMENT} from '@angular/common';
-import {ApplicationRef, Component, ComponentRef, createComponent, createEnvironmentInjector, Directive, ElementRef, EmbeddedViewRef, EnvironmentInjector, inject, Injectable, InjectionToken, Injector, Input, NgModule, OnDestroy, reflectComponentType, Renderer2, Type, ViewChild, ViewContainerRef, ViewEncapsulation, ɵsetDocument} from '@angular/core';
+import {DOCUMENT, NgIf} from '@angular/common';
+import {ApplicationRef, Component, ComponentRef, createComponent, createEnvironmentInjector, Directive, ElementRef, EmbeddedViewRef, EnvironmentInjector, forwardRef, inject, Injectable, InjectionToken, Injector, Input, NgModule, OnDestroy, reflectComponentType, Renderer2, Type, ViewChild, ViewContainerRef, ViewEncapsulation, ɵsetDocument} from '@angular/core';
 import {stringifyForError} from '@angular/core/src/render3/util/stringify_utils';
 import {TestBed} from '@angular/core/testing';
 import {expect} from '@angular/platform-browser/testing/src/matchers';
@@ -399,6 +399,68 @@ describe('component', () => {
       expect(() => TestBed.createComponent(App))
           .toThrowError(
               /NG0300: Multiple components match node with tagname comp: CompA and CompB/);
+    });
+
+    it('should not throw if a standalone component imports itself', () => {
+      @Component({
+        selector: 'comp',
+        template: '<comp *ngIf="recurse"/>hello',
+        standalone: true,
+        imports: [Comp, NgIf]
+      })
+      class Comp {
+        @Input() recurse = false;
+      }
+
+      @Component({
+        template: '<comp [recurse]="true"/>',
+        standalone: true,
+        imports: [Comp],
+      })
+      class App {
+      }
+
+      let textContent = '';
+
+      expect(() => {
+        const fixture = TestBed.createComponent(App);
+        fixture.detectChanges();
+        textContent = fixture.nativeElement.textContent.trim();
+      }).not.toThrow();
+
+      // Ensure that the component actually rendered.
+      expect(textContent).toBe('hellohello');
+    });
+
+    it('should not throw if a standalone component imports itself using a forwardRef', () => {
+      @Component({
+        selector: 'comp',
+        template: '<comp *ngIf="recurse"/>hello',
+        standalone: true,
+        imports: [forwardRef(() => Comp), NgIf]
+      })
+      class Comp {
+        @Input() recurse = false;
+      }
+
+      @Component({
+        template: '<comp [recurse]="true"/>',
+        standalone: true,
+        imports: [Comp],
+      })
+      class App {
+      }
+
+      let textContent = '';
+
+      expect(() => {
+        const fixture = TestBed.createComponent(App);
+        fixture.detectChanges();
+        textContent = fixture.nativeElement.textContent.trim();
+      }).not.toThrow();
+
+      // Ensure that the component actually rendered.
+      expect(textContent).toBe('hellohello');
     });
   });
 
@@ -862,6 +924,8 @@ describe('component', () => {
 
   describe('reflectComponentType', () => {
     it('should create an ComponentMirror for a standalone component', () => {
+      function transformFn() {}
+
       @Component({
         selector: 'standalone-component',
         standalone: true,
@@ -875,6 +939,7 @@ describe('component', () => {
         outputs: ['output-a', 'output-b:output-alias-b'],
       })
       class StandaloneComponent {
+        @Input({alias: 'input-alias-c', transform: transformFn}) inputC: unknown;
       }
 
       const mirror = reflectComponentType(StandaloneComponent)!;
@@ -884,7 +949,8 @@ describe('component', () => {
       expect(mirror.isStandalone).toEqual(true);
       expect(mirror.inputs).toEqual([
         {propName: 'input-a', templateName: 'input-a'},
-        {propName: 'input-b', templateName: 'input-alias-b'}
+        {propName: 'input-b', templateName: 'input-alias-b'},
+        {propName: 'inputC', templateName: 'input-alias-c', transform: transformFn},
       ]);
       expect(mirror.outputs).toEqual([
         {propName: 'output-a', templateName: 'output-a'},
@@ -896,6 +962,8 @@ describe('component', () => {
     });
 
     it('should create an ComponentMirror for a non-standalone component', () => {
+      function transformFn() {}
+
       @Component({
         selector: 'non-standalone-component',
         template: `
@@ -908,6 +976,7 @@ describe('component', () => {
         outputs: ['output-a', 'output-b:output-alias-b'],
       })
       class NonStandaloneComponent {
+        @Input({alias: 'input-alias-c', transform: transformFn}) inputC: unknown;
       }
 
       const mirror = reflectComponentType(NonStandaloneComponent)!;
@@ -917,7 +986,8 @@ describe('component', () => {
       expect(mirror.isStandalone).toEqual(false);
       expect(mirror.inputs).toEqual([
         {propName: 'input-a', templateName: 'input-a'},
-        {propName: 'input-b', templateName: 'input-alias-b'}
+        {propName: 'input-b', templateName: 'input-alias-b'},
+        {propName: 'inputC', templateName: 'input-alias-c', transform: transformFn},
       ]);
       expect(mirror.outputs).toEqual([
         {propName: 'output-a', templateName: 'output-a'},

@@ -7,7 +7,7 @@
  */
 
 
-import {CompilerFacade, CoreEnvironment, ExportedCompilerFacade, InputMap, OpaqueValue, R3ComponentMetadataFacade, R3DeclareComponentFacade, R3DeclareDependencyMetadataFacade, R3DeclareDirectiveDependencyFacade, R3DeclareDirectiveFacade, R3DeclareFactoryFacade, R3DeclareInjectableFacade, R3DeclareInjectorFacade, R3DeclareNgModuleFacade, R3DeclarePipeDependencyFacade, R3DeclarePipeFacade, R3DeclareQueryMetadataFacade, R3DependencyMetadataFacade, R3DirectiveMetadataFacade, R3FactoryDefMetadataFacade, R3InjectableMetadataFacade, R3InjectorMetadataFacade, R3NgModuleMetadataFacade, R3PipeMetadataFacade, R3QueryMetadataFacade, R3TemplateDependencyFacade} from './compiler_facade_interface';
+import {CompilerFacade, CoreEnvironment, ExportedCompilerFacade, InputMap, InputTransformFunction, OpaqueValue, R3ComponentMetadataFacade, R3DeclareComponentFacade, R3DeclareDependencyMetadataFacade, R3DeclareDirectiveDependencyFacade, R3DeclareDirectiveFacade, R3DeclareFactoryFacade, R3DeclareInjectableFacade, R3DeclareInjectorFacade, R3DeclareNgModuleFacade, R3DeclarePipeDependencyFacade, R3DeclarePipeFacade, R3DeclareQueryMetadataFacade, R3DependencyMetadataFacade, R3DirectiveMetadataFacade, R3FactoryDefMetadataFacade, R3InjectableMetadataFacade, R3InjectorMetadataFacade, R3NgModuleMetadataFacade, R3PipeMetadataFacade, R3QueryMetadataFacade, R3TemplateDependencyFacade} from './compiler_facade_interface';
 import {ConstantPool} from './constant_pool';
 import {ChangeDetectionStrategy, HostBinding, HostListener, Input, Output, ViewEncapsulation} from './core';
 import {compileInjectable} from './injectable_compiler_2';
@@ -18,7 +18,7 @@ import {ParseError, ParseSourceSpan, r3JitTypeSourceSpan} from './parse_util';
 import {compileFactoryFunction, FactoryTarget, R3DependencyMetadata} from './render3/r3_factory';
 import {compileInjector, R3InjectorMetadata} from './render3/r3_injector_compiler';
 import {R3JitReflector} from './render3/r3_jit';
-import {compileNgModule, compileNgModuleDeclarationExpression, R3NgModuleMetadata, R3SelectorScopeMode} from './render3/r3_module_compiler';
+import {compileNgModule, compileNgModuleDeclarationExpression, R3NgModuleMetadata, R3NgModuleMetadataKind, R3SelectorScopeMode} from './render3/r3_module_compiler';
 import {compilePipeFromMetadata, R3PipeMetadata} from './render3/r3_pipe_compiler';
 import {createMayBeForwardRefExpression, ForwardRefHandling, getSafePropertyAccessString, MaybeForwardRefExpression, wrapReference} from './render3/util';
 import {DeclarationListEmitMode, R3ComponentMetadata, R3DirectiveDependencyMetadata, R3DirectiveMetadata, R3HostDirectiveMetadata, R3HostMetadata, R3PipeDependencyMetadata, R3QueryMetadata, R3TemplateDependency, R3TemplateDependencyKind, R3TemplateDependencyMetadata} from './render3/view/api';
@@ -26,6 +26,13 @@ import {compileComponentFromMetadata, compileDirectiveFromMetadata, ParsedHostBi
 import {makeBindingParser, parseTemplate} from './render3/view/template';
 import {ResourceLoader} from './resource_loader';
 import {DomElementSchemaRegistry} from './schema/dom_element_schema_registry';
+
+let enabledBlockTypes: Set<string>|undefined;
+
+/** Temporary utility that enables specific block types in JIT compilations. */
+export function ɵsetEnabledBlockTypes(types: string[]) {
+  enabledBlockTypes = types.length > 0 ? new Set(types) : undefined;
+}
 
 export class CompilerFacadeImpl implements CompilerFacade {
   FactoryTarget = FactoryTarget;
@@ -124,6 +131,7 @@ export class CompilerFacadeImpl implements CompilerFacade {
       angularCoreEnv: CoreEnvironment, sourceMapUrl: string,
       facade: R3NgModuleMetadataFacade): any {
     const meta: R3NgModuleMetadata = {
+      kind: R3NgModuleMetadataKind.Global,
       type: wrapReference(facade.type),
       bootstrap: facade.bootstrap.map(wrapReference),
       declarations: facade.declarations.map(wrapReference),
@@ -188,6 +196,12 @@ export class CompilerFacadeImpl implements CompilerFacade {
       template,
       declarations: facade.declarations.map(convertDeclarationFacadeToMetadata),
       declarationListEmitMode: DeclarationListEmitMode.Direct,
+
+      // TODO: leaving empty in JIT mode for now,
+      // to be implemented as one of the next steps.
+      deferBlocks: new Map(),
+      deferrableDeclToImportDecl: new Map(),
+
       styles: [...facade.styles, ...template.styles],
       encapsulation: facade.encapsulation,
       interpolation,
@@ -324,7 +338,8 @@ function convertDirectiveFacadeToMetadata(facade: R3DirectiveMetadataFacade): R3
           inputsFromType[field] = {
             bindingPropertyName: ann.alias || field,
             classPropertyName: field,
-            required: ann.required || false
+            required: ann.required || false,
+            transformFunction: ann.transform != null ? new WrappedNodeExpr(ann.transform) : null,
           };
         } else if (isOutput(ann)) {
           outputsFromType[field] = ann.alias || field;
@@ -461,6 +476,12 @@ function convertDeclareComponentFacadeToMetadata(
     viewProviders: decl.viewProviders !== undefined ? new WrappedNodeExpr(decl.viewProviders) :
                                                       null,
     animations: decl.animations !== undefined ? new WrappedNodeExpr(decl.animations) : null,
+
+    // TODO: leaving empty in JIT mode for now,
+    // to be implemented as one of the next steps.
+    deferBlocks: new Map(),
+    deferrableDeclToImportDecl: new Map(),
+
     changeDetection: decl.changeDetection ?? ChangeDetectionStrategy.Default,
     encapsulation: decl.encapsulation ?? ViewEncapsulation.Emulated,
     interpolation,
@@ -522,7 +543,8 @@ function parseJitTemplate(
   const interpolationConfig =
       interpolation ? InterpolationConfig.fromArray(interpolation) : DEFAULT_INTERPOLATION_CONFIG;
   // Parse the template and check for errors.
-  const parsed = parseTemplate(template, sourceMapUrl, {preserveWhitespaces, interpolationConfig});
+  const parsed = parseTemplate(
+      template, sourceMapUrl, {preserveWhitespaces, interpolationConfig, enabledBlockTypes});
   if (parsed.errors !== null) {
     const errors = parsed.errors.map(err => err.toString()).join(', ');
     throw new Error(`Errors during JIT compilation of template for ${typeName}: ${errors}`);
@@ -646,26 +668,47 @@ function isOutput(value: any): value is Output {
   return value.ngMetadataName === 'Output';
 }
 
-function inputsMappingToInputMetadata(inputs: Record<string, string|[string, string]>) {
+function inputsMappingToInputMetadata(inputs: Record<string, string|[string, string, InputTransformFunction?]>) {
   return Object.keys(inputs).reduce<InputMap>((result, key) => {
     const value = inputs[key];
-    result[key] = typeof value === 'string' ?
-        {bindingPropertyName: value, classPropertyName: value, required: false} :
-        {bindingPropertyName: value[0], classPropertyName: value[1], required: false};
+
+    if (typeof value === 'string') {
+      result[key] = {
+        bindingPropertyName: value,
+        classPropertyName: value,
+        transformFunction: null,
+        required: false,
+      };
+    } else {
+      result[key] = {
+        bindingPropertyName: value[0],
+        classPropertyName: value[1],
+        transformFunction: value[2] ? new WrappedNodeExpr(value[2]) : null,
+        required: false,
+      };
+    }
+
     return result;
   }, {});
 }
 
-function parseInputsArray(values: (string|{name: string, alias?: string, required?: boolean})[]) {
+function parseInputsArray(
+    values: (string|{name: string, alias?: string, required?: boolean, transform?: Function})[]) {
   return values.reduce<InputMap>((results, value) => {
     if (typeof value === 'string') {
       const [bindingPropertyName, classPropertyName] = parseMappingString(value);
-      results[classPropertyName] = {bindingPropertyName, classPropertyName, required: false};
+      results[classPropertyName] = {
+        bindingPropertyName,
+        classPropertyName,
+        required: false,
+        transformFunction: null,
+      };
     } else {
       results[value.name] = {
         bindingPropertyName: value.alias || value.name,
         classPropertyName: value.name,
-        required: value.required || false
+        required: value.required || false,
+        transformFunction: value.transform != null ? new WrappedNodeExpr(value.transform) : null,
       };
     }
     return results;

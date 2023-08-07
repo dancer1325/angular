@@ -146,6 +146,28 @@ class ExpressionSourceHumanizer extends e.RecursiveAstVisitor implements t.Visit
       ast.placeholders[key].visit(this);
     }
   }
+
+  visitDeferredBlock(deferred: t.DeferredBlock) {
+    deferred.visitAll(this);
+  }
+
+  visitDeferredTrigger(trigger: t.DeferredTrigger): void {
+    if (trigger instanceof t.BoundDeferredTrigger) {
+      this.recordAst(trigger.value);
+    }
+  }
+
+  visitDeferredBlockPlaceholder(block: t.DeferredBlockPlaceholder) {
+    t.visitAll(this, block.children);
+  }
+
+  visitDeferredBlockError(block: t.DeferredBlockError) {
+    t.visitAll(this, block.children);
+  }
+
+  visitDeferredBlockLoading(block: t.DeferredBlockLoading) {
+    t.visitAll(this, block.children);
+  }
 }
 
 /**

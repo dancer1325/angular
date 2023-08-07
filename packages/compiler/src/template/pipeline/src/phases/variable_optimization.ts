@@ -8,11 +8,7 @@
 
 import * as o from '../../../../output/output_ast';
 import * as ir from '../../ir';
-import {ComponentCompilation} from '../compilation';
-
-export interface VariableOptimizationOptions {
-  conservative: boolean;
-}
+import {CompilationJob} from '../compilation';
 
 /**
  * Optimize variables declared and used in the IR.
@@ -32,15 +28,14 @@ export interface VariableOptimizationOptions {
  * To guarantee correctness, analysis of "fences" in the instruction lists is used to determine
  * which optimizations are safe to perform.
  */
-export function phaseVariableOptimization(
-    cpl: ComponentCompilation, options: VariableOptimizationOptions): void {
-  for (const [_, view] of cpl.views) {
-    optimizeVariablesInOpList(view.create, options);
-    optimizeVariablesInOpList(view.update, options);
+export function phaseVariableOptimization(job: CompilationJob): void {
+  for (const unit of job.units) {
+    optimizeVariablesInOpList(unit.create, job.compatibility);
+    optimizeVariablesInOpList(unit.update, job.compatibility);
 
-    for (const op of view.create) {
+    for (const op of unit.create) {
       if (op.kind === ir.OpKind.Listener) {
-        optimizeVariablesInOpList(op.handlerOps, options);
+        optimizeVariablesInOpList(op.handlerOps, job.compatibility);
       }
     }
   }
@@ -104,7 +99,7 @@ interface OpInfo {
  * Process a list of operations and optimize variables within that list.
  */
 function optimizeVariablesInOpList(
-    ops: ir.OpList<ir.CreateOp|ir.UpdateOp>, options: VariableOptimizationOptions): void {
+    ops: ir.OpList<ir.CreateOp|ir.UpdateOp>, compatibility: ir.CompatibilityMode): void {
   const varDecls = new Map<ir.XrefId, ir.VariableOp<ir.CreateOp|ir.UpdateOp>>();
   const varUsages = new Map<ir.XrefId, number>();
 
@@ -210,7 +205,8 @@ function optimizeVariablesInOpList(
 
       // Is the variable used in this operation?
       if (opInfo.variablesUsed.has(candidate)) {
-        if (options.conservative && !allowConservativeInlining(decl, targetOp)) {
+        if (compatibility === ir.CompatibilityMode.TemplateDefinitionBuilder &&
+            !allowConservativeInlining(decl, targetOp)) {
           // We're in conservative mode, and this variable is not eligible for inlining into the
           // target operation in this mode.
           break;
@@ -281,6 +277,10 @@ function collectOpInfo(op: ir.CreateOp|ir.UpdateOp): OpInfo {
   let fences = Fence.None;
   const variablesUsed = new Set<ir.XrefId>();
   ir.visitExpressionsInOp(op, expr => {
+    if (!ir.isIrExpression(expr)) {
+      return;
+    }
+
     switch (expr.kind) {
       case ir.ExpressionKind.ReadVariable:
         variablesUsed.add(expr.xref);
@@ -300,6 +300,10 @@ function countVariableUsages(
     op: ir.CreateOp|ir.UpdateOp, varUsages: Map<ir.XrefId, number>,
     varRemoteUsage: Set<ir.XrefId>): void {
   ir.visitExpressionsInOp(op, (expr, flags) => {
+    if (!ir.isIrExpression(expr)) {
+      return;
+    }
+
     if (expr.kind !== ir.ExpressionKind.ReadVariable) {
       return;
     }
@@ -323,6 +327,10 @@ function countVariableUsages(
 function uncountVariableUsages(
     op: ir.CreateOp|ir.UpdateOp, varUsages: Map<ir.XrefId, number>): void {
   ir.visitExpressionsInOp(op, expr => {
+    if (!ir.isIrExpression(expr)) {
+      return;
+    }
+
     if (expr.kind !== ir.ExpressionKind.ReadVariable) {
       return;
     }
@@ -377,6 +385,10 @@ function tryInlineVariableInitializer(
   let inliningAllowed = true;
 
   ir.transformExpressionsInOp(target, (expr, flags) => {
+    if (!ir.isIrExpression(expr)) {
+      return expr;
+    }
+
     if (inlined || !inliningAllowed) {
       // Either the inlining has already succeeded, or we've passed a fence that disallows inlining
       // at this point, so don't try.
