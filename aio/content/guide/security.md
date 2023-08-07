@@ -13,7 +13,7 @@ You can run the <live-example></live-example> in Stackblitz and download the cod
 
 <header>Reporting vulnerabilities</header>
 
-Angular is part of Google [Open Source Software Vulnerability Reward Program](https://bughunters.google.com/about/rules/6521337925468160/google-open-source-software-vulnerability-reward-program-rules), for vulnerabilities in Angular please submit your report [here](https://bughunters.google.com/report).
+Angular is part of Google [Open Source Software Vulnerability Reward Program](https://bughunters.google.com/about/rules/6521337925468160/google-open-source-software-vulnerability-reward-program-rules). [For vulnerabilities in Angular, please submit your report at https://bughunters.google.com](https://bughunters.google.com/report).
 
 For more information about how Google handles security issues, see [Google's security philosophy](https://www.google.com/about/appsecurity).
 
@@ -198,7 +198,7 @@ If an attacker can predict future nonces, they can circumvent the protections of
 
 </div>
 
-If you cannot generate nones in your project, you can allow inline styles by adding `'unsafe-inline'` to the `style-src` section of the CSP header.
+If you cannot generate nonces in your project, you can allow inline styles by adding `'unsafe-inline'` to the `style-src` section of the CSP header.
 
 | Sections                | Details |
 |:---                     |:---     |
@@ -344,7 +344,7 @@ That means only your application can read this cookie token and set the custom h
 The malicious code on `evil.com` can't.
 
 Angular's `HttpClient` has built-in support for the client-side half of this technique.
-Read about it more in the [HttpClient guide](guide/http#security-xsrf-protection).
+Read about it more in the [HttpClient guide](guide/http-security-xsrf-protection).
 
 For information about CSRF at the Open Web Application Security Project \(OWASP\), see [Cross-Site Request Forgery (CSRF)](https://owasp.org/www-community/attacks/csrf) and [Cross-Site Request Forgery (CSRF) Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html).
 The Stanford University paper [Robust Defenses for Cross-Site Request Forgery](https://seclab.stanford.edu/websec/csrf/csrf.pdf) is a rich source of detail.
@@ -380,4 +380,4 @@ Angular-specific APIs that should be audited in a security review, such as the [
 
 <!-- end links -->
 
-@reviewed 2022-02-28
+@reviewed 2023-05-16

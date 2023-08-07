@@ -20,6 +20,7 @@ import {deepForEach, flatten} from '../../util/array_utils';
 import {assertDefined} from '../../util/assert';
 import {EMPTY_ARRAY} from '../../util/empty';
 import {GENERATED_COMP_IDS, getComponentDef, getDirectiveDef, getNgModuleDef, getPipeDef, isStandalone} from '../definition';
+import {depsTracker, USE_RUNTIME_DEPS_TRACKER_FOR_JIT} from '../deps_tracker/deps_tracker';
 import {NG_COMP_DEF, NG_DIR_DEF, NG_FACTORY_DEF, NG_MOD_DEF, NG_PIPE_DEF} from '../fields';
 import {ComponentDef} from '../interfaces/definition';
 import {maybeUnwrapFn} from '../util/misc_utils';
@@ -424,7 +425,7 @@ function computeCombinedExports(type: Type<any>): Type<any>[] {
     return [type];
   }
 
-  return [...flatten(maybeUnwrapFn(ngModuleDef.exports).map((type) => {
+  return flatten(maybeUnwrapFn(ngModuleDef.exports).map((type) => {
     const ngModuleDef = getNgModuleDef(type);
     if (ngModuleDef) {
       verifySemanticsOfNgModuleDef(type as any as NgModuleType, false);
@@ -432,7 +433,7 @@ function computeCombinedExports(type: Type<any>): Type<any>[] {
     } else {
       return type;
     }
-  }))];
+  }));
 }
 
 /**
@@ -489,7 +490,16 @@ export function patchComponentDefWithScope<C>(
  */
 export function transitiveScopesFor<T>(type: Type<T>): NgModuleTransitiveScopes {
   if (isNgModule(type)) {
-    return transitiveScopesForNgModule(type);
+    if (USE_RUNTIME_DEPS_TRACKER_FOR_JIT) {
+      const scope = depsTracker.getNgModuleScope(type);
+      const def = getNgModuleDef(type, true);
+      return {
+        schemas: def.schemas || null,
+        ...scope,
+      };
+    } else {
+      return transitiveScopesForNgModule(type);
+    }
   } else if (isStandalone(type)) {
     const directiveDef = getComponentDef(type) || getDirectiveDef(type);
     if (directiveDef !== null) {

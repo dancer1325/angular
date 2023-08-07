@@ -6,6 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
+import type {ParseSourceSpan} from '../../../../parse_util';
 import type {Op, XrefId} from './operations';
 import type {Expression} from './expression';
 
@@ -27,7 +28,12 @@ export const UsesSlotIndex = Symbol('UsesSlotIndex');
 /**
  * Marker symbol for `ConsumesVars` trait.
  */
-export const ConsumesVarsTrait = Symbol('UsesVars');
+export const ConsumesVarsTrait = Symbol('ConsumesVars');
+
+/**
+ * Marker symbol for `UsesVarOffset` trait.
+ */
+export const UsesVarOffset = Symbol('UsesVarOffset');
 
 /**
  * Marks an operation as requiring allocation of one or more data slots for storage.
@@ -73,6 +79,8 @@ export interface DependsOnSlotContextOpTrait {
    * this operation can be executed.
    */
   target: XrefId;
+
+  sourceSpan: ParseSourceSpan;
 }
 
 
@@ -106,6 +114,15 @@ export interface ConsumesVarsTrait {
 }
 
 /**
+ * Marker trait indicating that an expression requires knowledge of the number of variable storage
+ * slots used prior to it.
+ */
+export interface UsesVarOffsetTrait {
+  [UsesVarOffset]: true;
+
+  varOffset: number|null;
+}
+/**
  * Default values for most `ConsumesSlotOpTrait` fields (used with the spread operator to initialize
  * implementors of the trait).
  */
@@ -128,9 +145,10 @@ export const TRAIT_USES_SLOT_INDEX: Omit<UsesSlotIndexTrait, 'target'> = {
  * Default values for most `DependsOnSlotContextOpTrait` fields (used with the spread operator to
  * initialize implementors of the trait).
  */
-export const TRAIT_DEPENDS_ON_SLOT_CONTEXT: Omit<DependsOnSlotContextOpTrait, 'target'> = {
-  [DependsOnSlotContext]: true,
-} as const;
+export const TRAIT_DEPENDS_ON_SLOT_CONTEXT:
+    Omit<DependsOnSlotContextOpTrait, 'target'|'sourceSpan'> = {
+      [DependsOnSlotContext]: true,
+    } as const;
 
 /**
  * Default values for `UsesVars` fields (used with the spread operator to initialize
@@ -138,6 +156,15 @@ export const TRAIT_DEPENDS_ON_SLOT_CONTEXT: Omit<DependsOnSlotContextOpTrait, 't
  */
 export const TRAIT_CONSUMES_VARS: ConsumesVarsTrait = {
   [ConsumesVarsTrait]: true,
+} as const;
+
+/**
+ * Default values for `UsesVarOffset` fields (used with the spread operator to initialize
+ * implementors of this trait).
+ */
+export const TRAIT_USES_VAR_OFFSET: UsesVarOffsetTrait = {
+  [UsesVarOffset]: true,
+  varOffset: null,
 } as const;
 
 /**
@@ -163,6 +190,14 @@ export function hasConsumesVarsTrait<ExprT extends Expression>(expr: ExprT): exp
 export function hasConsumesVarsTrait<OpT extends Op<OpT>>(op: OpT): op is OpT&ConsumesVarsTrait;
 export function hasConsumesVarsTrait(value: any): boolean {
   return (value as Partial<ConsumesVarsTrait>)[ConsumesVarsTrait] === true;
+}
+
+/**
+ * Test whether an expression implements `UsesVarOffsetTrait`.
+ */
+export function hasUsesVarOffsetTrait<ExprT extends Expression>(expr: ExprT): expr is ExprT&
+    UsesVarOffsetTrait {
+  return (expr as Partial<UsesVarOffsetTrait>)[UsesVarOffset] === true;
 }
 
 /**

@@ -6,11 +6,11 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import {ApplicationRef, InjectionToken, PlatformRef, Provider, Renderer2, StaticProvider, Type, ɵannotateForHydration as annotateForHydration, ɵENABLED_SSR_FEATURES as ENABLED_SSR_FEATURES, ɵInitialRenderPendingTasks as InitialRenderPendingTasks, ɵIS_HYDRATION_DOM_REUSE_ENABLED as IS_HYDRATION_DOM_REUSE_ENABLED} from '@angular/core';
+import {ApplicationRef, InjectionToken, PlatformRef, Provider, Renderer2, StaticProvider, Type, ɵannotateForHydration as annotateForHydration, ɵENABLED_SSR_FEATURES as ENABLED_SSR_FEATURES, ɵIS_HYDRATION_DOM_REUSE_ENABLED as IS_HYDRATION_DOM_REUSE_ENABLED, ɵSSR_CONTENT_INTEGRITY_MARKER as SSR_CONTENT_INTEGRITY_MARKER} from '@angular/core';
 import {first} from 'rxjs/operators';
 
 import {PlatformState} from './platform_state';
-import {platformDynamicServer, platformServer} from './server';
+import {platformServer} from './server';
 import {BEFORE_APP_SERIALIZED, INITIAL_CONFIG} from './tokens';
 
 interface PlatformOptions {
@@ -25,12 +25,23 @@ interface PlatformOptions {
  */
 function createServerPlatform(options: PlatformOptions): PlatformRef {
   const extraProviders = options.platformProviders ?? [];
-  const platformFactory =
-      (typeof ngJitMode === 'undefined' || ngJitMode) ? platformDynamicServer : platformServer;
-  return platformFactory([
+  return platformServer([
     {provide: INITIAL_CONFIG, useValue: {document: options.document, url: options.url}},
     extraProviders
   ]);
+}
+
+/**
+ * Creates a marker comment node and append it into the `<body>`.
+ * Some CDNs have mechanisms to remove all comment node from HTML.
+ * This behaviour breaks hydration, so we'll detect on the client side if this
+ * marker comment is still available or else throw an error
+ */
+function appendSsrContentIntegrityMarker(doc: Document) {
+  // Adding a ng hydration marken comment
+  const comment = doc.createComment(SSR_CONTENT_INTEGRITY_MARKER);
+  doc.body.firstChild ? doc.body.insertBefore(comment, doc.body.firstChild) :
+                        doc.body.append(comment);
 }
 
 /**
@@ -56,17 +67,15 @@ function appendServerContextInfo(applicationRef: ApplicationRef) {
 
 async function _render(platformRef: PlatformRef, applicationRef: ApplicationRef): Promise<string> {
   const environmentInjector = applicationRef.injector;
-  const isStablePromise =
-      applicationRef.isStable.pipe((first((isStable: boolean) => isStable))).toPromise();
-  const pendingTasks = environmentInjector.get(InitialRenderPendingTasks);
-  const pendingTasksPromise = pendingTasks.whenAllTasksComplete;
 
   // Block until application is stable.
-  await Promise.allSettled([isStablePromise, pendingTasksPromise]);
+  await applicationRef.isStable.pipe((first((isStable: boolean) => isStable))).toPromise();
 
   const platformState = platformRef.injector.get(PlatformState);
   if (applicationRef.injector.get(IS_HYDRATION_DOM_REUSE_ENABLED, false)) {
-    annotateForHydration(applicationRef, platformState.getDocument());
+    const doc = platformState.getDocument();
+    appendSsrContentIntegrityMarker(doc);
+    annotateForHydration(applicationRef, doc);
   }
 
   // Run any BEFORE_APP_SERIALIZED callbacks just before rendering to string.
@@ -96,7 +105,15 @@ async function _render(platformRef: PlatformRef, applicationRef: ApplicationRef)
 
   appendServerContextInfo(applicationRef);
   const output = platformState.renderToString();
-  platformRef.destroy();
+
+  // Destroy the application in a macrotask, this allows pending promises to be settled and errors
+  // to be surfaced to the users.
+  await new Promise<void>((resolve) => {
+    setTimeout(() => {
+      platformRef.destroy();
+      resolve();
+    }, 0);
+  });
 
   return output;
 }

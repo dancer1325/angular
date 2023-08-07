@@ -12,9 +12,9 @@ jobs:
   trigger:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
-      - uses: angular/dev-infra/github-actions/google-internal-tests@070bfccea3fc824c834bbf09ac84835889165878
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - uses: angular/dev-infra/github-actions/google-internal-tests@0109d498b0f6aae418ed4924a5e5c65695f0ac61
         with:
-          run-tests-guide-url: http://go/angular/g3sync
+          run-tests-guide-url: http://go/angular-g3sync-start
           github-token: ${{ secrets.GITHUB_TOKEN }}
           sync-config: ./.ng-dev/google-sync-config.json

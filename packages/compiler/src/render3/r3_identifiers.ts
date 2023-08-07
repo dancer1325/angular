@@ -139,6 +139,8 @@ export class Identifiers {
 
   static templateCreate: o.ExternalReference = {name: 'ɵɵtemplate', moduleName: CORE};
 
+  static defer: o.ExternalReference = {name: 'ɵɵdefer', moduleName: CORE};
+
   static text: o.ExternalReference = {name: 'ɵɵtext', moduleName: CORE};
 
   static enableBindings: o.ExternalReference = {name: 'ɵɵenableBindings', moduleName: CORE};
@@ -326,6 +328,9 @@ export class Identifiers {
 
   static HostDirectivesFeature:
       o.ExternalReference = {name: 'ɵɵHostDirectivesFeature', moduleName: CORE};
+
+  static InputTransformsFeatureFeature:
+      o.ExternalReference = {name: 'ɵɵInputTransformsFeature', moduleName: CORE};
 
   static listener: o.ExternalReference = {name: 'ɵɵlistener', moduleName: CORE};
 

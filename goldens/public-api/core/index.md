@@ -25,6 +25,22 @@ export interface AfterContentInit {
 }
 
 // @public
+export function afterNextRender(callback: VoidFunction, options?: AfterRenderOptions): AfterRenderRef;
+
+// @public
+export function afterRender(callback: VoidFunction, options?: AfterRenderOptions): AfterRenderRef;
+
+// @public
+export interface AfterRenderOptions {
+    injector?: Injector;
+}
+
+// @public
+export interface AfterRenderRef {
+    destroy(): void;
+}
+
+// @public
 export interface AfterViewChecked {
     ngAfterViewChecked(): void;
 }
@@ -120,6 +136,9 @@ export interface AttributeDecorator {
     // (undocumented)
     new (name: string): Attribute;
 }
+
+// @public
+export function booleanAttribute(value: unknown): boolean;
 
 // @public
 export interface BootstrapOptions {
@@ -222,6 +241,7 @@ export abstract class ComponentFactory<C> {
     abstract get inputs(): {
         propName: string;
         templateName: string;
+        transform?: (value: any) => any;
     }[];
     abstract get ngContentSelectors(): string[];
     abstract get outputs(): {
@@ -243,6 +263,7 @@ export interface ComponentMirror<C> {
     get inputs(): ReadonlyArray<{
         readonly propName: string;
         readonly templateName: string;
+        readonly transform?: (value: any) => any;
     }>;
     get isStandalone(): boolean;
     get ngContentSelectors(): ReadonlyArray<string>;
@@ -481,6 +502,7 @@ export interface Directive {
         name: string;
         alias?: string;
         required?: boolean;
+        transform?: (value: any) => any;
     } | string)[];
     jit?: true;
     outputs?: string[];
@@ -789,7 +811,7 @@ export abstract class Injector {
     // @deprecated (undocumented)
     static create(providers: StaticProvider[], parent?: Injector): Injector;
     static create(options: {
-        providers: StaticProvider[];
+        providers: Array<Provider | StaticProvider>;
         parent?: Injector;
         name?: string;
     }): Injector;
@@ -822,6 +844,7 @@ export interface InjectorType<T> extends Type<T> {
 export interface Input {
     alias?: string;
     required?: boolean;
+    transform?: (value: any) => any;
 }
 
 // @public (undocumented)
@@ -838,7 +861,7 @@ export interface InputDecorator {
 export function isDevMode(): boolean;
 
 // @public
-export function isSignal(value: Function): value is Signal<unknown>;
+export function isSignal(value: unknown): value is Signal<unknown>;
 
 // @public
 export function isStandalone(type: Type<unknown>): boolean;
@@ -1029,15 +1052,12 @@ export class NgZone {
         shouldCoalesceEventChangeDetection?: boolean | undefined;
         shouldCoalesceRunChangeDetection?: boolean | undefined;
     });
-    // (undocumented)
     static assertInAngularZone(): void;
-    // (undocumented)
     static assertNotInAngularZone(): void;
     // (undocumented)
     readonly hasPendingMacrotasks: boolean;
     // (undocumented)
     readonly hasPendingMicrotasks: boolean;
-    // (undocumented)
     static isInAngularZone(): boolean;
     readonly isStable: boolean;
     readonly onError: EventEmitter<any>;
@@ -1058,6 +1078,9 @@ export interface NgZoneOptions {
 
 // @public
 export const NO_ERRORS_SCHEMA: SchemaMetadata;
+
+// @public
+export function numberAttribute(value: unknown, fallbackValue?: number): number;
 
 // @public
 export interface OnChanges {
@@ -1103,7 +1126,7 @@ export interface OutputDecorator {
     new (alias?: string): any;
 }
 
-// @public
+// @public @deprecated
 export const PACKAGE_ROOT_URL: InjectionToken<string>;
 
 // @public

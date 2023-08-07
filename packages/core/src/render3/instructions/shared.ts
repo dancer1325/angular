@@ -10,7 +10,7 @@ import {Injector} from '../../di/injector';
 import {ErrorHandler} from '../../error_handler';
 import {RuntimeError, RuntimeErrorCode} from '../../errors';
 import {DehydratedView} from '../../hydration/interfaces';
-import {SKIP_HYDRATION_ATTR_NAME} from '../../hydration/skip_hydration';
+import {hasSkipHydrationAttrOnRElement} from '../../hydration/skip_hydration';
 import {PRESERVE_HOST_CONTENT, PRESERVE_HOST_CONTENT_DEFAULT} from '../../hydration/tokens';
 import {processTextNodeMarkersBeforeHydration} from '../../hydration/utils';
 import {DoCheck, OnChanges, OnInit} from '../../interface/lifecycle_hooks';
@@ -42,7 +42,7 @@ import {clearElementContents, updateTextNode} from '../node_manipulation';
 import {isInlineTemplate, isNodeMatchingSelectorList} from '../node_selector_matcher';
 import {profiler, ProfilerEvent} from '../profiler';
 import {commitLViewConsumerIfHasProducers, getReactiveLViewConsumer} from '../reactive_lview_consumer';
-import {getBindingsEnabled, getCurrentDirectiveIndex, getCurrentParentTNode, getCurrentTNodePlaceholderOk, getSelectedIndex, isCurrentTNodeParent, isInCheckNoChangesMode, isInI18nBlock, leaveView, setBindingRootForHostBindings, setCurrentDirectiveIndex, setCurrentQueryIndex, setCurrentTNode, setSelectedIndex} from '../state';
+import {getBindingsEnabled, getCurrentDirectiveIndex, getCurrentParentTNode, getCurrentTNodePlaceholderOk, getSelectedIndex, isCurrentTNodeParent, isInCheckNoChangesMode, isInI18nBlock, isInSkipHydrationBlock, setBindingRootForHostBindings, setCurrentDirectiveIndex, setCurrentQueryIndex, setCurrentTNode, setSelectedIndex} from '../state';
 import {NO_CHANGE} from '../tokens';
 import {mergeHostAttrs} from '../util/attrs_utils';
 import {INTERPOLATION_DELIMITER} from '../util/misc_utils';
@@ -94,7 +94,7 @@ export function createLView<T>(
     parentLView: LView|null, tView: TView, context: T|null, flags: LViewFlags, host: RElement|null,
     tHostNode: TNode|null, environment: LViewEnvironment|null, renderer: Renderer|null,
     injector: Injector|null, embeddedViewInjector: Injector|null,
-    hydrationInfo: DehydratedView|null): LView {
+    hydrationInfo: DehydratedView|null): LView<T> {
   const lView = tView.blueprint.slice() as LView;
   lView[HOST] = host;
   lView[FLAGS] = flags | LViewFlags.CreationMode | LViewFlags.Attached | LViewFlags.FirstLViewPass;
@@ -122,7 +122,7 @@ export function createLView<T>(
           'Embedded views must have parentLView');
   lView[DECLARATION_COMPONENT_VIEW] =
       tView.type == TViewType.Embedded ? parentLView![DECLARATION_COMPONENT_VIEW] : lView;
-  return lView;
+  return lView as LView<T>;
 }
 
 /**
@@ -497,7 +497,7 @@ let _applyRootElementTransformImpl: typeof applyRootElementTransformImpl =
  * @param rootElement the app root HTML Element
  */
 export function applyRootElementTransformImpl(rootElement: HTMLElement) {
-  if (rootElement.hasAttribute(SKIP_HYDRATION_ATTR_NAME)) {
+  if (hasSkipHydrationAttrOnRElement(rootElement)) {
     // Handle a situation when the `ngSkipHydration` attribute is applied
     // to the root node of an application. In this case, we should clear
     // the contents and render everything from scratch.
@@ -584,6 +584,10 @@ export function createTNode(
   ngDevMode && ngDevMode.tNode++;
   ngDevMode && tParent && assertTNodeForTView(tParent, tView);
   let injectorIndex = tParent ? tParent.injectorIndex : -1;
+  let flags = 0;
+  if (isInSkipHydrationBlock()) {
+    flags |= TNodeFlags.inSkipHydrationBlock;
+  }
   const tNode = {
     type,
     index,
@@ -594,7 +598,7 @@ export function createTNode(
     directiveStylingLast: -1,
     componentOffset: -1,
     propertyBindings: null,
-    flags: 0,
+    flags,
     providerIndexes: 0,
     value: value,
     attrs: attrs,
@@ -1307,6 +1311,10 @@ function writeToDirectiveInput<T>(
     def: DirectiveDef<T>, instance: T, publicName: string, privateName: string, value: string) {
   const prevConsumer = setActiveConsumer(null);
   try {
+    const inputTransforms = def.inputTransforms;
+    if (inputTransforms !== null && inputTransforms.hasOwnProperty(privateName)) {
+      value = inputTransforms[privateName].call(instance, value);
+    }
     if (def.setInput !== null) {
       def.setInput(instance, value, publicName, privateName);
     } else {

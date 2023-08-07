@@ -7,7 +7,9 @@
  */
 
 import {DOCUMENT, isPlatformServer, ɵgetDOM as getDOM} from '@angular/common';
-import {APP_ID, CSP_NONCE, Inject, Injectable, InjectionToken, NgZone, OnDestroy, PLATFORM_ID, Renderer2, RendererFactory2, RendererStyleFlags2, RendererType2, ViewEncapsulation} from '@angular/core';
+import {APP_ID, CSP_NONCE, Inject, Injectable, InjectionToken, NgZone, OnDestroy, PLATFORM_ID, Renderer2, RendererFactory2, RendererStyleFlags2, RendererType2, ViewEncapsulation, ɵRuntimeError as RuntimeError} from '@angular/core';
+
+import {RuntimeErrorCode} from '../errors';
 
 import {EventManager} from './events/event_manager';
 import {SharedStylesHost} from './shared_styles_host';
@@ -40,7 +42,7 @@ const REMOVE_STYLES_ON_COMPONENT_DESTROY_DEFAULT = false;
  * @publicApi
  */
 export const REMOVE_STYLES_ON_COMPONENT_DESTROY =
-    new InjectionToken<boolean>('RemoveStylesOnCompDestory', {
+    new InjectionToken<boolean>('RemoveStylesOnCompDestroy', {
       providedIn: 'root',
       factory: () => REMOVE_STYLES_ON_COMPONENT_DESTROY_DEFAULT,
     });
@@ -68,7 +70,7 @@ export class DomRendererFactory2 implements RendererFactory2, OnDestroy {
       private readonly eventManager: EventManager,
       private readonly sharedStylesHost: SharedStylesHost,
       @Inject(APP_ID) private readonly appId: string,
-      @Inject(REMOVE_STYLES_ON_COMPONENT_DESTROY) private removeStylesOnCompDestory: boolean,
+      @Inject(REMOVE_STYLES_ON_COMPONENT_DESTROY) private removeStylesOnCompDestroy: boolean,
       @Inject(DOCUMENT) private readonly doc: Document,
       @Inject(PLATFORM_ID) readonly platformId: Object,
       readonly ngZone: NgZone,
@@ -110,13 +112,13 @@ export class DomRendererFactory2 implements RendererFactory2, OnDestroy {
       const ngZone = this.ngZone;
       const eventManager = this.eventManager;
       const sharedStylesHost = this.sharedStylesHost;
-      const removeStylesOnCompDestory = this.removeStylesOnCompDestory;
+      const removeStylesOnCompDestroy = this.removeStylesOnCompDestroy;
       const platformIsServer = this.platformIsServer;
 
       switch (type.encapsulation) {
         case ViewEncapsulation.Emulated:
           renderer = new EmulatedEncapsulationDomRenderer2(
-              eventManager, sharedStylesHost, type, this.appId, removeStylesOnCompDestory, doc,
+              eventManager, sharedStylesHost, type, this.appId, removeStylesOnCompDestroy, doc,
               ngZone, platformIsServer);
           break;
         case ViewEncapsulation.ShadowDom:
@@ -125,12 +127,11 @@ export class DomRendererFactory2 implements RendererFactory2, OnDestroy {
               platformIsServer);
         default:
           renderer = new NoneEncapsulationDomRenderer(
-              eventManager, sharedStylesHost, type, removeStylesOnCompDestory, doc, ngZone,
+              eventManager, sharedStylesHost, type, removeStylesOnCompDestroy, doc, ngZone,
               platformIsServer);
           break;
       }
 
-      renderer.onDestroy = () => rendererByCompId.delete(type.id);
       rendererByCompId.set(type.id, renderer);
     }
 
@@ -200,7 +201,10 @@ class DefaultDomRenderer2 implements Renderer2 {
     let el: any = typeof selectorOrNode === 'string' ? this.doc.querySelector(selectorOrNode) :
                                                        selectorOrNode;
     if (!el) {
-      throw new Error(`The selector "${selectorOrNode}" did not match any elements`);
+      throw new RuntimeError(
+          RuntimeErrorCode.ROOT_NODE_NOT_FOUND,
+          (typeof ngDevMode === 'undefined' || ngDevMode) &&
+              `The selector "${selectorOrNode}" did not match any elements`);
     }
     if (!preserveContent) {
       el.textContent = '';
@@ -313,7 +317,6 @@ class DefaultDomRenderer2 implements Renderer2 {
           eventHandler(event);
       if (allowDefaultBehavior === false) {
         event.preventDefault();
-        event.returnValue = false;
       }
 
       return undefined;
@@ -324,10 +327,12 @@ class DefaultDomRenderer2 implements Renderer2 {
 const AT_CHARCODE = (() => '@'.charCodeAt(0))();
 function checkNoSyntheticProp(name: string, nameKind: string) {
   if (name.charCodeAt(0) === AT_CHARCODE) {
-    throw new Error(`Unexpected synthetic ${nameKind} ${name} found. Please make sure that:
+    throw new RuntimeError(
+        RuntimeErrorCode.UNEXPECTED_SYNTHETIC_PROPERTY,
+        `Unexpected synthetic ${nameKind} ${name} found. Please make sure that:
   - Either \`BrowserAnimationsModule\` or \`NoopAnimationsModule\` are imported in your application.
   - There is corresponding configuration for the animation named \`${
-        name}\` defined in the \`animations\` field of the \`@Component\` decorator (see https://angular.io/api/core/Component#animations).`);
+            name}\` defined in the \`animations\` field of the \`@Component\` decorator (see https://angular.io/api/core/Component#animations).`);
   }
 }
 
@@ -391,14 +396,12 @@ class ShadowDomRenderer extends DefaultDomRenderer2 {
 
 class NoneEncapsulationDomRenderer extends DefaultDomRenderer2 {
   private readonly styles: string[];
-  private rendererUsageCount = 0;
-  onDestroy: VoidFunction|undefined;
 
   constructor(
       eventManager: EventManager,
       private readonly sharedStylesHost: SharedStylesHost,
       component: RendererType2,
-      private removeStylesOnCompDestory: boolean,
+      private removeStylesOnCompDestroy: boolean,
       doc: Document,
       ngZone: NgZone,
       platformIsServer: boolean,
@@ -410,19 +413,14 @@ class NoneEncapsulationDomRenderer extends DefaultDomRenderer2 {
 
   applyStyles(): void {
     this.sharedStylesHost.addStyles(this.styles);
-    this.rendererUsageCount++;
   }
 
   override destroy(): void {
-    if (!this.removeStylesOnCompDestory) {
+    if (!this.removeStylesOnCompDestroy) {
       return;
     }
 
     this.sharedStylesHost.removeStyles(this.styles);
-    this.rendererUsageCount--;
-    if (this.rendererUsageCount === 0) {
-      this.onDestroy?.();
-    }
   }
 }
 
@@ -432,11 +430,11 @@ class EmulatedEncapsulationDomRenderer2 extends NoneEncapsulationDomRenderer {
 
   constructor(
       eventManager: EventManager, sharedStylesHost: SharedStylesHost, component: RendererType2,
-      appId: string, removeStylesOnCompDestory: boolean, doc: Document, ngZone: NgZone,
+      appId: string, removeStylesOnCompDestroy: boolean, doc: Document, ngZone: NgZone,
       platformIsServer: boolean) {
     const compId = appId + '-' + component.id;
     super(
-        eventManager, sharedStylesHost, component, removeStylesOnCompDestory, doc, ngZone,
+        eventManager, sharedStylesHost, component, removeStylesOnCompDestroy, doc, ngZone,
         platformIsServer, compId);
     this.contentAttr = shimContentAttribute(compId);
     this.hostAttr = shimHostAttribute(compId);

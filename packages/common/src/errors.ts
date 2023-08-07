@@ -20,6 +20,8 @@ export const enum RuntimeErrorCode {
   // NgForOf errors
   NG_FOR_MISSING_DIFFER = -2200,
 
+  // Keep 2800 - 2900 for Http Errors.
+
   // Image directive errors
   UNEXPECTED_SRC_ATTR = 2950,
   UNEXPECTED_SRCSET_ATTR = 2951,
@@ -34,4 +36,5 @@ export const enum RuntimeErrorCode {
   TOO_MANY_PRELOADED_IMAGES = 2961,
   MISSING_BUILTIN_LOADER = 2962,
   MISSING_NECESSARY_LOADER = 2963,
+  LCP_IMG_NGSRC_MODIFIED = 2964,
 }

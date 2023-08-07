@@ -6,8 +6,9 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import {EnvironmentInjector, inject, Injectable, InjectionToken} from '@angular/core';
+import {EnvironmentInjector, inject, Injectable, InjectionToken, ɵInitialRenderPendingTasks as InitialRenderPendingTasks} from '@angular/core';
 import {Observable} from 'rxjs';
+import {finalize} from 'rxjs/operators';
 
 import {HttpBackend, HttpHandler} from './backend';
 import {HttpRequest} from './request';
@@ -31,7 +32,7 @@ import {HttpEvent} from './response';
  *
  * @publicApi
  *
- * @see [HTTP Guide](guide/http#intercepting-requests-and-responses)
+ * @see [HTTP Guide](guide/http-intercept-requests-and-responses)
  *
  * @usageNotes
  *
@@ -69,7 +70,7 @@ export interface HttpInterceptor {
  *
  * @publicApi
  *
- * @see [HTTP Guide](guide/http#intercepting-requests-and-responses)
+ * @see [HTTP Guide](guide/http-intercept-requests-and-responses)
  */
 export type HttpHandlerFn = (req: HttpRequest<unknown>) => Observable<HttpEvent<unknown>>;
 
@@ -178,13 +179,16 @@ export function legacyInterceptorFnFactory(): HttpInterceptorFn {
           adaptLegacyInterceptorToChain, interceptorChainEndFn as ChainedInterceptorFn<any>);
     }
 
-    return chain(req, handler);
+    const pendingTasks = inject(InitialRenderPendingTasks);
+    const taskId = pendingTasks.add();
+    return chain(req, handler).pipe(finalize(() => pendingTasks.remove(taskId)));
   };
 }
 
 @Injectable()
 export class HttpInterceptorHandler extends HttpHandler {
   private chain: ChainedInterceptorFn<unknown>|null = null;
+  private readonly pendingTasks = inject(InitialRenderPendingTasks);
 
   constructor(private backend: HttpBackend, private injector: EnvironmentInjector) {
     super();
@@ -206,6 +210,9 @@ export class HttpInterceptorHandler extends HttpHandler {
               chainedInterceptorFn(nextSequencedFn, interceptorFn, this.injector),
           interceptorChainEndFn as ChainedInterceptorFn<unknown>);
     }
-    return this.chain(initialRequest, downstreamRequest => this.backend.handle(downstreamRequest));
+
+    const taskId = this.pendingTasks.add();
+    return this.chain(initialRequest, downstreamRequest => this.backend.handle(downstreamRequest))
+        .pipe(finalize(() => this.pendingTasks.remove(taskId)));
   }
 }

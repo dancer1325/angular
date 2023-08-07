@@ -105,6 +105,20 @@ export interface DirectiveDef<T> {
   readonly inputs: {[P in keyof T]: string};
 
   /**
+   * A dictionary mapping the private names of inputs to their transformation functions.
+   * Note: the private names are used for the keys, rather than the public ones, because public
+   * names can be re-aliased in host directives which would invalidate the lookup.
+   */
+  readonly inputTransforms: {[classPropertyName: string]: InputTransformFunction}|null;
+
+  /**
+   * Contains the raw input information produced by the compiler. Can be
+   * used to do further processing after the `inputs` have been inverted.
+   */
+  readonly inputConfig:
+      {[classPropertyName: string]: string|[string, string, InputTransformFunction?]};
+
+  /**
    * @deprecated This is only here because `NgOnChanges` incorrectly uses declared name instead of
    * public or minified name.
    */
@@ -459,6 +473,8 @@ export interface ComponentDefFeature {
   ngInherit?: true;
 }
 
+/** Function that can be used to transform incoming input values. */
+export type InputTransformFunction = (value: any) => any;
 
 /**
  * Type used for directiveDefs on component definition.
@@ -499,3 +515,20 @@ export type PipeTypeList =
 // Note: This hack is necessary so we don't erroneously get a circular dependency
 // failure based on types.
 export const unusedValueExportToPlacateAjd = 1;
+
+/**
+ * NgModule scope info as provided by NgModule decorator.
+ */
+export interface NgModuleScopeInfoFromDecorator {
+  /** List of components, directives, and pipes declared by this module. */
+  declarations?: Type<any>[]|(() => Type<any>[]);
+
+  /** List of modules or `ModuleWithProviders` imported by this module. */
+  imports?: Type<any>[]|(() => Type<any>[]);
+
+  /**
+   * List of modules, `ModuleWithProviders`, components, directives, or pipes exported by this
+   * module.
+   */
+  exports?: Type<any>[]|(() => Type<any>[]);
+}

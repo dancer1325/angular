@@ -56,9 +56,10 @@
 
 version: 3
 
-# availability:
-#   users_unavailable:
-#     - <name>
+availability:
+  users_unavailable:
+    - atscott
+    - devversion
 
 # Meta field that goes unused by PullApprove to allow for defining aliases to be
 # used throughout the config.
@@ -168,6 +169,7 @@ groups:
         - atscott
         - crisbeto
         - JoostK
+        - dylhunn
 
   # =========================================================
   #  Framework: Migrations
@@ -205,6 +207,7 @@ groups:
           'aio/content/guide/architecture-services.md',
           'aio/content/guide/architecture.md',
           'aio/content/examples/architecture/**/{*,.*}',
+          'aio/content/guide/rxjs-interop.md',
           'aio/content/images/guide/architecture/**/{*,.*}',
           'aio/content/guide/attribute-directives.md',
           'aio/content/examples/attribute-directives/**/{*,.*}',
@@ -218,27 +221,6 @@ groups:
           'aio/content/images/guide/change-detection/**/{*,.*}',
           'aio/content/guide/class-binding.md',
           'aio/content/guide/cheatsheet.md',
-          'aio/content/guide/component/component-content-projection-complex.md',
-          'aio/content/guide/component/component-content-projection-conditional.md',
-          'aio/content/guide/component/component-content-projection-multi-slot.md',
-          'aio/content/guide/component/component-content-projection-overview.md',
-          'aio/content/guide/component/component-content-projection-single-slot.md',
-          'aio/content/guide/component/component-create-cli.md',
-          'aio/content/guide/component/component-create-manual.md',
-          'aio/content/guide/component/component-example-dynamic-load.md',
-          'aio/content/guide/component/component-example-interaction.md',
-          'aio/content/guide/component/component-example.md',
-          'aio/content/guide/component/component-exchange-data.md',
-          'aio/content/guide/component/component-lifecycle-overview.md',
-          'aio/content/guide/component/component-overview.md',
-          'aio/content/guide/component/component-share-data-overview.md',
-          'aio/content/guide/component/component-share-data-to-child.md',
-          'aio/content/guide/component/component-share-data-to-parent.md',
-          'aio/content/guide/component/component-structure.md',
-          'aio/content/guide/component/component-style-overview.md',
-          'aio/content/guide/component/component-style-view-encapsulate.md',
-          'aio/content/guide/component/component-style.md',
-          'aio/content/guide/component/component-use-overview.md',
           'aio/content/guide/component-interaction.md',
           'aio/content/examples/component-interaction/**/{*,.*}',
           'aio/content/images/guide/component-interaction/**/{*,.*}',
@@ -262,6 +244,7 @@ groups:
           'aio/content/images/guide/dependency-injection-in-action/**/{*,.*}',
           'aio/content/guide/dependency-injection-navtree.md',
           'aio/content/guide/dependency-injection-providers.md',
+          'aio/content/guide/dependency-injection-context.md',
           'aio/content/guide/lightweight-injection-tokens.md',
           'aio/content/guide/displaying-data.md',
           'aio/content/examples/displaying-data/**/{*,.*}',
@@ -284,8 +267,6 @@ groups:
           'aio/content/guide/lazy-loading-ngmodules.md',
           'aio/content/examples/lazy-loading-ngmodules/**/{*,.*}',
           'aio/content/images/guide/lazy-loading-ngmodules/**/{*,.*}',
-          'aio/content/guide/lifecycle-hook/lifecycle-hook-example.md',
-          'aio/content/guide/lifecycle-hook/lifecycle-hook-overview.md',
           'aio/content/guide/lifecycle-hooks.md',
           'aio/content/examples/lifecycle-hooks/**/{*,.*}',
           'aio/content/images/guide/lifecycle-hooks/**/{*,.*}',
@@ -357,7 +338,8 @@ groups:
           'aio/content/examples/view-encapsulation/**/{*,.*}',
           'aio/content/images/guide/view-encapsulation/**/{*,.*}',
           'aio/content/special-elements/**/{*,.*}',
-          'aio/content/guide/hydration.md'
+          'aio/content/guide/hydration.md',
+          'aio/content/guide/signals.md'
           ])
     reviewers:
       users:
@@ -399,7 +381,6 @@ groups:
         contains_any_globs(files, [
           'packages/common/http/**/{*,.*}',
           'packages/examples/http/**/{*,.*}',
-          'aio/content/guide/http.md',
           'aio/content/guide/understanding-communicating-with-http.md',
           'aio/content/guide/http-configure-http-url-parameters.md',
           'aio/content/guide/http-handle-request-errors.md',
@@ -802,8 +783,9 @@ groups:
           ])
     reviewers:
       users:
-        - alxhub
+        - devversion
         - josephperrott
+        - pkozlowski-opensource
 
   # =========================================================
   #  Integration Tests
@@ -856,6 +838,7 @@ groups:
           'aio/content/images/guide/toh/**/{*,.*}',
           'aio/content/demos/first-app/**/{*,.*}',
           'aio/content/examples/first-app-*/**/{*,.*}',
+          'aio/content/images/guide/faa/**/{*,.*}',
           'aio/content/examples/toh-pt0/**/{*,.*}',
           'aio/content/examples/toh-pt1/**/{*,.*}',
           'aio/content/examples/toh-pt2/**/{*,.*}',
@@ -938,19 +921,14 @@ groups:
           'aio/content/guide/releases.md',
           'aio/content/guide/updating.md',
           'aio/content/guide/deprecations.md',
-          'aio/content/guide/migration-legacy-message-id.md',
           'aio/content/examples/deprecation-guide/**/{*,.*}',
-          'aio/content/guide/migration-renderer.md',
-          'aio/content/guide/migration-undecorated-classes.md',
-          'aio/content/guide/migration-dynamic-flag.md',
-          'aio/content/guide/migration-injectable.md',
-          'aio/content/guide/migration-localize.md',
           'aio/content/guide/migration-module-with-providers.md',
           'aio/content/guide/static-query-migration.md',
           'aio/content/guide/update-to-latest-version.md',
           'aio/content/guide/versions.md',
           'aio/content/guide/update-to-version-14.md',
-          'aio/content/guide/update-to-version-15.md'
+          'aio/content/guide/update-to-version-15.md',
+          'aio/content/guide/update-to-version-16.md',
           ])
     reviewers:
       users:
@@ -1024,6 +1002,7 @@ groups:
           'aio/content/guide/workspace-config.md',
           'aio/content/guide/migration-solution-style-tsconfig.md',
           'aio/content/guide/migration-update-libraries-tslib.md',
+          'aio/content/guide/esbuild.md',
           ])
     reviewers:
       users:
@@ -1184,6 +1163,7 @@ groups:
           'tools/legacy-saucelabs/**/{*,.*}',
           'tools/rxjs/**/{*,.*}',
           'tools/saucelabs/**/{*,.*}',
+          'tools/saucelabs-daemon/**/{*,.*}',
           'tools/symbol-extractor/**/{*,.*}',
           'tools/testing/**/{*,.*}',
           'tools/tslint/**/{*,.*}',

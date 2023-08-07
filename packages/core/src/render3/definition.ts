@@ -18,7 +18,7 @@ import {initNgDevMode} from '../util/ng_dev_mode';
 import {stringify} from '../util/stringify';
 
 import {NG_COMP_DEF, NG_DIR_DEF, NG_MOD_DEF, NG_PIPE_DEF} from './fields';
-import {ComponentDef, ComponentDefFeature, ComponentTemplate, ComponentType, ContentQueriesFunction, DependencyTypeList, DirectiveDef, DirectiveDefFeature, DirectiveDefListOrFactory, HostBindingsFunction, PipeDef, PipeDefListOrFactory, TypeOrFactory, ViewQueriesFunction} from './interfaces/definition';
+import {ComponentDef, ComponentDefFeature, ComponentTemplate, ComponentType, ContentQueriesFunction, DependencyTypeList, DirectiveDef, DirectiveDefFeature, DirectiveDefListOrFactory, HostBindingsFunction, InputTransformFunction, NgModuleScopeInfoFromDecorator, PipeDef, PipeDefListOrFactory, TypeOrFactory, ViewQueriesFunction} from './interfaces/definition';
 import {TAttributes, TConstantsOrFactory} from './interfaces/node';
 import {CssSelectorList} from './interfaces/projection';
 import {stringifyCSSSelectorList} from './node_selector_matcher';
@@ -35,7 +35,7 @@ interface DirectiveDefinition<T> {
   /**
    * A map of input names.
    *
-   * The format is in: `{[actualPropertyName: string]:(string|[string, string])}`.
+   * The format is in: `{[actualPropertyName: string]:(string|[string, string, Function])}`.
    *
    * Given:
    * ```
@@ -45,6 +45,9 @@ interface DirectiveDefinition<T> {
    *
    *   @Input('publicInput2')
    *   declaredInput2: string;
+   *
+   *   @Input({transform: (value: boolean) => value ? 1 : 0})
+   *   transformedInput3: number;
    * }
    * ```
    *
@@ -53,6 +56,11 @@ interface DirectiveDefinition<T> {
    * {
    *   publicInput1: 'publicInput1',
    *   declaredInput2: ['declaredInput2', 'publicInput2'],
+   *   transformedInput3: [
+   *     'transformedInput3',
+   *     'transformedInput3',
+   *     (value: boolean) => value ? 1 : 0
+   *   ]
    * }
    * ```
    *
@@ -61,6 +69,11 @@ interface DirectiveDefinition<T> {
    * {
    *   minifiedPublicInput1: 'publicInput1',
    *   minifiedDeclaredInput2: [ 'publicInput2', 'declaredInput2'],
+   *   minifiedTransformedInput3: [
+   *     'transformedInput3',
+   *     'transformedInput3',
+   *     (value: boolean) => value ? 1 : 0
+   *   ]
    * }
    * ```
    *
@@ -75,7 +88,7 @@ interface DirectiveDefinition<T> {
    *    this reason `NgOnChanges` will be deprecated and removed in future version and this
    *    API will be simplified to be consistent with `output`.
    */
-  inputs?: {[P in keyof T]?: string|[string, string]};
+  inputs?: {[P in keyof T]?: string|[string, string, InputTransformFunction?]};
 
   /**
    * A map of output names.
@@ -407,19 +420,7 @@ export function ɵɵdefineNgModule<T>(def: {
  *
  * @codeGenApi
  */
-export function ɵɵsetNgModuleScope(type: any, scope: {
-  /** List of components, directives, and pipes declared by this module. */
-  declarations?: Type<any>[]|(() => Type<any>[]);
-
-  /** List of modules or `ModuleWithProviders` imported by this module. */
-  imports?: Type<any>[] | (() => Type<any>[]);
-
-  /**
-   * List of modules, `ModuleWithProviders`, components, directives, or pipes exported by this
-   * module.
-   */
-  exports?: Type<any>[] | (() => Type<any>[]);
-}): unknown {
+export function ɵɵsetNgModuleScope(type: any, scope: NgModuleScopeInfoFromDecorator): unknown {
   return noSideEffects(() => {
     const ngModuleDef = getNgModuleDef(type, true);
     ngModuleDef.declarations = scope.declarations || EMPTY_ARRAY;
@@ -484,13 +485,13 @@ export function ɵɵsetNgModuleScope(type: any, scope: {
 
  */
 function invertObject<T>(
-    obj?: {[P in keyof T]?: string|[string, string]},
-    secondary?: {[key: string]: string}): {[P in keyof T]: string} {
+    obj?: {[P in keyof T]?: string|[string, string, ...unknown[]]},
+    secondary?: Record<string, string>): {[P in keyof T]: string} {
   if (obj == null) return EMPTY_OBJ as any;
   const newLookup: any = {};
   for (const minifiedKey in obj) {
     if (obj.hasOwnProperty(minifiedKey)) {
-      let publicName: string|[string, string] = obj[minifiedKey]!;
+      let publicName: string|[string, string, ...unknown[]] = obj[minifiedKey]!;
       let declaredName = publicName;
       if (Array.isArray(publicName)) {
         declaredName = publicName[1];
@@ -593,7 +594,7 @@ export function getPipeDef<T>(type: any): PipeDef<T>|null {
 /**
  * Checks whether a given Component, Directive or Pipe is marked as standalone.
  * This will return false if passed anything other than a Component, Directive, or Pipe class
- * See this guide for additional information: https://angular.io/guide/standalone-components
+ * See [this guide](/guide/standalone-components) for additional information:
  *
  * @param type A reference to a Component, Directive or Pipe.
  * @publicApi
@@ -626,6 +627,8 @@ function getNgDirectiveDef<T>(directiveDefinition: DirectiveDefinition<T>):
     hostAttrs: directiveDefinition.hostAttrs || null,
     contentQueries: directiveDefinition.contentQueries || null,
     declaredInputs,
+    inputTransforms: null,
+    inputConfig: directiveDefinition.inputs || EMPTY_OBJ,
     exportAs: directiveDefinition.exportAs || null,
     standalone: directiveDefinition.standalone === true,
     signals: directiveDefinition.signals === true,
@@ -696,6 +699,10 @@ function getComponentId(componentDef: ComponentDef<unknown>): string {
     componentDef.decls,
     componentDef.encapsulation,
     componentDef.standalone,
+    componentDef.signals,
+    componentDef.exportAs,
+    JSON.stringify(componentDef.inputs),
+    JSON.stringify(componentDef.outputs),
     // We cannot use 'componentDef.type.name' as the name of the symbol will change and will not
     // match in the server and browser bundles.
     Object.getOwnPropertyNames(componentDef.type.prototype),
