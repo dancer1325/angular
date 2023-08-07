@@ -13,7 +13,7 @@ We use [Yarn](https://yarnpkg.com) to manage the dependencies and development ta
 You should run all these tasks from the `angular/aio` folder.
 Here are the most important tasks you might need to use:
 
-* `yarn` - install all the dependencies.
+* `yarn install` - install all the dependencies.
 * `yarn build` - create a development build of the application.
 * `yarn build-prod` - create a production build of the application.
 * `yarn build-local` - same as `build`, but uses locally built Angular packages from source code rather than from npm.
@@ -39,6 +39,23 @@ Here are the most important tasks you might need to use:
   - `--local`: run e2e tests against locally built Angular packages.
   - `--filter=foo`: limit e2e tests to those containing the word "foo".
   - `--exclude=bar`: exclude e2e tests containing the word "bar".
+
+### Notes:
+* `yarn install`
+  * First command to run
+  * Problems:
+    * Problem1: No matching the requirements of node and yarn versions used
+      * Solution: `nvm use v16.20.1`
+* How to generate the documentation?
+  * `yarn build`
+  * `yarn start`
+* How to generate a specific example project locally?
+  * Under this path
+  * `yarn build`
+  * `yarn example-playground ProjectName --local`
+  * `cd ...aio/content/example-playground/ProjectName`
+  * `ng serve`
+
 
 > **Note for Windows users**
 >
