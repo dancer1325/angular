@@ -1,13 +1,19 @@
 <h2>Hello World: ngIf!</h2>
 
+<!-- (click)=".." is an event binding -->
 <button type="button" (click)="onEditClick()">Make text editable!</button>
 
+<!-- noEdit  makes reference to the HTML component defined below.
+Not problem to define it afterwards -->
 <div *ngIf="canEdit; else noEdit">
     <p>You can edit the following paragraph.</p>
 </div>
 
+<!-- <ng-template>  does not render it -->
+<!-- #noEdit  is an id for this HTML component -->
 <ng-template #noEdit>
     <p>The following paragraph is read only. Try clicking the button!</p>
 </ng-template>
 
+<!-- [contentEditable]    property binding. It's an HTML's property -->
 <p [contentEditable]="canEdit">{{ message }}</p>

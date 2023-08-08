@@ -8,6 +8,7 @@ import { Logger } from '../logger.service';
 export class HelloWorldDependencyInjectionComponent  {
   count = 0;
 
+  // Add the service via constructor
   constructor(private logger: Logger) { }
 
   onLogMe() {
