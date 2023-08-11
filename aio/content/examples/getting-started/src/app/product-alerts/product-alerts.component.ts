@@ -10,7 +10,10 @@ import { Product } from '../products';
   styleUrls: ['./product-alerts.component.css']
 })
 // #docregion input-output
+// Added to the AppModule to make it available to other components in the application
 export class ProductAlertsComponent {
+  // Receive data from the parent === Parent -> Child component
   @Input() product: Product | undefined;
+  // Send data Child -> Parent component. Allows emitting a new event to the parent
   @Output() notify = new EventEmitter();
 }

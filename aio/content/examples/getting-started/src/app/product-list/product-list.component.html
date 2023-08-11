@@ -1,13 +1,18 @@
 <h2>Products</h2>
 
 <!-- #docregion router-link -->
+<!-- Thanks to *ngFor -> <div> is repeated for each product in the list -->
 <div *ngFor="let product of products">
 
   <h3>
+    <!-- https://www.w3schools.com/tags/ref_standardattributes.asp -->
+    <!-- title  It's a HTML Global Attribute -->\
+    <!-- [title]  is an property binding, since it's used the property 'product' -->
     <a
       [title]="product.name + ' details'"
       [routerLink]="['/products', product.id]">
       {{ product.name }}
+    <!-- Interpolation  -->
     </a>
   </h3>
 
@@ -16,10 +21,15 @@
     Description: {{ product.description }}
   </p>
 
+  <!-- ()  is an event binding -->
   <button type="button" (click)="share()">
     Share
   </button>
 
+  <!-- Add a child component -->
+  <!-- []   is property binding to pass values to the child component  -->
+  <!-- ()   is an event binding, where the event is emitted by the child component,
+  and onNotify is a method on parent component, which it's this template belonging -->
   <app-product-alerts
     [product]="product"
     (notify)="onNotify()">
