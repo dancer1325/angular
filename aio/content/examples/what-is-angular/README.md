@@ -10,3 +10,4 @@ Example of [GettingStarted-What's Angular](https://angular.io/guide/what-is-angu
   * Generated folder is created
 * `cd ...aio/content/example-playground/what-is-angular`
 * `ng serve`
+* Open in your browser "localhost:4200"
