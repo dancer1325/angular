@@ -18,7 +18,15 @@ Example of [GettingStarted-What's Angular](https://angular.io/guide/what-is-angu
   * Create another component
 * `ng generate component product-details`
   * Create another component
+* `ng generate service cart`
+  * Create a service
+* `ng generate component cart`
+  * Create another component
+* Configure HTTPClientModule manually, importing it 
+* `ng generate component shipping`
+  * Create another component
 
 # Notes:
 * `@angular/router - Route`
   * Interface to define single routes
+* 

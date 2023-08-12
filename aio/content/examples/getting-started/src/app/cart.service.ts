@@ -11,6 +11,7 @@ import { Injectable } from '@angular/core';
 })
 export class CartService {
 // #enddocregion get-shipping
+  // Array to store the current products
   items: Product[] = [];
 // #enddocregion props, methods
 
@@ -35,7 +36,9 @@ export class CartService {
 // #enddocregion methods
 
 // #docregion get-shipping
+  // Returned type is inferred
   getShippingPrices() {
+    // url    In this case, it's an internal URL
     return this.http.get<{type: string, price: number}[]>('/assets/shipping.json');
   }
 // #docregion props, methods, inject-http
