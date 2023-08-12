@@ -17,6 +17,7 @@ export class CartComponent {
   // #enddocregion inject-form-builder
   items = this.cartService.getItems();
 
+  // control { key: inner control type }
   checkoutForm = this.formBuilder.group({
     name: '',
     address: ''

@@ -25,8 +25,8 @@ Example of [GettingStarted-What's Angular](https://angular.io/guide/what-is-angu
 * Configure HTTPClientModule manually, importing it 
 * `ng generate component shipping`
   * Create another component
+* Inject FormBuilder service manually
 
 # Notes:
 * `@angular/router - Route`
   * Interface to define single routes
-* 

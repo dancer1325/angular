@@ -12,6 +12,10 @@
 </div>
 
 <!-- #docregion checkout-form-1 -->
+<!-- [formGroup]    adds the FormGroup directive to this form HTML element,
+passing the data to the property with formGroup name, via property binding -->
+<!-- (ngSubmit)   is an event binding, listening for the form submission, and
+calling to onSumbit()-->
 <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
 <!-- #enddocregion checkout-form-1 -->
 
@@ -19,6 +23,8 @@
     <label for="name">
       Name
     </label>
+    <!-- formControlName    adds FormControlName directive, passing to the property with
+     same name, the input field to bind to the form control checkoutForm-->
     <input id="name" type="text" formControlName="name">
   </div>
 
