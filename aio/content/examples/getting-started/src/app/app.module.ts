@@ -30,8 +30,10 @@ import { ShippingComponent } from './shipping/shipping.component';
     HttpClientModule,
     // #docregion product-details-route, cart-route
     ReactiveFormsModule,
+    // Next specific routing is added manually, not generated after adding components
     RouterModule.forRoot([
       { path: '', component: ProductListComponent },
+//  Link the URL < -- > Component
       { path: 'products/:productId', component: ProductDetailsComponent },
 // #enddocregion product-details-route
       { path: 'cart', component: CartComponent },

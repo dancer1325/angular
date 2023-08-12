@@ -16,3 +16,9 @@ Example of [GettingStarted-What's Angular](https://angular.io/guide/what-is-angu
 * It had got a basic skeleton with the main component, but it could have been generated via `npm init @angular getting-starter`
 * `ng generate component product-alerts`
   * Create another component
+* `ng generate component product-details`
+  * Create another component
+
+# Notes:
+* `@angular/router - Route`
+  * Interface to define single routes

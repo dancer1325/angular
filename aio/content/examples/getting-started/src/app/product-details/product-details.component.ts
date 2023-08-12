@@ -19,6 +19,7 @@ export class ProductDetailsComponent implements OnInit {
   product: Product | undefined;
 
 // #docregion inject-cart-service
+  // Injectable classes to pass via constructor
   constructor(
     private route: ActivatedRoute,
     private cartService: CartService
@@ -27,6 +28,8 @@ export class ProductDetailsComponent implements OnInit {
 
   ngOnInit() {
     // First get the product id from the current route.
+    // ActivatedRouteSnapshot is a snapshot of an ActivatedRoute
+    // paramMap   has access to all route's parameters
     const routeParams = this.route.snapshot.paramMap;
     const productIdFromRoute = Number(routeParams.get('productId'));
 

@@ -8,6 +8,8 @@
     <!-- https://www.w3schools.com/tags/ref_standardattributes.asp -->
     <!-- title  It's a HTML Global Attribute -->\
     <!-- [title]  is an property binding, since it's used the property 'product' -->
+    <!-- [routerLink]   is a directive from @angular/router. Since no property is specified -> the value
+     is for the input property 'routerLink' which admits an array of concatenated URLs "/products/ProductIdValue" -->
     <a
       [title]="product.name + ' details'"
       [routerLink]="['/products', product.id]">
