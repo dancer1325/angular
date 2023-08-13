@@ -19,12 +19,12 @@ Example of [Lifecycle hooks](https://angular.io/guide/lifecycle-hooks#lifecycle-
 * All the components have been created manually apparently, since they don't follow the common structure
 
 # Notes
-* PeekABooParentComponent / PeekABooComponent
+* PeekABooParentComponent & PeekABooComponent
   * implement every lifecycle hook
 * SpyParentComponent
   * implement a custom directive -- SpyDirective --
-* OnChangesParentComponent
+* OnChangesParentComponent & OnChangesComponent
   * analyzes ngOnChanges()
-* DoCheckParentComponent
+* DoCheckParentComponent & DoCheckComponent
   * analyzes ngDoCheck()
     * Pretty expensive hook === Called frequently
