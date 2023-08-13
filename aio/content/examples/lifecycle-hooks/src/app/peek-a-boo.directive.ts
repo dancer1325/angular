@@ -2,6 +2,7 @@ import { Directive, OnInit } from '@angular/core';
 
 import { LoggerService } from './logger.service';
 
+// Global variable, because it's lifecycle doesn't depend on PeekABooDirective's life
 let nextId = 1;
 
 // #docregion ngOnInit

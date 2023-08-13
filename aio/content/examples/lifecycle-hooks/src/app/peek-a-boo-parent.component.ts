@@ -10,9 +10,11 @@ import { LoggerService } from './logger.service';
   <div class="parent">
     <h2>Peek-A-Boo</h2>
 
+    <!-- type="button"      because we want to define the behavior  -->
     <button type="button" (click)="toggleChild()">
       {{hasChild ? 'Destroy' : 'Create'}} PeekABooComponent
     </button>
+    <!-- [hidden]       is an attribute binding    -->
     <button type="button" (click)="updateHero()" [hidden]="!hasChild">Update Hero</button>
 
     <div class="info">

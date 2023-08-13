@@ -21,7 +21,7 @@ import { PeekABooDirective } from './peek-a-boo.directive';
   selector: 'peek-a-boo',
   template: '<p>Now you see my hero, {{name}}</p>'
 })
-// Don't HAVE to mention the Lifecycle Hook interfaces
+// Don't HAVE to mention the Lifecycle Hook interfaces (implemented all)
 // unless we want typing and tool support.
 export class PeekABooComponent extends PeekABooDirective implements
              OnChanges, OnInit, DoCheck,
@@ -40,6 +40,7 @@ export class PeekABooComponent extends PeekABooDirective implements
   }
 
   // only called for/if there is an @input variable set by parent.
+  // constructor    is invoked first
   ngOnChanges(changes: SimpleChanges) {
     const changesMsgs: string[] = [];
     for (const propName in changes) {
