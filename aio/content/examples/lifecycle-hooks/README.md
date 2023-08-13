@@ -21,3 +21,5 @@ Example of [Lifecycle hooks](https://angular.io/guide/lifecycle-hooks#lifecycle-
 # Notes
 * PeekABooParentComponent / PeekABooComponent
   * implement every lifecycle hook
+* SpyParentComponent
+  * implement a custom directive -- SpyDirective --
