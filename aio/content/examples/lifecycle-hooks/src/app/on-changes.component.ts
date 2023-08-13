@@ -24,13 +24,16 @@ export class OnChangesComponent implements OnChanges {
   changeLog: string[] = [];
 
   // #docregion ng-on-changes
-  // Make an action after updating input / output values
+  // Make an action after updating input / output values. Due to it's own template
+  // seems to react to 'power' changes only, and not to Hero, because you are just modifying Hero.name
+  // reference
   ngOnChanges(changes: SimpleChanges) {
     for (const propName in changes) {
       const chng = changes[propName];
       const cur  = JSON.stringify(chng.currentValue);
       const prev = JSON.stringify(chng.previousValue);
       this.changeLog.push(`${propName}: currentValue = ${cur}, previousValue = ${prev}`);
+      console.log("chng " + chng + " with current value " + cur + " and previous value " + prev);
     }
   }
   // #enddocregion ng-on-changes
