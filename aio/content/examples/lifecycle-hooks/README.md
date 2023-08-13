@@ -25,3 +25,6 @@ Example of [Lifecycle hooks](https://angular.io/guide/lifecycle-hooks#lifecycle-
   * implement a custom directive -- SpyDirective --
 * OnChangesParentComponent
   * analyzes ngOnChanges()
+* DoCheckParentComponent
+  * analyzes ngDoCheck()
+    * Pretty expensive hook === Called frequently

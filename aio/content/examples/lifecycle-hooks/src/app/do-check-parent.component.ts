@@ -11,6 +11,8 @@ export class DoCheckParentComponent {
   hero!: Hero;
   power = '';
   title = 'DoCheck';
+  // Property decorator matches with a view query
+  // Used to get access to that component here
   @ViewChild(DoCheckComponent) childView!: DoCheckComponent;
 
   constructor() {
