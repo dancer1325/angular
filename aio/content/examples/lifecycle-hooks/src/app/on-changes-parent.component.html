@@ -8,4 +8,6 @@
 
 <!-- #docregion on-changes -->
 <on-changes [hero]="hero" [power]="power"></on-changes>
+<!-- Next doesn't react to onChange, since it's required for both linked properties -->
+<on-changes [hero]="hero"></on-changes>
 <!-- #enddocregion on-changes -->

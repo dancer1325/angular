@@ -23,3 +23,5 @@ Example of [Lifecycle hooks](https://angular.io/guide/lifecycle-hooks#lifecycle-
   * implement every lifecycle hook
 * SpyParentComponent
   * implement a custom directive -- SpyDirective --
+* OnChangesParentComponent
+  * analyzes ngOnChanges()

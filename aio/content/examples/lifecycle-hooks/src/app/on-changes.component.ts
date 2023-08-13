@@ -24,6 +24,7 @@ export class OnChangesComponent implements OnChanges {
   changeLog: string[] = [];
 
   // #docregion ng-on-changes
+  // Make an action after updating input / output values
   ngOnChanges(changes: SimpleChanges) {
     for (const propName in changes) {
       const chng = changes[propName];
@@ -33,6 +34,5 @@ export class OnChangesComponent implements OnChanges {
     }
   }
   // #enddocregion ng-on-changes
-
   reset() { this.changeLog = []; }
 }

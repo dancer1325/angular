@@ -12,6 +12,8 @@ export class OnChangesParentComponent {
   hero!: Hero;
   power = '';
   title = 'OnChanges';
+  // Property decorator matches with a view query
+  // Used to get access to that component here
   @ViewChild(OnChangesComponent) childView!: OnChangesComponent;
 
   constructor() {
