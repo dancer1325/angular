@@ -40,3 +40,9 @@ Example of [Lifecycle hooks](https://angular.io/guide/lifecycle-hooks#lifecycle-
   * analyzes DestroyRef
   * `ng generate component counterDestroyRef --skip-import`
     * `--skip-import` because these examples are built in a different common Angular workspace
+* AfterNextRenderComponentComponent
+  * analyzes afterNextRender
+    * Problems:
+      * Problem1: `afterNextRender` not found
+  * `ng generate component afterNextRenderComponentComponent --skip-import`
+    * `--skip-import` because these examples are built in a different common Angular workspace
