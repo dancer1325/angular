@@ -29,6 +29,7 @@ import { SpyParentComponent } from './spy.component';
 import { SpyDirective } from './spy.directive';
 import {CounterDestroyRefComponent} from "../counter-destroy-ref/counter-destroy-ref.component";
 import {AfterNextRenderComponentComponent} from "../after-next-render-component/after-next-render-component.component";
+import {AfterRenderComponentComponent} from "../after-render-component/after-render-component.component";
 
 @NgModule({
   imports: [
@@ -54,7 +55,8 @@ import {AfterNextRenderComponentComponent} from "../after-next-render-component/
     SpyParentComponent,
     SpyDirective,
     CounterDestroyRefComponent,
-    AfterNextRenderComponentComponent
+    AfterNextRenderComponentComponent,
+    AfterRenderComponentComponent
   ],
   bootstrap: [ AppComponent ]
 })
