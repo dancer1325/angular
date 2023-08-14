@@ -14,10 +14,27 @@ export class AfterNextRenderComponentComponent {
   //@ViewChild('chart') chartRef: ElementRef;
   //chart: AfterNextRenderObjectType|null;
 
+  resizeObserver: ResizeObserver|null = null;
+  @ViewChild('content') contentRef: ElementRef;
+
   constructor() {
     // afterNextRender(() => {
     //   this.chart = new AfterNextRenderObjectType(this.chartRef.nativeElement);
     // });
+
+    // Use built-in browser APIs (ResizeObserver or IntersectionObserver)
+    // afterNextRender(() => {
+    //   this.resizeObserver = new ResizeObserver(() => {
+    //     console.log('Content was resized');
+    //   });
+    //
+    //   this.resizeObserver.observe(this.contentRef.nativeElement);
+    // });
   }
+
+  // ngOnDestroy() {
+  //   this.resizeObserver?.disconnect();
+  //   this.resizeObserver = null;
+  // }
 
 }
