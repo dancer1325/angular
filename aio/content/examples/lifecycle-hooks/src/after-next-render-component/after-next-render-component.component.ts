@@ -15,7 +15,7 @@ export class AfterNextRenderComponentComponent {
   //chart: AfterNextRenderObjectType|null;
 
   resizeObserver: ResizeObserver|null = null;
-  @ViewChild('content') contentRef: ElementRef;
+  //@ViewChild('content') contentRef: ElementRef;
 
   constructor() {
     // afterNextRender(() => {
