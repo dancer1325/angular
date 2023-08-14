@@ -27,6 +27,7 @@ import { PeekABooComponent } from './peek-a-boo.component';
 
 import { SpyParentComponent } from './spy.component';
 import { SpyDirective } from './spy.directive';
+import {CounterDestroyRefComponent} from "../counter-destroy-ref/counter-destroy-ref.component";
 
 @NgModule({
   imports: [
@@ -50,7 +51,8 @@ import { SpyDirective } from './spy.directive';
     PeekABooParentComponent,
     PeekABooComponent,
     SpyParentComponent,
-    SpyDirective
+    SpyDirective,
+    CounterDestroyRefComponent
   ],
   bootstrap: [ AppComponent ]
 })
