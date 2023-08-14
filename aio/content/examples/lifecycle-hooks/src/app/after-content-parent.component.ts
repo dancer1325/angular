@@ -11,6 +11,9 @@ import { LoggerService } from './logger.service';
     <div *ngIf="show">` +
       // #docregion parent-template
       `<after-content>
+        <!-- This component is inside, because AfterContentComponent accepts
+          ng-content
+           === Project content into the component -->
         <app-child></app-child>
       </after-content>`
       // #enddocregion parent-template

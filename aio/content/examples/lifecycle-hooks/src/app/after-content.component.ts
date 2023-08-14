@@ -10,6 +10,7 @@ import { LoggerService } from './logger.service';
 // #docregion template
   template: `
     <div>projected content begins</div>
+      <!-- <ng-content>  is a placeholder for the external content -->
       <ng-content></ng-content>
     <div>projected content ends</div>
   `
@@ -35,13 +36,13 @@ export class AfterContentComponent implements AfterContentChecked, AfterContentI
 
 // #docregion hooks
   ngAfterContentInit() {
-    // contentChild is set after the content has been initialized
+    // At this moment, contentChild is set -- after the content has been projected to the view --
     this.logIt('AfterContentInit');
     this.doSomething();
   }
 
   ngAfterContentChecked() {
-    // contentChild is updated after the content has been checked
+    // At this moment, contentChild is updated -- after the content has been checked --
     if (this.prevHero === this.contentChild.hero) {
       this.logIt('AfterContentChecked (no change)');
     } else {
@@ -54,6 +55,7 @@ export class AfterContentComponent implements AfterContentChecked, AfterContentI
 
   // This surrogate for real business logic sets the `comment`
   private doSomething() {
+    // It's not necessary to wait for!! -- != AfterView hooks --
     this.comment = this.contentChild.hero.length > 10 ? "That's a long name" : '';
   }
 

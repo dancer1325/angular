@@ -30,3 +30,7 @@ Example of [Lifecycle hooks](https://angular.io/guide/lifecycle-hooks#lifecycle-
     * Pretty expensive hook === Called frequently
 * AfterViewParentComponent & AfterViewComponent & ChildViewComponent
   * analyzes AfterViewChecked and AfterViewInit
+    * concern to ViewChildren
+* AfterContentParentComponent & AfterContentComponent
+  * analyzes AfterContentInit and AfterContentChecked
+    * concern to ContentChildren
