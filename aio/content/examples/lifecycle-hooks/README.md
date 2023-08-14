@@ -28,3 +28,5 @@ Example of [Lifecycle hooks](https://angular.io/guide/lifecycle-hooks#lifecycle-
 * DoCheckParentComponent & DoCheckComponent
   * analyzes ngDoCheck()
     * Pretty expensive hook === Called frequently
+* AfterViewParentComponent & AfterViewComponent & ChildViewComponent
+  * analyzes AfterViewChecked and AfterViewInit

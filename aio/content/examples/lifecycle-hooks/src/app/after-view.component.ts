@@ -14,6 +14,8 @@ import { LoggerService } from './logger.service';
     <div>child view ends</div>
   `
 // #enddocregion template
+    // Concatenate templates via +
+    // comment is updated any time is changed via interpolation source < -- > view
    + `
     <p *ngIf="comment" class="comment">
       {{comment}}
@@ -37,13 +39,13 @@ export class AfterViewComponent implements  AfterViewChecked, AfterViewInit {
 
   // #docregion hooks
   ngAfterViewInit() {
-    // viewChild is set after the view has been initialized
+    // At this moment, viewChild is set -- after the view has been initialized --
     this.logIt('AfterViewInit');
     this.doSomething();
   }
 
   ngAfterViewChecked() {
-    // viewChild is updated after the view has been checked
+    // At this moment, viewChild could have been updated -- after the view has been checked --
     if (this.prevHero === this.viewChild.hero) {
       this.logIt('AfterViewChecked (no change)');
     } else {
@@ -59,7 +61,8 @@ export class AfterViewComponent implements  AfterViewChecked, AfterViewInit {
   private doSomething() {
     const c = this.viewChild.hero.length > 10 ? "That's a long name" : '';
     if (c !== this.comment) {
-      // Wait a tick because the component's view has already been checked
+      // this.comment = c;
+      // Wait a tick because the component's view has already been checked!!
       this.logger.tick_then(() => this.comment = c);
     }
   }

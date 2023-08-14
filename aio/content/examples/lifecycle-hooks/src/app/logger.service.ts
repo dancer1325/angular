@@ -21,7 +21,8 @@ export class LoggerService {
 
   clear() { this.logs = []; }
 
-  // schedules a view refresh to ensure display catches up
+  // schedules (postpone 1 turn of the browser's JS cycle) a view refresh to ensure
+  // display catches up
   tick() {  this.tick_then(() => { }); }
   tick_then(fn: () => any) { setTimeout(fn, 0); }
 }
