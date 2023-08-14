@@ -34,3 +34,5 @@ Example of [Lifecycle hooks](https://angular.io/guide/lifecycle-hooks#lifecycle-
 * AfterContentParentComponent & AfterContentComponent
   * analyzes AfterContentInit and AfterContentChecked
     * concern to ContentChildren
+* CounterParentComponent & MyCounterComponent
+  * analyzes OnChanges & OnInit & OnDestory
