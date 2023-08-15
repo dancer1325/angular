@@ -17,6 +17,7 @@ import { CountdownTimerComponent } from './countdown-timer.component';
     <button type="button" (click)="timer.start()">Start</button>
     <button type="button" (click)="timer.stop()">Stop</button>
     <div class="seconds">{{timer.seconds}}</div>
+    <!-- Nested component has an id assigned === local variable   -->
     <app-countdown-timer #timer></app-countdown-timer>
   `,
   styleUrls: ['../assets/demo.css']
@@ -39,15 +40,18 @@ export class CountdownLocalVarParentComponent { }
 })
 export class CountdownViewChildParentComponent implements AfterViewInit {
 
+  // Get access from the parent to the child component
   @ViewChild(CountdownTimerComponent)
   private timerComponent!: CountdownTimerComponent;
 
   seconds() { return 0; }
 
+  // Previous to afterViewInit is triggered, child component is not available in the parent
+  // component -> it displays 0" initially
   ngAfterViewInit() {
     // Redefine `seconds()` to get from the `CountdownTimerComponent.seconds` ...
-    // but wait a tick first to avoid one-time devMode
-    // unidirectional-data-flow-violation error
+    // but wait a tick first to avoid one-time devMode, updating the parent's view in the same cycle
+    // --> unidirectional-data-flow-violation error
     setTimeout(() => this.seconds = () => this.timerComponent.seconds, 0);
   }
 

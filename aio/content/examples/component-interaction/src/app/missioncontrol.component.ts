@@ -30,6 +30,7 @@ export class MissionControlComponent {
   nextMission = 0;
 
   constructor(private missionService: MissionService) {
+    // Subscribe to receive updates from the child, emitted by the Observables
     missionService.missionConfirmed$.subscribe(
       astronaut => {
         this.history.push(`${astronaut} confirmed the mission`);

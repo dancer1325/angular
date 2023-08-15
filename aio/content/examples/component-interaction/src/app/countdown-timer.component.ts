@@ -9,6 +9,7 @@ export class CountdownTimerComponent implements OnDestroy {
   message = '';
   seconds = 11;
 
+  // Clear, previous to destroy the component's instance
   ngOnDestroy() { this.clearTimer?.(); }
 
   start() { this.countDown(); }
@@ -17,6 +18,7 @@ export class CountdownTimerComponent implements OnDestroy {
     this.message = `Holding at T-${this.seconds} seconds`;
   }
 
+  // TODO: How does it work? Where is it implemented?
   private clearTimer: VoidFunction | undefined;
 
   private countDown() {

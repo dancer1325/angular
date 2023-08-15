@@ -6,10 +6,11 @@ import { Subject } from 'rxjs';
 export class MissionService {
 
   // Observable string sources
+  // Subject can either Observable or Observer
   private missionAnnouncedSource = new Subject<string>();
   private missionConfirmedSource = new Subject<string>();
 
-  // Observable string streams
+  // Observable string streams, coming from the Subject
   missionAnnounced$ = this.missionAnnouncedSource.asObservable();
   missionConfirmed$ = this.missionConfirmedSource.asObservable();
 

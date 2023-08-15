@@ -26,6 +26,7 @@ export class AstronautComponent implements OnDestroy {
   subscription: Subscription;
 
   constructor(private missionService: MissionService) {
+    // Subscribe to receive updates from parent, emitted by the Observables
     this.subscription = missionService.missionAnnounced$.subscribe(
       mission => {
         this.mission = mission;
@@ -39,6 +40,7 @@ export class AstronautComponent implements OnDestroy {
     this.missionService.confirmMission(this.astronaut);
   }
 
+  // TODO: What's mentioned about not possible memory-leak guard step here?
   ngOnDestroy() {
     // prevent memory leak when component destroyed
     this.subscription.unsubscribe();

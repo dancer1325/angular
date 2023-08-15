@@ -4,7 +4,7 @@ describe('Component Communication Cookbook Tests', () => {
 
   beforeEach(() => browser.get(browser.baseUrl));
 
-  describe('Parent-to-child communication', () => {
+  describe('Parent-to-child communication via @input', () => {
     // #docregion parent-to-child
     // ...
     const heroNames = ['Dr. IQ', 'Magneta', 'Bombasto'];
@@ -70,6 +70,7 @@ describe('Component Communication Cookbook Tests', () => {
       const repoTag = element(by.tagName('app-version-parent'));
       const newMinorButton = repoTag.all(by.tagName('button')).get(0);
 
+      // Since they are real e2e, the buttons are clicked
       await newMinorButton.click();
       await newMinorButton.click();
 
@@ -80,6 +81,7 @@ describe('Component Communication Cookbook Tests', () => {
 
       expect(actual.label).toBe(labelAfter2Minor);
       expect(actual.count).toBe(3);
+      // Check just the last one generated
       expect(await actual.logs.get(2).getText()).toBe(logAfter2Minor);
     });
 
@@ -87,6 +89,7 @@ describe('Component Communication Cookbook Tests', () => {
       const repoTag = element(by.tagName('app-version-parent'));
       const newMajorButton = repoTag.all(by.tagName('button')).get(1);
 
+      // Since they are real e2e, the buttons are clicked
       await newMajorButton.click();
       const actual = await getActual();
 
@@ -124,6 +127,8 @@ describe('Component Communication Cookbook Tests', () => {
 
     it('should process Agree vote', async () => {
       const voteLabel = element(by.tagName('app-vote-taker')).element(by.tagName('h3'));
+      // .get(0)    because there are several child elements
+      // .get(0)    pick the Agree button
       const agreeButton1 = element.all(by.tagName('app-voter')).get(0)
         .all(by.tagName('button')).get(0);
 
@@ -134,11 +139,14 @@ describe('Component Communication Cookbook Tests', () => {
 
     it('should process Disagree vote', async () => {
       const voteLabel = element(by.tagName('app-vote-taker')).element(by.tagName('h3'));
+      // .get(1)    because there are several child elements
+      // .get(1)    pick the Agree button
       const agreeButton1 = element.all(by.tagName('app-voter')).get(1)
         .all(by.tagName('button')).get(1);
 
       await agreeButton1.click();
 
+      // Agree is 0, because each it is a different test / app initialized
       expect(await voteLabel.getText()).toBe('Agree: 0, Disagree: 1');
     });
     // ...

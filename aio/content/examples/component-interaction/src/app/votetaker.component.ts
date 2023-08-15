@@ -7,6 +7,8 @@ import { Component } from '@angular/core';
     <h2>Should mankind colonize the Universe?</h2>
     <h3>Agree: {{agreed}}, Disagree: {{disagreed}}</h3>
 
+    <!-- parent listen for child, via event binding with @output
+      $event        is the child event payload  -->
     <app-voter
       *ngFor="let voter of voters"
       [name]="voter"
