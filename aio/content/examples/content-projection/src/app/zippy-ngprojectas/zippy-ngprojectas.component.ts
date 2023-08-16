@@ -9,6 +9,7 @@ import { Component } from '@angular/core';
     <ng-content></ng-content>
 
     Question:
+    <!-- select="selector"          Same here to the multi-slot  -->
     <ng-content select="[question]"></ng-content>
   `
 })

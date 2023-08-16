@@ -1,7 +1,13 @@
+<!-- Render the content outside the <ng-template> -->
 <ng-content></ng-content>
+
 <!-- #docregion ngif -->
+<!-- Wrap under div, to apply the ngIf directive, since not possible to apply several to the same HTML element -->
 <div *ngIf="expanded" [id]="contentId">
     <!-- #docregion ng-container -->
+    <!-- ng-container     Angular element to hold structural directive without adding HTML element -->
+    <!-- ngTemplateOutlet     directive which from a prepared TemplateRef — inserts an ⟶ Embedded view
+          with a property binding to the TemplateRef-->
     <ng-container [ngTemplateOutlet]="content.templateRef"></ng-container>
     <!-- #enddocregion ng-container-->
 </div>

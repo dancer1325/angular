@@ -10,6 +10,8 @@
 
 <!-- #docregion multi-slot -->
 <app-zippy-multislot>
+  <!-- question  CSS selector for this p HTML element  -->
+  <!-- CSS selector != id   (#Id)-->
   <p question>
     Is content projection cool?
   </p>
@@ -34,6 +36,9 @@
 <app-zippy-ngprojectas>
   <p>Let's learn about content projection!</p>
   <!-- #docregion ngprojectas-->
+  <!-- ngProjectAs    is an attribute which project all the whole component's content
+    -> that's why it's wrapped under ng-container
+    TODO: Where is it defined in the code ? -->
   <ng-container ngProjectAs="[question]">
     <p>Is content projection cool?</p>
   </ng-container>

@@ -9,6 +9,7 @@ import { Component } from '@angular/core';
     <ng-content></ng-content>
 
     Question:
+    <!-- select     selector to filter the content to project -->
     <ng-content select="[question]"></ng-content>
   `
 })
