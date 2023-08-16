@@ -1,10 +1,12 @@
 /* #docregion import */
 /* The AOT compiler needs the `./` to show that this is local */
+/* @import    must be placed at the top   */
 @import './hero-details-box.css';
 /* #enddocregion import */
 
 
 /* #docregion host */
+/* :host      Pseudoclass, matching the host element in a Shadow Tree */
 :host {
   font-style: italic;
 }
@@ -15,18 +17,23 @@
   font-style: italic;
 }
 
+/* :host(ElementToLookFor)      Function Pseudoclass, matching the host's element in a Shadow Tree */
+/*  In this case, it's matching by a class named active */
 :host(.active) {
   font-weight: bold;
 }
 /* #enddocregion hostfunction */
 
 /* #docregion hostcontext */
+/* :host-context(ElementToLookFor)      Function Pseudoclass, matching the host's element or any ancestor host's element, in a Shadow Tree */
+/*  In this case, it's matching by a class named active */
 :host-context(.active) {
   font-style: italic;
 }
 /* #enddocregion hostcontext */
 
 /* #docregion deep */
+/* :host ::ng-deep HTMLElement  make the style available for all the host's descendants   */
 :host ::ng-deep h3 {
   font-style: italic;
 }

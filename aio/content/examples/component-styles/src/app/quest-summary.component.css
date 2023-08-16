@@ -1,3 +1,5 @@
+/* :host      Pseudoclass, matching the host element in a Shadow Tree */
+/*  host element    refers to the component linked to this .css */
 :host {
   display: block;
   background-color: green;

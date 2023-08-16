@@ -5,6 +5,7 @@ import { Hero } from './hero';
 @Component({
   selector: 'app-hero-team',
   template: `
+    <!-- <link>         template link tag -->
     <!-- We must use a relative URL so that the AOT compiler can find the stylesheet -->
     <link rel="stylesheet" href="../assets/hero-team.component.css">
     <h3>Team</h3>

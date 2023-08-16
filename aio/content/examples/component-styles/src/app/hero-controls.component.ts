@@ -5,6 +5,7 @@ import { Hero } from './hero';
 @Component({
   selector: 'app-hero-controls',
   template: `
+    <!-- template inline style -- defined within the template via <style> -- -->
     <style>
       button {
         background-color: white;
