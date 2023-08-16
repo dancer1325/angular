@@ -23,13 +23,14 @@ export class AppComponent {
   wishlist = ['Drone', 'Computer'];
 
   // #docregion add-new-item
-
+  // argument is the data emitted by the child component
   addItem(newItem: string) {
     this.items.push(newItem);
   }
   // #enddocregion add-new-item
 
 
+  // argument is the data emitted by the child component
   crossOffItem(item: string) {
     console.warn(`Parent says: crossing off ${item}.`);
   }

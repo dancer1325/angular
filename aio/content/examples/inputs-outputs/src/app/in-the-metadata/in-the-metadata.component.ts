@@ -5,6 +5,7 @@ import { Component, EventEmitter } from '@angular/core';
   selector: 'app-in-the-metadata',
   templateUrl: './in-the-metadata.component.html',
   styleUrls: ['./in-the-metadata.component.css'],
+  // Alternative to declare via decorators
   inputs: ['clearanceItem'],
   outputs: ['buyEvent']
 })

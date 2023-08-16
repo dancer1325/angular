@@ -10,13 +10,14 @@ import { booleanAttribute } from '@angular/core'; // First, import booleanAttrib
   templateUrl: './item-details-metadata.component.html'
 })
 
-
 export class ItemDetailMetadataComponent {
   // #docregion use-input-metadata-required
+  //  required      if the input is required for the directive / component to work
   @Input({required: true}) item!: string; // Second, decorate the property with required metadata
   // #enddocregion use-input-metadata-required
 
   // #docregion use-input-metadata-boolean-transform
+  // transform      function to transform the input value previous to be assigned to directive’s property
   @Input({transform: booleanAttribute}) itemAvailability!: boolean; // Second, decorate the property with transform
   // #enddocregion use-input-metadata-boolean-transform
 }
