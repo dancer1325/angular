@@ -19,7 +19,7 @@ export class HeroAppComponent {
   );
 
   // Bind the host's "class" to the DOM property
-  // TODO: Where does it come from?
+  // TODO: Where does 'theme-light' options come from?
   @HostBinding('class') get themeClass() {
     return 'theme-light';
   }
