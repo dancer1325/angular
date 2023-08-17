@@ -61,7 +61,8 @@ export class AdBannerComponent implements OnInit, OnDestroy {
     componentRef.instance.data = adItem.data;
   }
 
-  // Cyclic method to load new components
+  // Load components repeatedly
+  // setInterval          Cyclic function, continuously after the interval stablished
   getAds() {
     const interval = setInterval(() => {
       this.loadComponent();
