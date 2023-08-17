@@ -6,6 +6,7 @@ import { Directive, ViewContainerRef } from '@angular/core';
   selector: '[adHost]',
 })
 export class AdDirective {
+  // Get access to the view container
   constructor(public viewContainerRef: ViewContainerRef) { }
 }
 
