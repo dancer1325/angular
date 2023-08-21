@@ -6,24 +6,31 @@
   <div>
     <h2>Button disabled state bound to isUnchanged property</h2>
     <!-- #docregion disabled-button -->
-    <!-- Bind button disabled state to `isUnchanged` property -->
+    <!-- Bind button disabled state to `isUnchanged` property === binding property -->
     <button type="button" [disabled]="isUnchanged">Save</button>
     <!-- #enddocregion disabled-button -->
   </div>
 
   <hr />
 
+  <!-- keyup    := event triggered when a keyboard key is released after being pressed (=== stop holding the key down / press) -->
+  <!-- (keyup)="0"     is an event binding, in which, once they keyboard key is released -> assigned to "0"which hasn't got an effect,
+  but even more, div doesn't capture keyboard events -->
   <div (keyup)="0">
     <h2>HTML attributes and DOM properties</h2>
-    <p>1. Use the inspector to see the HTML attribute and DOM property values. Click the buttons to log values to the console.</p>
+    <p>1. Use the inspector to see the HTML attribute and DOM property values. Click the buttons and check the logs to the console, displayed.</p>
 
+    <!-- for      Id to relate to the <label> or <input>  -->
     <label for="html-attr">HTML Attribute Initializes to "Sarah":
+      <!-- #variableReferenceName       is a reference to the HTML element -->
     <input id="html-attr" type="text" value="Sarah" #bindingInput></label>
     <div>
+      <!-- (click)="getHTMLAttributeValue()"    is an event binding -->
     <button type="button" (click)="getHTMLAttributeValue()">Get HTML attribute value</button> Won't change.
     </div>
 
     <div>
+        <!-- (click)="getDOMPropertyValue()"    is an event binding -->
         <button type="button" (click)="getDOMPropertyValue()">Get DOM property value</button> Changeable. Angular works with these.
     </div>
 
@@ -36,6 +43,8 @@
     <h3>Disabled property vs. attribute</h3>
     <p>Use the inspector to see the Test Button work and its disabled property toggle.</p>
     <div>
+      <!-- (click)="working()"    is an event binding -->
+      <!-- If the HTML element is disabled    -> events are not triggered -->
     <button type="button" id="testButton" (click)="working()">Test Button</button>
     </div>
     <div>
