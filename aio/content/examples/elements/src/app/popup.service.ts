@@ -1,15 +1,13 @@
-
 import { ApplicationRef, createComponent, EnvironmentInjector, Injectable } from '@angular/core';
 import { NgElement, WithProperties } from '@angular/elements';
 import { PopupComponent } from './popup.component';
-
 
 @Injectable()
 export class PopupService {
   constructor(private injector: EnvironmentInjector,
               private applicationRef: ApplicationRef) {}
 
-  // Previous dynamic-loading method required you to set up infrastructure
+  // === previously in dynamic-component-loader, required you to set up infrastructure
   // before adding the popup to the DOM.
   showAsComponent(message: string) {
     // Create element
@@ -36,9 +34,11 @@ export class PopupService {
 
   // This uses the new custom-element method to add the popup to the DOM.
   showAsElement(message: string) {
-    // Create element
+    // createElement(): HTMLElement,    but since it's created with Angular -> we can expect to receive NgElement
+    // WithProperties     allow adding the expected properties of the underlying component
     const popupEl: NgElement & WithProperties<PopupComponent> = document.createElement('popup-element') as any;
 
+    // Next lines are based on DOM API & JS
     // Listen to the close event
     popupEl.addEventListener('closed', () => document.body.removeChild(popupEl));
 

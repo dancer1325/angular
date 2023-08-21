@@ -6,6 +6,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
   selector: 'my-popup',
   template: `
     <span>Popup: {{message}}</span>
+    <!-- The event is emitted directly form the template  -->
     <button type="button" (click)="closed.next()">&#x2716;</button>
   `,
   animations: [
@@ -37,6 +38,8 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
   `]
 })
 export class PopupComponent {
+  // Bind the host's "state" (https://angular.io/api/animations/state) to the DOM property
+  // 'closed' & 'opened' come from transition (https://angular.io/api/animations/transition)
   @HostBinding('@state')
   state: 'opened' | 'closed' = 'closed';
 
