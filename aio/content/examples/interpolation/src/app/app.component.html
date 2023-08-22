@@ -1,4 +1,3 @@
-
 <div>
   <h1>Interpolation and Template Expressions</h1>
   <hr />
@@ -6,11 +5,13 @@
   <div>
     <h2>Interpolation</h2>
     <!-- #docregion interpolation-example1 -->
+    <!-- {{ currentCustomer }}    interpolation between HTML element -->
     <h3>Current customer: {{ currentCustomer }}</h3>
     <!-- #enddocregion interpolation-example1 -->
 
     <!-- #docregion component-property -->
     <p>{{title}}</p>
+    <!-- {{ itemImageUrl }}    interpolation in HTML element's attribute -->
     <div><img alt="item" src="{{itemImageUrl}}"></div>
     <!-- #enddocregion component-property -->
 
@@ -31,6 +32,7 @@
   <h3>Component context, properties of app.component.ts:</h3>
   <!-- #docregion component-context -->
   <h4>{{recommended}}</h4>
+  <!-- [src]="itemImageUrl2"      property binding -->
   <img alt="item 2" [src]="itemImageUrl2">
   <!-- #enddocregion component-context -->
 </div>
@@ -39,15 +41,22 @@
   <h4>Template context, template input variables (let customer):</h4>
   <!-- #docregion template-input-variable -->
   <ul>
+    <!-- *ngFor     Structural directive as shorthand      -->
     <li *ngFor="let customer of customers">{{customer.name}}</li>
   </ul>
   <!-- #enddocregion template-input-variable -->
 </div>
 
+  <!-- keyup    := event triggered when a keyboard key is released after being pressed (=== stop holding the key down / press) -->
+  <!-- (keyup)="0"     is an event binding, in which, once they keyboard key is released -> assigned to "0"which hasn't got an effect,
+  but even more, div doesn't capture keyboard events -->
 <div (keyup)="0">
   <h4>Template context: template reference variables (#customerInput):</h4>
   <!-- #docregion template-reference-variable -->
+
+  <!-- for      Id to relate to the <label> or <input>  -->
   <label for="customer-input">Type something:
+    <!-- {{customerInput.value}}      display the values typed in input -->
     <input id="customer-input" #customerInput>{{customerInput.value}}
   </label>
   <!-- #enddocregion template-reference-variable -->
