@@ -1,8 +1,11 @@
 <div id="heroForm">
   <!-- #docregion -->
+  <!-- #heroForm="ngForm"     is a template variable name   -->
+  <!-- (ngSubmit)      is an event emitter of the FormGroupDirective, created for each ngForm -->
   <form (ngSubmit)="onSubmit(heroForm)" #heroForm="ngForm">
     <div class="form-group">
       <label for="name">Name</label>
+      <!-- form-control      is a built-in class for all textual form elements -->
       <input
         type="text"
         id="name"

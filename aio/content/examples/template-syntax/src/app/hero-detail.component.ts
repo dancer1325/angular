@@ -5,6 +5,7 @@ import { Hero } from './hero';
 
 @Component({
   selector: 'app-hero-detail',
+  // Specified inputs and outputs
   inputs: ['hero'],
   outputs: ['deleteRequest'],
   styles: ['button {margin-left: 8px} div {margin: 8px 0} img {height:24px}'],
@@ -43,6 +44,7 @@ export class HeroDetailComponent {
     <div>Name: {{hero.name}}</div>
     <div>Emotion: {{hero.emotion}}</div>
     <div>Birthdate: {{hero.birthdate | date:'longDate'}}</div>
+    <!-- < ... target="HowToOpenTheNewLink"....    -->
     <div>Web: <a href="{{hero.url}}" target="_blank">{{hero.url}}</a></div>
     <div>Rate/hr: {{hero.rate | currency:'EUR'}}</div>
     <br clear="all">

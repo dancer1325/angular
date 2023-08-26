@@ -13,6 +13,8 @@ import { Hero } from './hero';
 })
 export class HeroFormComponent {
   @Input() hero!: Hero;
+  // Get access from the parent to the child component or element
+  // heroForm     is the id given in the template
   @ViewChild('heroForm') form!: NgForm;
 
   private _submitMessage = '';

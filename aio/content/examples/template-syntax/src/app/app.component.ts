@@ -56,17 +56,20 @@ export class AppComponent implements AfterViewInit, OnInit {
   clicked = '';
   clickMessage = '';
   clickMessage2 = '';
+  clickedNoMatching = '';
 
   Color = Color;
   color = Color.Red;
   colorToggle() {this.color = (this.color === Color.Red) ? Color.Blue : Color.Red; }
 
+  // Initialized on the ngOnInit() via resetHeroes
   currentHero!: Hero;
 
   updateCurrentHeroName(event: Event) {
     this.currentHero.name = (event.target as any).value;
   }
 
+  // Just to display an alert, because no action of deletion
   deleteHero(hero?: Hero) {
     this.alert(`Delete ${hero ? hero.name : 'the hero'}.`);
   }
@@ -80,7 +83,9 @@ export class AppComponent implements AfterViewInit, OnInit {
   getVal(): number { return 2; }
 
   name: string = Hero.heroes[0].name || '';
+  // Initialized on the ngOnInit() via resetHeroes
   hero!: Hero; // defined to demonstrate template context precedence
+  // Initialized on the ngOnInit() via resetHeroes
   heroes: Hero[] = [];
 
   // trackBy change counting
@@ -101,6 +106,7 @@ export class AppComponent implements AfterViewInit, OnInit {
   isActive = false;
   isSpecial = true;
   isUnchanged = true;
+  enabled = 'enabled';
 
   get nullHero(): Hero | null { return null; }
 
@@ -112,7 +118,11 @@ export class AppComponent implements AfterViewInit, OnInit {
   onSave(event?: MouseEvent) {
     const evtMsg = event ? ' Event target is ' + (event.target as HTMLElement).textContent : '';
     this.alert('Saved.' + evtMsg);
+    console.log(`event.eventPhase: ${event?.eventPhase} with event.target.tagName ${event?.target}`);
+
+    // We want to avoid propagating through the DOM's event flow
     if (event) { event.stopPropagation(); }
+    this.enabled = this.canSave ? 'Disabled' : 'Enabled';
   }
 
   onSubmit(data: any) {/* referenced but not used */}
