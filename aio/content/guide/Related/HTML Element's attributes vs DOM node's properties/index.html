@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTMLElement's attributes vs DOM node's properties</title>
+</head>
+
+<body>
+<!-- type and value are HTML element's attributes-->
+<input type="text" value="name" id="myInput">
+
+<script>
+  // Accessing HTML element's attributes
+  const inputElement = document.getElementById('myInput');
+  console.log(inputElement.getAttribute('value')); // Returns "Initial Value"
+
+  // Accessing DOM node's properties
+  console.log(inputElement.value); // Returns the current value, which may have changed dynamically
+</script>
+
+<!-- aria-* HTML attributes -->
+<h1 id="main-heading" aria-level="1" aria-describedby="main-description">Welcome to our Website</h1>
+
+<!-- textContent -->
+<div id="exampleDiv">This is a div element with some text content.</div>
+<script>
+  // Accessing textContent property
+  var exampleDiv = document.getElementById('exampleDiv');
+
+  // Outputting textContent
+  console.log('Text Content:', exampleDiv.textContent);
+
+  // Modifying textContent
+  exampleDiv.textContent = 'Updated text content using JavaScript!';
+
+  console.log('textContent as attribute: ', exampleDiv.getAttribute('textContent'));
+</script>
+
+</body>
+</html>
