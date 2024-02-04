@@ -1,0 +1,45 @@
+<h1>ExpressionComponent</h1>
+<!-- DOM layout is changed -->
+<!-- based on the value of an expression -> creates / disposes a template -->
+<!-- 1. then and else-->
+<button type="button" (click)="onClickFirstButton()">Change template to render</button>
+<div *ngIf="changeTemplateToDisplay; then trueTemplateRef else falseTemplateRef"></div>
+<!-- then and else expects TemplateRef, which are the properties -->
+
+<ng-template #trueTemplateRef>
+  <p>ngIf: {{changeTemplateToDisplay}} - trueTemplateRef -</p>
+</ng-template>
+
+<ng-template #falseTemplateRef>
+  <p>ngIf: {{changeTemplateToDisplay}} - falseTemplateRef -</p>
+</ng-template>
+
+
+<!-- 2. expression=null  ->  `else` -->
+<div *ngIf="templateToDisplayAlwaysElse; then trueTemplateRef else nullTemplateRef"></div>
+
+<ng-template #nullTemplateRef>
+  <p>ngIf: {{templateToDisplayAlwaysElse}} - nullTemplateRef -</p>
+</ng-template>
+
+
+<!-- 3. If `else` is NOT indicated &
+      3.1. expression = true -> Angular renders it
+      3.2. expression = false -> Angular removes from the DOM  === Check that it does NOT appear in the browser's devtool
+  -->
+<div *ngIf="changeTemplateToDisplay">
+  `else` is NOT indicated and expression: {{changeTemplateToDisplay}}
+</div>
+
+<!-- 4. expression stored as local variable-->
+<div *ngIf="expressionStored as storedVariable; else storedTemplateRef">
+  expression stored as local variable: {{storedVariable}}
+  <span>expression stored as local variable - child: {{storedVariable}}</span>
+</div>
+<!-- Local, because it does NOT work outside the node in which it was defined
+{{storeVariable}} -->
+<ng-template #storedTemplateRef>
+  <p>ngIf: {{expressionStored}} - expression stored as variable -</p>
+</ng-template>
+
+<br>

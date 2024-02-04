@@ -82,6 +82,8 @@ export class NgIfThenElse implements OnInit {
     <div *ngIf="userObservable | async as user; else loading">
       Hello {{user.last}}, {{user.first}}!
     </div>
+    <!-- Till 'userObservable | async' is NOT determined == null -> elseBlock -->
+    <!-- Alternative to use ?. operator  -->
     <ng-template #loading let-user>Waiting... (user is {{user|json}})</ng-template>
 `
 })

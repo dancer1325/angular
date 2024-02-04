@@ -1,0 +1,31 @@
+<h1>PropertiesComponent</h1>
+
+<!-- ngIf's properties are optionals to be added -->
+<h2>Optionals</h2>
+<!-- 1. just ngIfElse -->
+<!-- if justElse=true -> div is displayed == then is 'inline' specified -->
+<div *ngIf="justElse; else elseBlock">Just else specified {{justElse}}</div>
+<ng-template #elseBlock>Just else specified {{justElse}}</ng-template>
+<button type="button" (click)="onClickJustElse()">Change justElse value</button>
+
+<br>
+
+<!-- 2. just ngIfThen -->
+<!-- if justThen=true -> ngTemplate is displayed, but NEVER content inside <div> -->
+<ng-template #thenBlock>Just then specified -ngTemplate - {{justThen}}</ng-template>    <!-- This template can be defined anywhere in the component's template -->
+<div *ngIf="justThen; then thenBlock">Just then specified - div -{{justThen}}</div>
+<button type="button" (click)="onClickJustThen()">Change justThen value</button>
+
+<br>
+<br>
+
+<h2>Ways to define them</h2>
+<!-- 1. inline -->
+<div *ngIf="show">1. inline </div>
+<!-- 2. <ng-template> referenced in the template-->
+<div *ngIf="show; then thenReferencedInTheTemplate">2. ng-template referenced in the template inline</div>
+<ng-template #thenReferencedInTheTemplate>2. ng-template referenced in the template</ng-template>
+<br>
+<!-- 3. <ng-template> referenced in the component-->
+<div *ngIf="show; then thenReferencedInTheComponent">3. ng-template referenced in the component inline</div>
+<ng-template #thenReferenced>3. ng-template referenced in the component</ng-template>

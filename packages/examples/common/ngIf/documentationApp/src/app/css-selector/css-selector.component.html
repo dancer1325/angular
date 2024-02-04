@@ -1,0 +1,12 @@
+<h1>CssSelectorComponent</h1>
+<br>
+<!-- *ngIf  -->
+<div *ngIf="withAsterisk">*ngIf: {{withAsterisk}}</div>
+
+<!-- [ngIf] -->
+<!-- 1. NO existing on HTML elements -->
+<!--<div [ngIf]="withSquareBracket">[ngIf]: {{withSquareBracket}}</div>-->
+<!-- 2. Valid under <ng-template> -->
+<ng-template [ngIf]="withSquareBracket">
+  <div>[ngIf]: {{withSquareBracket}}</div>
+</ng-template>
