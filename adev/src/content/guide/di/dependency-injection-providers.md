@@ -7,12 +7,12 @@
 
 # Configuring dependency providers
 
-The previous sections described how to use class instances as dependencies.
-Aside from classes, you can also use values such as `boolean`, `string`, `Date`, and objects as dependencies.
-Angular provides the necessary APIs to make the dependency configuration flexible, so you can make those values available in DI.
+* 👀values (`boolean`, `string`, `Date`) & objects -- can be used as -- dependencies 👀
+  * Reason: 🧠thanks to Angular's APIs / are dependency configuration flexible 🧠
 
 ## Specifying a provider token
 
+* TODO:
 If you specify the service class as the provider token, the default behavior is for the injector to instantiate that class using the `new` operator.
 
 In the following example, the app component provides a `Logger` instance:
@@ -162,57 +162,55 @@ The next section provides more information about the `useValue` key.
 
 ## Using an `InjectionToken` object
 
-Use an `InjectionToken` object as provider token for non-class dependencies.
-The following example defines a token, `APP_CONFIG`. of the type `InjectionToken`:
+* `InjectionToken` object
+  * 👀== provider token -- for -- non-class dependencies 👀
+  * `InjectionToken<OptionalTypeParameter>('tokenDescription');`
+    * `OptionalTypeParameter` & `tokenDescription` specify the token's purpose 
+  * _Example:_
+    ```src/app/app.config.ts
+    import { InjectionToken } from '@angular/core';
+    
+    export interface AppConfig {
+      title: string;
+    }
+    
+    // defines a token, `APP_CONFIG`. of type `InjectionToken`
+    export const APP_CONFIG = new InjectionToken<AppConfig>('app.config description');
+    ```
+    register the dependency provider | component / use the `InjectionToken` object of `APP_CONFIG`
+    ```src/app/app.component.ts
+    const MY_APP_CONFIG_VARIABLE: AppConfig = {
+    title: 'Hello',
+    };
 
-<docs-code header="src/app/app.config.ts" language="typescript" highlight="[3]">
-import { InjectionToken } from '@angular/core';
-
-export interface AppConfig {
-  title: string;
-}
-
-export const APP_CONFIG = new InjectionToken<AppConfig>('app.config description');
-</docs-code>
-
-The optional type parameter, `<AppConfig>`, and the token description, `app.config description`, specify the token's purpose.
-
-Next, register the dependency provider in the component using the `InjectionToken` object of `APP_CONFIG`:
-
-<docs-code header="src/app/app.component.ts" language="typescript">
-const MY_APP_CONFIG_VARIABLE: AppConfig = {
-  title: 'Hello',
-};
-
-providers: [{ provide: APP_CONFIG, useValue: MY_APP_CONFIG_VARIABLE }]
-</docs-code>
-
-Now, inject the configuration object into the constructor with the `@Inject()` parameter decorator:
-
-<docs-code header="src/app/app.component.ts" language="typescript" highlight="[2]">
-export class AppComponent {
-  constructor(@Inject(APP_CONFIG) config: AppConfig) {
-    this.title = config.title;
-  }
-}
-</docs-code>
+    providers: [{ provide: APP_CONFIG, useValue: MY_APP_CONFIG_VARIABLE }]
+    ```
+    inject the configuration object | constructor -- via -- `@Inject()` parameter decorator
+    ```src/app/app.component.ts
+    export class AppComponent {
+      constructor(@Inject(APP_CONFIG) config: AppConfig) {
+      this.title = config.title;
+      }
+    }
+    ```
 
 ### Interfaces and DI
 
-Though the TypeScript `AppConfig` interface supports typing within the class, the `AppConfig` interface plays no role in DI.
-In TypeScript, an interface is a design-time artifact, and does not have a runtime representation, or token, that the DI framework can use.
-
-When the TypeScript transpiles to JavaScript, the interface disappears because JavaScript doesn't have interfaces.
-Because there is no interface for Angular to find at runtime, the interface cannot be a token, nor can you inject it:
-
-<docs-code header="src/app/app.component.ts" language="typescript">
-// Can't use interface as provider token
-[{ provide: AppConfig, useValue: MY_APP_CONFIG_VARIABLE })]
-</docs-code>
-
-<docs-code header="src/app/app.component.ts" language="typescript" highlight="[3]">
-export class AppComponent {
-  // Can't inject using the interface as the parameter type
-  constructor(private config: AppConfig) {}
-}
-</docs-code>
+* `AppConfig` interface
+  * | TypeScript,
+    * supports typing
+    * == design-time artifact != runtime representation, or token / DI can use  
+  * 👀plays NO role in DI 👀
+  * ❌interface can NOT be a token -> you can NOT inject it! ❌
+    * Reason: 🧠 TypeScript -- transpiles to -- JavaScript -> interface disappears 🧠
+    * _Example:_ 
+      ```src/app/app.component.ts
+      // interface -- can NOT be used as -- provider token
+      [{ provide: AppConfig, useValue: MY_APP_CONFIG_VARIABLE })]
+      ```
+      ```src/app/app.component.ts
+      export class AppComponent {
+      // Can NOT inject using the interface as the parameter type
+        constructor(private config: AppConfig) {}
+      }
+      ```
