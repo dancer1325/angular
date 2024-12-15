@@ -11,3 +11,15 @@ Example of [GettingStarted-What's Angular](https://angular.io/guide/what-is-angu
 * `cd ...aio/content/example-playground/what-is-angular`
 * `ng serve`
 * Open in your browser "localhost:4200"
+
+
+# How to make unit testing ?
+* Create the unit test file for an existing component -- 'hello-world-component.spec.ts' --
+  * Attempt1: `ng generate component HelloWorldComponent --spec`
+  * Solution: Create manually
+* Run the unit test
+  * Generate the corresponding 'example-playground'
+    * `yarn example-playground what-is-angular --local`
+  * `cd ...aio/content/example-playground/what-is-angular`
+  * `ng test`
+  * Open in your browser "localhost:9877"
