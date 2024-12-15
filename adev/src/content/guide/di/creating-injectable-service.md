@@ -1,3 +1,8 @@
+* goal
+  * how to 
+    * create a service
+    * inject it | OTHER services & components
+
 # Creating an injectable service
 
 Service is a broad category encompassing any value, function, or feature that an application needs.
