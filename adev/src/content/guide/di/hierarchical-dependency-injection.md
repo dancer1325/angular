@@ -1,3 +1,7 @@
+* goal
+  * Hierarchical DI
+    * enables you to share dependencies between different application's parts | if you need to
+
 # Hierarchical injectors
 
 Injectors in Angular have rules that you can leverage to achieve the desired visibility of injectables in your applications.
