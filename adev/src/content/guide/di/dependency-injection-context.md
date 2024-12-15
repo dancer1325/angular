@@ -4,21 +4,23 @@
 
 # Injection context
 
-The dependency injection (DI) system relies internally on a runtime context where the current injector is available.
-This means that injectors can only work when code is executed in such a context.
-
-The injection context is available in these situations:
-
-* During construction (via the `constructor`) of a class being instantiated by the DI system, such as an `@Injectable` or `@Component`.
-* In the initializer for fields of such classes.
-* In the factory function specified for `useFactory` of a `Provider` or an `@Injectable`.
-* In the `factory` function specified for an `InjectionToken`.
-* Within a stack frame that runs in an injection context.
-
-Knowing when you are in an injection context will allow you to use the [`inject`](api/core/inject) function to inject instances.
+* == runtime context
+  * 👀injector is available | this context 👀
+    * ⚠️== requirements to work injectors 
+      * code is executed | injection context ⚠️ 
+    * -> you can use [`inject`](api/core/inject) function -- to -- inject instances
+  * uses
+    * by DI system 
+  * use cases / injection context is available
+    * | construction (via the `constructor`) of a class / -- instantiated by the -- DI system (`@Injectable` or `@Component`)
+      * | such classes' initializer for fields 
+    * | function / specified in `Provider.useFactory` or `@Injectable(useFactory)`
+    * | `InjectionToken.factory`
+    * | stack frame / runs | injection context
 
 ## Class constructors
 
+* TODO:
 Every time the DI system instantiates a class, it does so in an injection context. This is handled by the framework itself. The constructor of the class is executed in that runtime context, which also allows injection of a token using the [`inject`](api/core/inject) function.
 
 <docs-code language="typescript" highlight="[[3],[6]]">
