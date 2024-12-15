@@ -11,7 +11,7 @@
     * | 
       * services
         * 👀MOST typical one 👀
-      * values (_Example:_ strings or functions)
+      * 👀values (_Example:_ strings or functions) 👀
   * injector 
     * 👀created AUTOMATICALLY | bootstrap 👀
     * instantiates -- via a configured provider of the service or value -- dependencies | needed
