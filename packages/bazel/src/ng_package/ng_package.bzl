@@ -1,7 +1,7 @@
 # Copyright Google LLC All Rights Reserved.
 #
 # Use of this source code is governed by an MIT-style license that can be
-# found in the LICENSE file at https://angular.io/license
+# found in the LICENSE file at https://angular.dev/license
 """Package Angular libraries for npm distribution
 
 If all users of an Angular library use Bazel (e.g. internal usage in your company)
@@ -80,7 +80,6 @@ WELL_KNOWN_EXTERNALS = [
     "@angular/common/testing",
     "@angular/common/upgrade",
     "@angular/compiler",
-    "@angular/compiler/testing",
     "@angular/core",
     "@angular/core/testing",
     "@angular/elements",
@@ -323,13 +322,7 @@ def _ng_package_impl(ctx):
         # necessary to allow for entry-points to rely on sub-targets (as a perf improvement).
         unscoped_esm2022_depset = dep[JSEcmaScriptModuleInfo].sources
         unscoped_types_depset = dep[DeclarationInfo].transitive_declarations
-
-        # Note: Using `to_list()` is expensive but we cannot get around this here as
-        # we need to filter out generated files and need to be able to iterate through
-        # JavaScript files in order to capture the `esm2022/` in the APF, and to be able
-        # to detect entry-point index files when no flat module metadata is available.
-        unscoped_esm2022 = unscoped_esm2022_depset.to_list()
-        unscoped_all_entry_point_esm2022.extend(unscoped_esm2022)
+        unscoped_all_entry_point_esm2022.append(unscoped_esm2022_depset)
 
         # Extract the "module_name" from either "ts_library" or "ng_module". Both
         # set the "module_name" in the provider struct.
@@ -367,10 +360,15 @@ def _ng_package_impl(ctx):
             # typing files in order to determine the entry-point type file.
             unscoped_types = unscoped_types_depset.to_list()
 
+            # Note: Using `to_list()` is expensive but we cannot get around this here as
+            # we need to filter out generated files to be able to detect entry-point index
+            # files when no flat module metadata is available.
+            unscoped_esm2022_list = unscoped_esm2022_depset.to_list()
+
             # In case the dependency is built through the "ts_library" rule, or the "ng_module"
             # rule does not generate a flat module bundle, we determine the index file and
             # typings entry-point through the most reasonable defaults (i.e. "package/index").
-            es2022_entry_point = _find_matching_file(unscoped_esm2022, "%s/index.mjs" % entry_point_package)
+            es2022_entry_point = _find_matching_file(unscoped_esm2022_list, "%s/index.mjs" % entry_point_package)
             typings_entry_point = _find_matching_file(unscoped_types, "%s/index.d.ts" % entry_point_package)
             guessed_paths = True
 
@@ -428,9 +426,14 @@ def _ng_package_impl(ctx):
             ),
         )
 
+    # Note: Using `to_list()` is expensive but we cannot get around this here as
+    # we need to filter out generated files and need to be able to iterate through
+    # JavaScript files in order to capture the relevant package-owned `esm2022/` in the APF.
+    unscoped_all_entry_point_esm2022_list = depset(transitive = unscoped_all_entry_point_esm2022).to_list()
+
     # Filter ESM2022 JavaScript inputs to files which are part of the owning package. The
     # packager should not copy external files into the package.
-    esm2022 = _filter_esm_files_to_include(unscoped_all_entry_point_esm2022, owning_package)
+    esm2022 = _filter_esm_files_to_include(unscoped_all_entry_point_esm2022_list, owning_package)
 
     packager_inputs = (
         static_files +
@@ -473,6 +476,13 @@ def _ng_package_impl(ctx):
         packager_args.add(ctx.file.readme_md.path)
     else:
         # placeholder
+        packager_args.add("")
+
+    if ctx.file.license:
+        packager_inputs.append(ctx.file.license)
+        packager_args.add(ctx.file.license.path)
+    else:
+        #placeholder
         packager_args.add("")
 
     packager_args.add(_serialize_files_for_arg(fesm2022))
@@ -533,6 +543,10 @@ _NG_PACKAGE_ATTRS = dict(PKG_NPM_ATTRS, **{
         The contents of the file will be copied to the top of the resulting bundles.
         Configured substitutions are applied like with other files in the package.""",
         allow_single_file = [".txt"],
+    ),
+    "license": attr.label(
+        doc = """A textfile that will be copied to the root of the npm package.""",
+        allow_single_file = True,
     ),
     "deps": attr.label_list(
         doc = """ Targets that produce production JavaScript outputs, such as `ts_library`.""",

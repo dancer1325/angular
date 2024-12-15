@@ -3,14 +3,16 @@
  * Copyright Google LLC All Rights Reserved.
  *
  * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * found in the LICENSE file at https://angular.dev/license
  */
 
-import * as o from '../../../../output/output_ast';
 import * as ir from '../../ir';
 import type {CompilationJob} from '../compilation';
 
-export function phaseRemoveEmptyBindings(job: CompilationJob): void {
+/**
+ * Binding with no content can be safely deleted.
+ */
+export function removeEmptyBindings(job: CompilationJob): void {
   for (const unit of job.units) {
     for (const op of unit.update) {
       switch (op.kind) {

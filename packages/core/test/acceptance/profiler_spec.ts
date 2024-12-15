@@ -3,14 +3,29 @@
  * Copyright Google LLC All Rights Reserved.
  *
  * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * found in the LICENSE file at https://angular.dev/license
  */
 
-import {ProfilerEvent, setProfiler} from '@angular/core/src/render3/profiler';
+import {setProfiler} from '@angular/core/src/render3/profiler';
+import {ProfilerEvent} from '@angular/core/src/render3/profiler_types';
 import {TestBed} from '@angular/core/testing';
 
-import {AfterContentChecked, AfterContentInit, AfterViewChecked, AfterViewInit, Component, DoCheck, ErrorHandler, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, ViewChild} from '../../src/core';
-
+import {
+  AfterContentChecked,
+  AfterContentInit,
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  DoCheck,
+  ErrorHandler,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from '../../src/core';
 
 describe('profiler', () => {
   class Profiler {
@@ -27,19 +42,26 @@ describe('profiler', () => {
 
   afterAll(() => setProfiler(null));
 
-  function findProfilerCall(condition: ProfilerEvent|((args: any[]) => boolean)) {
-    let predicate: (args: any[]) => boolean = _ => true;
+  function findProfilerCall(condition: ProfilerEvent | ((args: any[]) => boolean)) {
+    let predicate: (args: any[]) => boolean = (_) => true;
     if (typeof condition !== 'function') {
       predicate = (args: any[]) => args[0] === condition;
     } else {
       predicate = condition;
     }
-    return profilerSpy.calls.all().map((call: any) => call.args).find(predicate);
+    return profilerSpy.calls
+      .all()
+      .map((call: any) => call.args)
+      .find(predicate);
   }
 
   describe('change detection hooks', () => {
     it('should call the profiler for creation and change detection', () => {
-      @Component({selector: 'my-comp', template: '<button (click)="onClick()"></button>'})
+      @Component({
+        selector: 'my-comp',
+        template: '<button (click)="onClick()"></button>',
+        standalone: false,
+      })
       class MyComponent {
         onClick() {}
       }
@@ -50,11 +72,13 @@ describe('profiler', () => {
       expect(profilerSpy).toHaveBeenCalled();
 
       const templateCreateStart = findProfilerCall(
-          (args: any[]) => args[0] === ProfilerEvent.TemplateCreateStart &&
-              args[1] === fixture.componentInstance);
+        (args: any[]) =>
+          args[0] === ProfilerEvent.TemplateCreateStart && args[1] === fixture.componentInstance,
+      );
       const templateCreateEnd = findProfilerCall(
-          (args: any[]) =>
-              args[0] === ProfilerEvent.TemplateCreateEnd && args[1] === fixture.componentInstance);
+        (args: any[]) =>
+          args[0] === ProfilerEvent.TemplateCreateEnd && args[1] === fixture.componentInstance,
+      );
 
       expect(templateCreateStart).toBeTruthy();
       expect(templateCreateEnd).toBeTruthy();
@@ -62,18 +86,20 @@ describe('profiler', () => {
       fixture.detectChanges();
 
       const templateUpdateStart = findProfilerCall(
-          (args: any[]) => args[0] === ProfilerEvent.TemplateUpdateStart &&
-              args[1] === fixture.componentInstance);
+        (args: any[]) =>
+          args[0] === ProfilerEvent.TemplateUpdateStart && args[1] === fixture.componentInstance,
+      );
       const templateUpdateEnd = findProfilerCall(
-          (args: any[]) =>
-              args[0] === ProfilerEvent.TemplateUpdateEnd && args[1] === fixture.componentInstance);
+        (args: any[]) =>
+          args[0] === ProfilerEvent.TemplateUpdateEnd && args[1] === fixture.componentInstance,
+      );
 
       expect(templateUpdateStart).toBeTruthy();
       expect(templateUpdateEnd).toBeTruthy();
     });
 
     it('should invoke the profiler when the template throws', () => {
-      @Component({selector: 'my-comp', template: '{{ throw() }}'})
+      @Component({selector: 'my-comp', template: '{{ throw() }}', standalone: false})
       class MyComponent {
         throw() {
           throw new Error();
@@ -92,9 +118,11 @@ describe('profiler', () => {
       expect(profilerSpy).toHaveBeenCalled();
 
       const templateCreateStart = findProfilerCall(
-          (args: any[]) => args[0] === ProfilerEvent.TemplateCreateStart && args[1] === myComp);
+        (args: any[]) => args[0] === ProfilerEvent.TemplateCreateStart && args[1] === myComp,
+      );
       const templateCreateEnd = findProfilerCall(
-          (args: any[]) => args[0] === ProfilerEvent.TemplateCreateEnd && args[1] === myComp);
+        (args: any[]) => args[0] === ProfilerEvent.TemplateCreateEnd && args[1] === myComp,
+      );
 
       expect(templateCreateStart).toBeTruthy();
       expect(templateCreateEnd).toBeTruthy();
@@ -103,7 +131,11 @@ describe('profiler', () => {
 
   describe('outputs and events', () => {
     it('should invoke the profiler on event handler', () => {
-      @Component({selector: 'my-comp', template: '<button (click)="onClick()"></button>'})
+      @Component({
+        selector: 'my-comp',
+        template: '<button (click)="onClick()"></button>',
+        standalone: false,
+      })
       class MyComponent {
         onClick() {}
       }
@@ -127,7 +159,11 @@ describe('profiler', () => {
     });
 
     it('should invoke the profiler on event handler even when it throws', () => {
-      @Component({selector: 'my-comp', template: '<button (click)="onClick()"></button>'})
+      @Component({
+        selector: 'my-comp',
+        template: '<button (click)="onClick()"></button>',
+        standalone: false,
+      })
       class MyComponent {
         onClick() {
           throw new Error();
@@ -137,8 +173,10 @@ describe('profiler', () => {
       const handler = new ErrorHandler();
       const errorSpy = spyOn(handler, 'handleError');
 
-      TestBed.configureTestingModule(
-          {declarations: [MyComponent], providers: [{provide: ErrorHandler, useValue: handler}]});
+      TestBed.configureTestingModule({
+        declarations: [MyComponent],
+        providers: [{provide: ErrorHandler, useValue: handler}],
+      });
 
       const fixture = TestBed.createComponent(MyComponent);
       const myComp = fixture.componentInstance;
@@ -156,12 +194,16 @@ describe('profiler', () => {
     });
 
     it('should invoke the profiler on output handler execution', async () => {
-      @Component({selector: 'child', template: ''})
+      @Component({selector: 'child', template: '', standalone: false})
       class Child {
         @Output() childEvent = new EventEmitter();
       }
 
-      @Component({selector: 'my-comp', template: '<child (childEvent)="onEvent()"></child>'})
+      @Component({
+        selector: 'my-comp',
+        template: '<child (childEvent)="onEvent()"></child>',
+        standalone: false,
+      })
       class MyComponent {
         @ViewChild(Child) child!: Child;
         onEvent() {}
@@ -188,9 +230,23 @@ describe('profiler', () => {
       class Service implements OnDestroy {
         ngOnDestroy() {}
       }
-      @Component({selector: 'my-comp', template: '{{prop}}', providers: [Service]})
-      class MyComponent implements OnInit, AfterViewInit, AfterViewChecked, AfterContentInit,
-                                   AfterContentChecked, OnChanges, DoCheck, OnDestroy {
+      @Component({
+        selector: 'my-comp',
+        template: '{{prop}}',
+        providers: [Service],
+        standalone: false,
+      })
+      class MyComponent
+        implements
+          OnInit,
+          AfterViewInit,
+          AfterViewChecked,
+          AfterContentInit,
+          AfterContentChecked,
+          OnChanges,
+          DoCheck,
+          OnDestroy
+      {
         @Input() prop = 1;
 
         constructor(private service: Service) {}
@@ -205,7 +261,11 @@ describe('profiler', () => {
         ngAfterContentChecked() {}
       }
 
-      @Component({selector: 'my-parent', template: '<my-comp [prop]="prop"></my-comp>'})
+      @Component({
+        selector: 'my-parent',
+        template: '<my-comp [prop]="prop"></my-comp>',
+        standalone: false,
+      })
       class MyParent {
         prop = 1;
         @ViewChild(MyComponent) child!: MyComponent;
@@ -220,65 +280,74 @@ describe('profiler', () => {
       const myComp = fixture.componentInstance.child;
 
       const ngOnInitStart = findProfilerCall(
-          (args: any[]) =>
-              args[0] === ProfilerEvent.LifecycleHookStart && args[2] === myComp.ngOnInit);
+        (args: any[]) =>
+          args[0] === ProfilerEvent.LifecycleHookStart && args[2] === myComp.ngOnInit,
+      );
       const ngOnInitEnd = findProfilerCall(
-          (args: any[]) =>
-              args[0] === ProfilerEvent.LifecycleHookEnd && args[2] === myComp.ngOnInit);
+        (args: any[]) => args[0] === ProfilerEvent.LifecycleHookEnd && args[2] === myComp.ngOnInit,
+      );
 
       expect(ngOnInitStart).toBeTruthy();
       expect(ngOnInitEnd).toBeTruthy();
 
       const ngOnDoCheckStart = findProfilerCall(
-          (args: any[]) =>
-              args[0] === ProfilerEvent.LifecycleHookStart && args[2] === myComp.ngDoCheck);
+        (args: any[]) =>
+          args[0] === ProfilerEvent.LifecycleHookStart && args[2] === myComp.ngDoCheck,
+      );
       const ngOnDoCheckEnd = findProfilerCall(
-          (args: any[]) =>
-              args[0] === ProfilerEvent.LifecycleHookEnd && args[2] === myComp.ngDoCheck);
+        (args: any[]) => args[0] === ProfilerEvent.LifecycleHookEnd && args[2] === myComp.ngDoCheck,
+      );
 
       expect(ngOnDoCheckStart).toBeTruthy();
       expect(ngOnDoCheckEnd).toBeTruthy();
 
       const ngAfterViewInitStart = findProfilerCall(
-          (args: any[]) =>
-              args[0] === ProfilerEvent.LifecycleHookStart && args[2] === myComp.ngAfterViewInit);
+        (args: any[]) =>
+          args[0] === ProfilerEvent.LifecycleHookStart && args[2] === myComp.ngAfterViewInit,
+      );
       const ngAfterViewInitEnd = findProfilerCall(
-          (args: any[]) =>
-              args[0] === ProfilerEvent.LifecycleHookEnd && args[2] === myComp.ngAfterViewInit);
+        (args: any[]) =>
+          args[0] === ProfilerEvent.LifecycleHookEnd && args[2] === myComp.ngAfterViewInit,
+      );
 
       expect(ngAfterViewInitStart).toBeTruthy();
       expect(ngAfterViewInitEnd).toBeTruthy();
 
       const ngAfterViewCheckedStart = findProfilerCall(
-          (args: any[]) => args[0] === ProfilerEvent.LifecycleHookStart &&
-              args[2] === myComp.ngAfterViewChecked);
+        (args: any[]) =>
+          args[0] === ProfilerEvent.LifecycleHookStart && args[2] === myComp.ngAfterViewChecked,
+      );
       const ngAfterViewCheckedEnd = findProfilerCall(
-          (args: any[]) =>
-              args[0] === ProfilerEvent.LifecycleHookEnd && args[2] === myComp.ngAfterViewChecked);
+        (args: any[]) =>
+          args[0] === ProfilerEvent.LifecycleHookEnd && args[2] === myComp.ngAfterViewChecked,
+      );
 
       expect(ngAfterViewCheckedStart).toBeTruthy();
       expect(ngAfterViewCheckedEnd).toBeTruthy();
 
       const ngAfterContentInitStart = findProfilerCall(
-          (args: any[]) => args[0] === ProfilerEvent.LifecycleHookStart &&
-              args[2] === myComp.ngAfterContentInit);
+        (args: any[]) =>
+          args[0] === ProfilerEvent.LifecycleHookStart && args[2] === myComp.ngAfterContentInit,
+      );
       const ngAfterContentInitEnd = findProfilerCall(
-          (args: any[]) =>
-              args[0] === ProfilerEvent.LifecycleHookEnd && args[2] === myComp.ngAfterContentInit);
+        (args: any[]) =>
+          args[0] === ProfilerEvent.LifecycleHookEnd && args[2] === myComp.ngAfterContentInit,
+      );
 
       expect(ngAfterContentInitStart).toBeTruthy();
       expect(ngAfterContentInitEnd).toBeTruthy();
 
       const ngAfterContentCheckedStart = findProfilerCall(
-          (args: any[]) => args[0] === ProfilerEvent.LifecycleHookStart &&
-              args[2] === myComp.ngAfterContentChecked);
+        (args: any[]) =>
+          args[0] === ProfilerEvent.LifecycleHookStart && args[2] === myComp.ngAfterContentChecked,
+      );
       const ngAfterContentChecked = findProfilerCall(
-          (args: any[]) => args[0] === ProfilerEvent.LifecycleHookEnd &&
-              args[2] === myComp.ngAfterContentChecked);
+        (args: any[]) =>
+          args[0] === ProfilerEvent.LifecycleHookEnd && args[2] === myComp.ngAfterContentChecked,
+      );
 
       expect(ngAfterContentCheckedStart).toBeTruthy();
       expect(ngAfterContentChecked).toBeTruthy();
-
 
       // Verify we call `ngOnChanges` and the corresponding profiler hooks
       const onChangesSpy = spyOn(myComp, 'ngOnChanges');
@@ -288,11 +357,19 @@ describe('profiler', () => {
       fixture.detectChanges();
 
       const ngOnChangesStart = findProfilerCall(
-          (args: any[]) => args[0] === ProfilerEvent.LifecycleHookStart && args[2] &&
-              args[2].name && args[2].name.indexOf('OnChangesHook') >= 0);
+        (args: any[]) =>
+          args[0] === ProfilerEvent.LifecycleHookStart &&
+          args[2] &&
+          args[2].name &&
+          args[2].name.indexOf('OnChangesHook') >= 0,
+      );
       const ngOnChangesEnd = findProfilerCall(
-          (args: any[]) => args[0] === ProfilerEvent.LifecycleHookEnd && args[2] && args[2].name &&
-              args[2].name.indexOf('OnChangesHook') >= 0);
+        (args: any[]) =>
+          args[0] === ProfilerEvent.LifecycleHookEnd &&
+          args[2] &&
+          args[2].name &&
+          args[2].name.indexOf('OnChangesHook') >= 0,
+      );
 
       expect(onChangesSpy).toHaveBeenCalled();
       expect(ngOnChangesStart).toBeTruthy();
@@ -300,21 +377,25 @@ describe('profiler', () => {
 
       fixture.destroy();
       const ngOnDestroyStart = findProfilerCall(
-          (args: any[]) =>
-              args[0] === ProfilerEvent.LifecycleHookStart && args[2] === myComp.ngOnDestroy);
+        (args: any[]) =>
+          args[0] === ProfilerEvent.LifecycleHookStart && args[2] === myComp.ngOnDestroy,
+      );
       const ngOnDestroyEnd = findProfilerCall(
-          (args: any[]) =>
-              args[0] === ProfilerEvent.LifecycleHookEnd && args[2] === myComp.ngOnDestroy);
+        (args: any[]) =>
+          args[0] === ProfilerEvent.LifecycleHookEnd && args[2] === myComp.ngOnDestroy,
+      );
 
       expect(ngOnDestroyStart).toBeTruthy();
       expect(ngOnDestroyEnd).toBeTruthy();
 
       const serviceNgOnDestroyStart = findProfilerCall(
-          (args: any[]) => args[0] === ProfilerEvent.LifecycleHookStart &&
-              args[2] === Service.prototype.ngOnDestroy);
+        (args: any[]) =>
+          args[0] === ProfilerEvent.LifecycleHookStart && args[2] === Service.prototype.ngOnDestroy,
+      );
       const serviceNgOnDestroyEnd = findProfilerCall(
-          (args: any[]) => args[0] === ProfilerEvent.LifecycleHookEnd &&
-              args[2] === Service.prototype.ngOnDestroy);
+        (args: any[]) =>
+          args[0] === ProfilerEvent.LifecycleHookEnd && args[2] === Service.prototype.ngOnDestroy,
+      );
 
       expect(serviceNgOnDestroyStart).toBeTruthy();
       expect(serviceNgOnDestroyEnd).toBeTruthy();
@@ -322,7 +403,7 @@ describe('profiler', () => {
   });
 
   it('should call the profiler on lifecycle execution even after error', () => {
-    @Component({selector: 'my-comp', template: ''})
+    @Component({selector: 'my-comp', template: '', standalone: false})
     class MyComponent implements OnInit {
       ngOnInit() {
         throw new Error();

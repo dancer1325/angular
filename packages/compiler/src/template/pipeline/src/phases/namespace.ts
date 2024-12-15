@@ -3,22 +3,21 @@
  * Copyright Google LLC All Rights Reserved.
  *
  * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * found in the LICENSE file at https://angular.dev/license
  */
 
-import * as o from '../../../../output/output_ast';
 import * as ir from '../../ir';
-import type {ComponentCompilationJob} from '../compilation';
+import type {CompilationJob} from '../compilation';
 
 /**
  * Change namespaces between HTML, SVG and MathML, depending on the next element.
  */
-export function phaseNamespace(job: ComponentCompilationJob): void {
-  for (const [_, view] of job.views) {
+export function emitNamespaceChanges(job: CompilationJob): void {
+  for (const unit of job.units) {
     let activeNamespace = ir.Namespace.HTML;
 
-    for (const op of view.create) {
-      if (op.kind !== ir.OpKind.Element && op.kind !== ir.OpKind.ElementStart) {
+    for (const op of unit.create) {
+      if (op.kind !== ir.OpKind.ElementStart) {
         continue;
       }
       if (op.namespace !== activeNamespace) {

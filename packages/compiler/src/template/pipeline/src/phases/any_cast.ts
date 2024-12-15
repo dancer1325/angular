@@ -3,27 +3,31 @@
  * Copyright Google LLC All Rights Reserved.
  *
  * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * found in the LICENSE file at https://angular.dev/license
  */
 
 import * as o from '../../../../output/output_ast';
 import * as ir from '../../ir';
-import {ComponentCompilationJob} from '../compilation';
+import {CompilationJob} from '../compilation';
 
 /**
- * Find any function calls to `$any`, excluding `this.$any`, and delete them.
+ * Find any function calls to `$any`, excluding `this.$any`, and delete them, since they have no
+ * runtime effects.
  */
-export function phaseFindAnyCasts(cpl: ComponentCompilationJob): void {
-  for (const [_, view] of cpl.views) {
-    for (const op of view.ops()) {
+export function deleteAnyCasts(job: CompilationJob): void {
+  for (const unit of job.units) {
+    for (const op of unit.ops()) {
       ir.transformExpressionsInOp(op, removeAnys, ir.VisitorContextFlag.None);
     }
   }
 }
 
 function removeAnys(e: o.Expression): o.Expression {
-  if (e instanceof o.InvokeFunctionExpr && e.fn instanceof ir.LexicalReadExpr &&
-      e.fn.name === '$any') {
+  if (
+    e instanceof o.InvokeFunctionExpr &&
+    e.fn instanceof ir.LexicalReadExpr &&
+    e.fn.name === '$any'
+  ) {
     if (e.args.length !== 1) {
       throw new Error('The $any builtin function expects exactly one argument.');
     }
