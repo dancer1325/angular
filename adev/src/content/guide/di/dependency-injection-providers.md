@@ -1,3 +1,10 @@
+* goal
+  * describe how to
+    * configure dependencies -- via -- the `@Component(providers=)` & `@NgModule(providers=)`
+    * use InjectionToken -- to -- provide & inject values in DI
+      * use cases
+        * use a value / != classes 
+
 # Configuring dependency providers
 
 The previous sections described how to use class instances as dependencies.
