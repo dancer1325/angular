@@ -1,3 +1,7 @@
+* goal
+  * describes an injection context
+  * how to use the DI system
+
 # Injection context
 
 The dependency injection (DI) system relies internally on a runtime context where the current injector is available.
