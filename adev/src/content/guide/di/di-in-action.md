@@ -1,44 +1,43 @@
 # DI in action
 
-This guide explores additional features of dependency injection in Angular.
+* goal
+  * additional features of DI | Angular
 
 ## Custom providers with `@Inject`
 
-Using a custom provider allows you to provide a concrete implementation for implicit dependencies, such as built-in browser APIs.
-The following example uses an `InjectionToken` to provide the [localStorage](https://developer.mozilla.org/docs/Web/API/Window/localStorage) browser API as a dependency in the `BrowserStorageService`:
+* custom provider
+  * allows you
+    * provide a concrete implementation -- for -- implicit dependencies (built-in browser APIs)
 
-<docs-code header="src/app/storage.service.ts" language="typescript"
-           highlight="[[3,6],[12]]">
-import { Inject, Injectable, InjectionToken } from '@angular/core';
+* _Example:_ [localStorage](https://developer.mozilla.org/docs/Web/API/Window/localStorage) browser API -- is provided, via `InjectionToken`, as a -- dependency | `BrowserStorageService`
+  ```src/app/storage.service.ts
+  import { Inject, Injectable, InjectionToken } from '@angular/core';
 
-export const BROWSER_STORAGE = new InjectionToken<Storage>('Browser Storage', {
-  providedIn: 'root',
-  factory: () => localStorage
-});
+  export const BROWSER_STORAGE = new InjectionToken<Storage>('Browser Storage', {
+    providedIn: 'root',
+    factory: () => localStorage. // `localStorage` property / -- attached to the -- browser's window object
+  });
 
-@Injectable({
-  providedIn: 'root'
-})
-export class BrowserStorageService {
-  constructor(@Inject(BROWSER_STORAGE) public storage: Storage) {}
-
-  get(key: string) {
-    return this.storage.getItem(key);
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class BrowserStorageService {
+    // specify a custom provider of the dependency -- | testing, it can be overridden -- with a -- mock API of `localStorage` -- 
+    constructor(@Inject(BROWSER_STORAGE) public storage: Storage) {}
+  
+    get(key: string) {
+      return this.storage.getItem(key);
+    }
+  
+    set(key: string, value: string) {
+      this.storage.setItem(key, value);
+    }
   }
-
-  set(key: string, value: string) {
-    this.storage.setItem(key, value);
-  }
-}
-</docs-code>
-
-The `factory` function returns the `localStorage` property that is attached to the browser's window object.
-The `Inject` decorator is applied to the `storage` constructor parameter and specifies a custom provider of the dependency.
-
-This custom provider can now be overridden during testing with a mock API of `localStorage` instead of interacting with real browser APIs.
+  ```
 
 ## Inject the component's DOM element
 
+* TODO:
 Although developers strive to avoid it, some visual effects and third-party tools require direct DOM access.
 As a result, you might need to access a component's DOM element.
 
