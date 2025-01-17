@@ -1,9 +1,11 @@
 # Router reference
 
-The following sections highlight some core router concepts.
+* goal
+  * core Router API concepts
 
 ## Router imports
 
+* TODO:
 The Angular Router is an optional service that presents a particular component view for a given URL.
 It isn't part of the Angular core and thus is in its own library package, `@angular/router`.
 
