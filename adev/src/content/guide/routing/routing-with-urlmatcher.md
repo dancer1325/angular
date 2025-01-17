@@ -1,6 +1,10 @@
 # Creating custom route matches
 
-The Angular Router supports a powerful matching strategy that you can use to help users navigate your application.
+* goal
+  * how to use custom matching strategy patterns | Angular routing
+
+* TODO:
+* The Angular Router supports a powerful matching strategy that you can use to help users navigate your application.
 This matching strategy supports static routes, variable routes with parameters, wildcard routes, and so on.
 Also, build your own custom pattern matching for situations in which the URLs are more complicated.
 
