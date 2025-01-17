@@ -1,10 +1,12 @@
 # Common Routing Tasks
 
-This topic describes how to implement many of the common tasks associated with adding the Angular router to your application.
+* goal
+  * how to implement typical Angular routing's tasks
 
 ## Generate an application with routing enabled
 
-The following command uses the Angular CLI to generate a basic Angular application with application routes. The application name in the following example is `routing-app`.
+The following command uses the Angular CLI to generate a basic Angular application with application routes. 
+The application name in the following example is `routing-app`.
 
 ```shell
 ng new routing-app
@@ -12,7 +14,8 @@ ng new routing-app
 
 ### Adding components for routing
 
-To use the Angular router, an application needs to have at least two components so that it can navigate from one to the other. To create a component using the CLI, enter the following at the command line where `first` is the name of your component:
+To use the Angular router, an application needs to have at least two components so that it can navigate from one to the other. 
+To create a component using the CLI, enter the following at the command line where `first` is the name of your component:
 
 ```shell
 ng generate component first
@@ -30,7 +33,8 @@ The CLI automatically appends `Component`, so if you were to write `first-compon
 
 <docs-callout title="`base href`">
 
-This guide works with a CLI-generated Angular application. If you are working manually, make sure that you have `<base href="/">` in the `<head>` of your index.html file.
+This guide works with a CLI-generated Angular application. 
+If you are working manually, make sure that you have `<base href="/">` in the `<head>` of your index.html file.
 This assumes that the `app` folder is the application root, and uses `"/"`.
 
 </docs-callout>
@@ -50,7 +54,8 @@ import {SecondComponent} from './second/second.component';
 
 There are three fundamental building blocks to creating a route.
 
-Import the routes into `app.config.ts` and add it to the `provideRouter` function. The following is the default `ApplicationConfig` using the CLI.
+Import the routes into `app.config.ts` and add it to the `provideRouter` function. 
+The following is the default `ApplicationConfig` using the CLI.
 
 <docs-code language="ts">
 
@@ -78,7 +83,8 @@ export const routes: Routes = [];
 
 <docs-step title="Define your routes in your `Routes` array">
 
-Each route in this array is a JavaScript object that contains two properties. The first property, `path`, defines the URL path for the route. The second property, `component`, defines the component Angular should use for the corresponding path.
+Each route in this array is a JavaScript object that contains two properties.
+The first property, `path`, defines the URL path for the route. The second property, `component`, defines the component Angular should use for the corresponding path.
 
 ```ts
 const routes: Routes = [
