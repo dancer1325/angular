@@ -1,5 +1,15 @@
-Example of [Router](https://angular.io/guide/router-tutorial-toh)
-TODO: Not valid that one. Find
+* Example of [Router | SPA](/adev/src/content/guide/routing/router-tutorial.md)
+
+# Goal
+* SAMPLE application's features | modules
+* how to navigate -- to a -- component
+* pass information -- via a parameter, to a -- component
+* structure routes -- by -- nesting several routes
+* control whether the application can discard unsaved changes
+* improve performance -- by -- 
+  * pre-fetching route data
+  * lazy loading feature modules
+* criteria to load components
 
 # How to run locally?
 * `cd /aio`
@@ -11,11 +21,15 @@ TODO: Not valid that one. Find
   * Generated folder is created
 * `cd ...aio/content/example-playground/router-tutorial`
 * `ng serve`
-* Open in your browser "localhost:4200"
+* if you want to see
+  * main page -> open | browser, http://localhost:4200
+  * `CrisisListComponent` -> open | browser, http://localhost:4200/crisis-list
+  * `HeroesListComponent` -> open | browser, http://localhost:4200/heroes-list
 
 # How was it created?
-* It had got a basic skeleton with the main component, but it could have been generated via 
+* create skeleton of Angular application -- via -- 
   * `npm init @angular router-tutorial` or
   * `ng new router-tutorial`
-
-# Notes
+    * if you get the prompt `Would you like to add Angular routing?"` -> select `N`
+* `ng generate component crisis-list`
+* `ng generate component heroes-list`
