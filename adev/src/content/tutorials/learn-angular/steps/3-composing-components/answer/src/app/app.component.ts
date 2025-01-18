@@ -17,6 +17,6 @@ export class UserComponent {
       <app-user />
     </section>
   `,
-  imports: [UserComponent],
+  imports: [UserComponent], // OTHERWISE, other can NOT be used | this template
 })
 export class AppComponent {}
