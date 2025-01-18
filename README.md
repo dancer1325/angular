@@ -53,6 +53,15 @@
 
 * [Changelog][changelog]
 
+## Built-in scripts
+
+* tools used
+  * [Yarn](https://yarnpkg.com)
+  * [Bazel](https://bazel.build/)
+    * build targets
+    * run tests
+* 👀SOME should be executed | [adev](adev/README.md#built-in-scripts) 👀
+
 ## Community
 
 - [X (formerly Twitter)][X (formerly Twitter)]
