@@ -68,10 +68,6 @@
 [documentation]: https://angular.dev/overview
 [angularmaterial]: https://material.angular.io/
 [cli]: https://angular.dev/tools/cli
-[angularelements]: https://angular.dev/guide/elements
-[ssr]: https://angular.dev/guide/ssr
-[schematics]: https://angular.dev/tools/cli/schematics
-[lazyloading]: https://angular.dev/guide/ngmodules/lazy-loading
 [node.js]: https://nodejs.org/
 [npm]: https://www.npmjs.com/get-npm
 [codeofconduct]: CODE_OF_CONDUCT.md
@@ -81,4 +77,3 @@
 [stackoverflow]: https://stackoverflow.com/questions/tagged/angular
 [youtube]: https://youtube.com/angular
 [meetup]: https://www.meetup.com/find/?keywords=angular
-[animations]: https://angular.dev/guide/animations
