@@ -1,13 +1,15 @@
 # Welcome to the Angular tutorial
 
-This interactive tutorial will teach you the basic building blocks to start building great apps with Angular.
+* goal
+  * Angular's basic building blocks
 
-## How to use this tutorial
+## Requirements
 
-You'll need to have basic familiarity with HTML, CSS and JavaScript to understand Angular.
+* knowledge of
+  * HTML,
+  * CSS
+  * JS
 
-Each step represents a concept in Angular. You can do one, or all of them.
+## Structure
 
-If you get stuck, click "Reveal answer" at the top.
-
-Alright, let's [get started](/tutorials/learn-angular/1-components-in-angular).
+* EACH [step's subfolder](../steps) == concept in Angular
