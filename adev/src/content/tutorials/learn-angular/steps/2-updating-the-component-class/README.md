@@ -1,49 +1,45 @@
 # Updating the Component Class
 
-In Angular, the component's logic and behavior are defined in the component's TypeScript class.
+* goal
+  * how to update the component class
+  * how to use [interpolation](/adev/src/content/guide/templates/binding.md#render-dynamic-text-with-text-interpolation) 
 
-In this activity, you'll learn how to update the component class and how to use [interpolation](/guide/templates/binding#render-dynamic-text-with-text-interpolation).
+* component's logic and behavior
+  * defined | component's TypeScript class
 
-<hr />
+* steps
+  * add a property | `AppComponent` class
 
-<docs-workflow>
+  ```ts
+  export class AppComponent {
+    // type -- can be inferred by -- Typescript
+    city = 'San Francisco';
+  }
+  ```
+  * `{{ }}`
+    * interpolation 
+    * == Angular template syntax
+      * allows
+        * call functions,
+        * evaluate expressions
+    * how does it work?
+      * evaluates the contents
+      * renders the output | template
 
-<docs-step title="Add a property called `city`">
-Update the component class by adding a property called `city` to the `AppComponent` class.
+# How to run locally?
 
-```ts
-export class AppComponent {
-  city = 'San Francisco';
-}
-```
-
-The `city` property is of type `string` but you can omit the type because of [type inference in TypeScript](https://www.typescriptlang.org/docs/handbook/type-inference.html). The `city` property can be used in the `AppComponent` class and can be referenced in the component template.
-
-<br>
-
-To use a class property in a template, you have to use the `{{ }}` syntax.
-</docs-step>
-
-<docs-step title="Update the component template">
-Update the `template` property to match the following HTML:
-
-```ts
-template: `Hello {{ city }}`,
-```
-
-This is an example of interpolation and is a part of Angular template syntax. It enables you to do much more than put dynamic text in a template. You can also use this syntax to call functions, write expressions and more.
-</docs-step>
-
-<docs-step title="More practice with interpolation">
-Try this - add another set of `{{ }}` with the contents being `1 + 1`:
-
-```ts
-template: `Hello {{ city }}, {{ 1 + 1 }}`,
-```
-
-Angular evaluates the contents of the `{{ }}` and renders the output in the template.
-</docs-step>
-
-</docs-workflow>
-
-This is just the beginning of what's possible with Angular templates, keep on learning to find out more.
+* ways
+  * see [here](/adev/README.md#how-to-generate-a-specific-example-project-locally)
+    * Solution: TODO:
+  * create an angular project
+    * Attempts:
+      * Attempt1: `npm init @angular final`
+      * Attempt2: `ng new final`
+    * Solution: TODO:
+  * use [existing `common/` Angular skeleton project](../../common)
+    * | "common/", `yarn build`
+      * Problems:
+        * Problem1: "Cannot find tsconfig file "tsconfig.app.json"
+          * Solution: Add reference to ["adev/tsconfig"](/adev/tsconfig.app.json)
+        * Problem2: Files from ALL files are taking in account "../../../../app/core/layout/secondary-navigation/secondary-navigation.component.scss"
+          * Solution: TODO:
