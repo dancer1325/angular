@@ -63,16 +63,11 @@
 - Find a Local [Meetup][meetup]
 
 [contributing]: CONTRIBUTING.md
-[quickstart]: https://angular.dev/tutorials/learn-angular
 [changelog]: CHANGELOG.md
 [ng]: https://angular.dev
 [documentation]: https://angular.dev/overview
 [angularmaterial]: https://material.angular.io/
 [cli]: https://angular.dev/tools/cli
-[architecture]: https://angular.dev/essentials
-[componentstemplates]: https://angular.dev/tutorials/learn-angular/1-components-in-angular
-[forms]: https://angular.dev/tutorials/learn-angular/15-forms
-[api]: https://angular.dev/api
 [angularelements]: https://angular.dev/guide/elements
 [ssr]: https://angular.dev/guide/ssr
 [schematics]: https://angular.dev/tools/cli/schematics
