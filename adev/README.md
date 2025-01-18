@@ -6,26 +6,31 @@
     * 👀| `src/content` 👀
     * 💡['s navigation](src/app/sub-navigation-data.ts) 💡
 
-## Local Development
-* TODO:
+## Fundamentals
 
-For local development, [yarn](https://yarnpkg.com/) is the preferred package manager. You can setup a local environment with the following commands
-:
+* [Getting Started](src/content/tutorials/learn-angular)
+* [Architecture](src/content/introduction/essentials)
 
-```bash
-# Clone Angular repo
-git clone https://github.com/angular/angular.git
+## Advanced
 
-# Navigate to project directory
-cd angular
+* [Angular Elements](src/content/guide/elements.md)
+* [Server Side Rendering](src/content/guide/ssr.md)
+* [Schematics](src/content/tools/cli/schematics.md)
+* [Lazy Loading](src/content/guide/routing/common-router-tasks.md)
+* [Animations](src/content/guide/animations)
+* [Upgrade guide](https://angular.dev/update-guide/)
 
-# Install dependencies
-yarn
+## How to run locally angular dev site?
 
-# Build and run local dev server
-# Note: Initial build will take some time
-yarn docs
-```
+* 
+  ```bash
+  # Install dependencies
+  yarn
+  
+  # Build and run local dev server
+  # Note: Initial build will take some time
+  yarn docs
+  ```
 
 ## Contributing
 
