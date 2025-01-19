@@ -1,14 +1,18 @@
 Example of [GettingStarted-What's Angular](https://angular.io/guide/what-is-angular)
 
 # How to run locally?
-* `cd /aio`
+* `cd /adev`
+  * 
 * `yarn build`
   * Problems:
     * Problem1: "The engine "node" is incompatible with this module. Expected version ">=16.14.0". Got "X.Y.Z""
       * Solution: `nvm use v16.20.1`
 * `yarn example-playground what-is-angular --local`
   * Generated folder is created
-* `cd ...aio/content/example-playground/what-is-angular`
+  * Problems:
+    * Problem1: `example-playground` does NOT exist
+      * Solution: TODO:
+* `cd ...adev/content/example-playground/what-is-angular`
 * `ng serve`
 * Open in your browser "localhost:4200"
 
@@ -20,6 +24,6 @@ Example of [GettingStarted-What's Angular](https://angular.io/guide/what-is-angu
 * Run the unit test
   * Generate the corresponding 'example-playground'
     * `yarn example-playground what-is-angular --local`
-  * `cd ...aio/content/example-playground/what-is-angular`
+  * `cd ...adev/content/example-playground/what-is-angular`
   * `ng test`
   * Open in your browser "localhost:9877"
