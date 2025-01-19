@@ -1,46 +1,37 @@
-# Property Binding in Angular
+# Property Binding | Angular
 
-Property binding in Angular enables you to set values for properties of HTML elements, Angular components and more.
+* Property binding | Angular
+  * enables you to set dynamically values -- for -- HTML elements' OR Angular components'
+    * properties
+    * attributes
+      ```angular-html
+      <  [someAttribute]= >
+      ```
+      ```angular-html
+      <!-- `src` attribute value -- will be bound to the -- class property `imageURL` -->
+      <img alt="photo" [src]="imageURL"> 
+      ```
+  * use cases
+    * toggle button features,
+    * set image paths programmatically,
+    * share values between components
+  * see [binding](/adev/src/content/guide/templates/binding.md)
 
-Use property binding to dynamically set values for properties and attributes. You can do things such as toggle button features, set image paths programmatically, and share values between components.
+# How to run locally?
 
-In this activity, you'll learn how to use property binding in templates.
+* ways
+  * see [here](/adev/README.md#how-to-generate-a-specific-example-project-locally)
+    * Solution: TODO:
+  * create an angular project
+    * Attempts:
+      * Attempt1: `npm init @angular final`
+      * Attempt2: `ng new final`
+    * Solution: TODO:
+  * use [existing `common/` Angular skeleton project](../../common)
+    * | "common/", `yarn build`
+      * Problems:
+        * Problem1: "Cannot find tsconfig file "tsconfig.app.json"
+          * Solution: Add reference to ["adev/tsconfig"](/adev/tsconfig.app.json)
+        * Problem2: Files from ALL files are taking in account "../../../../app/core/layout/secondary-navigation/secondary-navigation.component.scss"
+          * Solution: TODO:
 
-<hr />
-
-To bind to an element's attribute, wrap the attribute name in square brackets. Here's an example:
-
-```angular-html
-<img alt="photo" [src]="imageURL">
-```
-
-In this example, the value of the `src` attribute will be bound to the class property `imageURL`. Whatever value `imageURL` has will be set as the `src` attribute of the `img` tag.
-
-<docs-workflow>
-
-<docs-step title="Add a property called `isEditable`" header="app.component.ts" language="ts">
-Update the code in `app.component.ts` by adding a property to the `AppComponent` class called `isEditable` with the initial value set to `true`.
-
-<docs-code highlight="[2]">
-export class AppComponent {
-    isEditable = true;
-}
-</docs-code>
-</docs-step>
-
-<docs-step title="Bind to `contentEditable`" header="app.component.ts" language="ts">
-Next, bind the `contentEditable` attribute of the `div` to the `isEditable` property by using the <code aria-label="square brackets">[]</code> syntax.
-
-<docs-code highlight="[3]" language="angular-ts">
-@Component({
-    ...
-    template: `<div [contentEditable]="isEditable"></div>`,
-})
-</docs-code>
-</docs-step>
-
-</docs-workflow>
-
-The div is now editable. Nice work 👍
-
-Property binding is one of Angular's many powerful features. If you'd like to learn more checkout [the Angular documentation](guide/templates/property-binding).
