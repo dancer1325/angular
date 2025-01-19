@@ -6,10 +6,11 @@
 * `@if`
   * uses
     * what to display programmatically
-  * `@` prefix 
-    * == [Angular template syntax](/adev/src/content/guide/templates)
-  * | Angular v16+,
-    * see [Angular documentation for NgIf](/adev/src/content/guide/directives/structural-directives.md)
+  * | Angular v16-,
+    * see [NgIf](/adev/src/content/guide/directives/structural-directives.md)
+
+* `@` prefix
+  * == [Angular template syntax](/adev/src/content/guide/templates)
 
 * `@else`
 
