@@ -1,12 +1,19 @@
 # Structural directives
 
-Structural directives are directives applied to an `<ng-template>` element that conditionally or repeatedly render the content of that `<ng-template>`.
+* Structural directives
+  * := directives applied | `<ng-template>` element / it's content is rendered
+    * conditionally or
+    * repeatedly
 
 ## Example use case
 
-In this guide you'll build a structural directive which fetches data from a given data source and renders its template when that data is available. This directive is called `SelectDirective`, after the SQL keyword `SELECT`, and match it with an attribute selector `[select]`.
+* TODO:
+In this guide you'll build a structural directive which fetches data from a given data source and renders its template when that data is available.
+This directive is called `SelectDirective`, after the SQL keyword `SELECT`, and match it with an attribute selector `[select]`.
 
-`SelectDirective` will have an input naming the data source to be used, which you will call `selectFrom`. The `select` prefix for this input is important for the [shorthand syntax](#structural-directive-shorthand). The directive will instantiate its `<ng-template>` with a template context providing the selected data.
+`SelectDirective` will have an input naming the data source to be used, which you will call `selectFrom`. 
+The `select` prefix for this input is important for the [shorthand syntax](#structural-directive-shorthand). 
+The directive will instantiate its `<ng-template>` with a template context providing the selected data.
 
 The following is an example of using this directive directly on an `<ng-template>` would look like:
 
@@ -26,7 +33,8 @@ For more information, see the [ng-template API](api/core/ng-template) documentat
 
 Angular supports a shorthand syntax for structural directives which avoids the need to explicitly author an `<ng-template>` element.
 
-Structural directives can be applied directly on an element by prefixing the directive attribute selector with an asterisk (`*`), such as `*select`. Angular transforms the asterisk in front of a structural directive into an `<ng-template>` that hosts the directive and surrounds the element and its descendants.
+Structural directives can be applied directly on an element by prefixing the directive attribute selector with an asterisk (`*`), such as `*select`. 
+Angular transforms the asterisk in front of a structural directive into an `<ng-template>` that hosts the directive and surrounds the element and its descendants.
 
 You can use this with `SelectDirective` as follows:
 
@@ -36,7 +44,8 @@ You can use this with `SelectDirective` as follows:
 
 This example shows the flexibility of structural directive shorthand syntax, which is sometimes called _microsyntax_.
 
-When used in this way, only the structural directive and its bindings are applied to the `<ng-template>`. Any other attributes or bindings on the `<p>` tag are left alone. For example, these two forms are equivalent:
+When used in this way, only the structural directive and its bindings are applied to the `<ng-template>`. 
+Any other attributes or bindings on the `<p>` tag are left alone. For example, these two forms are equivalent:
 
 ```angular-html
 <!-- Shorthand syntax: -->
@@ -48,15 +57,24 @@ When used in this way, only the structural directive and its bindings are applie
 </ng-template>
 ```
 
-Shorthand syntax is expanded through a set of conventions. A more thorough [grammar](#structural-directive-syntax-reference) is defined below, but in the above example, this transformation can be explained as follows:
+Shorthand syntax is expanded through a set of conventions.
+A more thorough [grammar](#structural-directive-syntax-reference) is defined below, but in the above example, this transformation can be explained as follows:
 
-The first part of the `*select` expression is `let data`, which declares a template variable `data`. Since no assignment follows, the template variable is bound to the template context property `$implicit`.
+The first part of the `*select` expression is `let data`, which declares a template variable `data`. 
+Since no assignment follows, the template variable is bound to the template context property `$implicit`.
 
-The second piece of syntax is a key-expression pair, `from source`. `from` is a binding key and `source` is a regular template expression. Binding keys are mapped to properties by transforming them to PascalCase and prepending the structural directive selector. The `from` key is mapped to `selectFrom`, which is then bound to the expression `source`. This is why many structural directives will have inputs that are all prefixed with the structural directive's selector.
+The second piece of syntax is a key-expression pair, `from source`. 
+`from` is a binding key and `source` is a regular template expression. 
+Binding keys are mapped to properties by transforming them to PascalCase and prepending the structural directive selector.
+The `from` key is mapped to `selectFrom`, which is then bound to the expression `source`. 
+This is why many structural directives will have inputs that are all prefixed with the structural directive's selector.
 
 ## One structural directive per element
 
-You can only apply one structural directive per element when using the shorthand syntax. This is because there is only one `<ng-template>` element onto which that directive gets unwrapped. Multiple directives would require multiple nested `<ng-template>`, and it's unclear which directive should be first. `<ng-container>` can be used when to create wrapper layers when multiple structural directives need to be applied around the same physical DOM element or component, which allows the user to define the nested structure.
+You can only apply one structural directive per element when using the shorthand syntax.
+This is because there is only one `<ng-template>` element onto which that directive gets unwrapped.
+Multiple directives would require multiple nested `<ng-template>`, and it's unclear which directive should be first. 
+`<ng-container>` can be used when to create wrapper layers when multiple structural directives need to be applied around the same physical DOM element or component, which allows the user to define the nested structure.
 
 ## Creating a structural directive
 
@@ -73,7 +91,8 @@ ng generate directive select
 Angular creates the directive class and specifies the CSS selector, `[select]`, that identifies the directive in a template.
 </docs-step>
 <docs-step title="Make the directive structural">
-Import `TemplateRef`, and `ViewContainerRef`. Inject `TemplateRef` and `ViewContainerRef` in the directive constructor as private variables.
+Import `TemplateRef`, and `ViewContainerRef`.
+Inject `TemplateRef` and `ViewContainerRef` in the directive constructor as private variables.
 
 ```ts
 import {Directive, TemplateRef, ViewContainerRef} from '@angular/core';
@@ -121,7 +140,8 @@ export class SelectDirective {
 </docs-step>
 </docs-workflow>
 
-That's it - `SelectDirective` is up and running. A follow-up step might be to [add template type-checking support](#typing-the-directives-context).
+That's it - `SelectDirective` is up and running. 
+A follow-up step might be to [add template type-checking support](#typing-the-directives-context).
 
 ## Structural directive syntax reference
 
@@ -184,7 +204,8 @@ For more information, see [Template type checking](tools/cli/template-typecheck 
 
 ### Type narrowing with template guards
 
-A structural directive in a template controls whether that template is rendered at run time. Some structural directives want to perform type narrowing based on the type of input expression.
+A structural directive in a template controls whether that template is rendered at run time.
+Some structural directives want to perform type narrowing based on the type of input expression.
 
 There are two narrowings which are possible with input guards:
 
@@ -226,7 +247,8 @@ The template type-checker will behave as if the expression bound to `condition` 
 
 ### Typing the directive's context
 
-If your structural directive provides a context to the instantiated template, you can properly type it inside the template by providing a static `ngTemplateContextGuard` type assertion function. This function can use the type of the directive to derive the type of the context, which is useful when the type of the directive is generic.
+If your structural directive provides a context to the instantiated template, you can properly type it inside the template by providing a static `ngTemplateContextGuard` type assertion function. 
+This function can use the type of the directive to derive the type of the context, which is useful when the type of the directive is generic.
 
 For the `SelectDirective` described above, you can implement an `ngTemplateContextGuard` to correctly specify the data type, even if the data source is generic.
 
