@@ -1,55 +1,35 @@
-# Component Communication with `@Input`
+# Component Communication -- via -- `@Input`
 
-Sometimes app development requires you to send data into a component. This data can be used to customize a component or perhaps send information from a parent component to a child component.
+* goal
+  * how to use the `@Input` decorator -- to send information to -- components
 
-Angular uses a concept called `Input`. This is similar to `props` in other frameworks. To create an `Input` property, use the `@Input` decorator.
+* `Input` 
+  * == property
+  * 👀== React's `props` 👀
+  * steps
+    * add `@Input` decorator | component class' property
+    * if you want to pass a value -> use the attribute syntax
+  * use cases
+    * send data -- via -- 1! direction  | component -- to --
+      * customize a component OR
+      * from a parent component -- send information to a -- child component
 
-In this activity, you'll learn how to use the `@Input` decorator to send information to components.
+# How to run locally?
 
-<hr>
+* ways
+  * see [here](/adev/README.md#how-to-generate-a-specific-example-project-locally)
+    * Solution: TODO:
+  * create an angular project
+    * Attempts:
+      * Attempt1: `npm init @angular final`
+      * Attempt2: `ng new final`
+    * Solution: TODO:
+  * use [existing `common/` Angular skeleton project](../../common)
+    * | "common/", `yarn build`
+      * Problems:
+        * Problem1: "Cannot find tsconfig file "tsconfig.app.json"
+          * Solution: Add reference to ["adev/tsconfig"](/adev/tsconfig.app.json)
+        * Problem2: Files from ALL files are taking in account "../../../../app/core/layout/secondary-navigation/secondary-navigation.component.scss"
+          * Solution: TODO:
 
-To create an `Input` property, add the `@Input` decorator to a property of a component class:
 
-<docs-code header="user.component.ts" language="ts">
-class UserComponent {
-  @Input() occupation = '';
-}
-</docs-code>
-
-When you are ready to pass in a value through an `Input`, values can be set in templates using the attribute syntax. Here's an example:
-
-<docs-code header="app.component.ts" language="angular-ts" highlight="[3]">
-@Component({
-  ...
-  template: `<app-user occupation="Angular Developer"></app-user>`
-})
-class AppComponent {}
-</docs-code>
-
-Make sure you bind the property `occupation` in your `UserComponent`.
-
-<docs-code header="user.component.ts" language="angular-ts">
-@Component({
-  ...
-  template: `<p>The user's occupation is {{occupation}}</p>`
-})
-</docs-code>
-
-<docs-workflow>
-
-<docs-step title="Define an `@Input` property">
-Update the code in `user.component.ts` to define an `Input` property on the `UserComponent` called `name`. For now, set the initial value to `empty string`. Be sure to update the template to interpolate the `name` property at the end of the sentence.
-</docs-step>
-
-<docs-step title="Pass a value to the `@Input` property">
-Update the code in `app.component.ts` to send in the `name` property with a value of `"Simran"`.
-<br>
-
-When the code has been successfully updated, the app will display `The user's name is Simran`.
-</docs-step>
-
-</docs-workflow>
-
-While this is great, it is only one direction of the component communication. What if you want to send information and data to a parent component from a child component? Check out the next lesson to find out.
-
-P.S. you are doing great - keep going 🎉
