@@ -1,37 +1,54 @@
-# Angular workspace configuration
+# Angular workspace configuration == `angular.json`
 
-The `angular.json` file at the root level of an Angular workspace provides workspace-wide and project-specific configuration defaults. These are used for build and development tools provided by the Angular CLI.
-Path values given in the configuration are relative to the root workspace directory.
+* Angular workspace
+  * := collection of Angular projects co-located | ⚠️ 1! source-control repository ⚠️
+    * ALL projects | workspace, share CLI configuration
+  * ways to create it
+    * `ng new WorkspaceName`
+      * create
+        * angular.json
+        * "src/" / skeleton of application source files
+        * .editorconfig
+        * README.md
+        * package.json
+        * package-lock.json
+        * tsconfig.json
+
+* Project
+  * := standalone Application or Library /
+    * can be created or modified -- by an -- Angular CLI command
+  * ways to be created
+    * `ng new ProjectName`
+    * `ng generate application` / `ng generate library`
+
+* `angular.json`
+  * placed | Angular workspace's root level
+  * 💡provides the configuration defaults 💡/
+    * are
+      * workspace-wide
+      * project-specific
+    * -- used by --
+      * build and development tools / -- provided by the -- Angular CLI 
+  * path values -- are relative to the -- root workspace directory
 
 ## General JSON structure
 
-At the top-level of `angular.json`, a few properties configure the workspace and a `projects` section contains the remaining per-project configuration options.
-You can override Angular CLI defaults set at the workspace level through defaults set at the project level.
-You can also override defaults set at the project level using the command line.
+* == `angular.json`'s top-level properties 👀
 
-The following properties, at the top-level of the file, configure the workspace.
+| Properties       | Details                                                                                                                                                                                           |
+|:-----------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `version`        | == configuration-file version                                                                                                                                                                     |
+| `newProjectRoot` | == path (absolute or relative to workspace directory) / NEW projects -- through tools (_Example:_ `ng generate application` or `ng generate library`) -- are created <br/> by default, `projects` |
+| `cli`            | == set of options / customize the [Angular CLI](../../tools/cli) at workspace level <br/> see [Angular CLI configuration options](#angular-cli-configuration-options)                             |
+| `schematics`     | == set of [schematics](../../tools/cli/schematics) / customize the `ng generate` sub-command option defaults at this workspace <br/> see [schematics](#schematics)                                |
+| `projects`       | == project-specific configuration options == subsection / EACH application or library                                                                                       |
 
-| Properties       | Details                                                                                                                                                                                        |
-|:---              |:---                                                                                                                                                                                            |
-| `version`        | The configuration-file version.                                                                                                                                                                |
-| `newProjectRoot` | Path where new projects are created through tools like `ng generate application` or `ng generate library`. Path can be absolute or relative to the workspace directory. Defaults to `projects` |
-| `cli`            | A set of options that customize the [Angular CLI](tools/cli). See [Angular CLI configuration options](#angular-cli-configuration-options) below.                                               |
-| `schematics`     | A set of [schematics](tools/cli/schematics) that customize the `ng generate` sub-command option defaults for this workspace. See [schematics](#schematics) below.                              |
-| `projects`       | Contains a subsection for each application or library in the workspace, with project-specific configuration options.                                                                           |
-
-The initial application that you create with `ng new app-name` is listed under "projects":
-
-When you create a library project with `ng generate library`, the library project is also added to the `projects` section.
-
-HELPFUL: The `projects` section of the configuration file does not correspond exactly to the workspace file structure.
-<!-- markdownlint-disable-next-line MD032 -->
-* The initial application created by `ng new` is at the top level of the workspace file structure.
-* Other applications and libraries are under the `projects` directory by default.
-
-For more information, see [Workspace and project file structure](reference/configs/file-structure).
+* if you run `ng new app-name` or `ng generate library` -> created application or library is listed | "projects"
+* see [MORE](file-structure)
 
 ## Angular CLI configuration options
 
+* TODO:
 The following properties are a set of options that customize the Angular CLI.
 
 | Property              | Details                                                                                                                                                                    | Value type                            | Default value |
@@ -58,13 +75,13 @@ The following properties are a set of options that customize the Angular CLI.
 
 ## Project configuration options
 
-The following top-level configuration properties are available for each project, under `projects['project-name']`.
+* `projects['project-name']`'s top-level configuration properties 
 
 | Property      | Details                                                                                                                                                                              | Value type                                                      | Default value   |
-|:---           |:---                                                                                                                                                                                  |:---                                                             |:---             |
-| `root`        | The root directory for this project's files, relative to the workspace directory. Empty for the initial application, which resides at the top level of the workspace.                | `string`                                                        | None (required) |
+|:---           |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---                                                             |:---             |
+| `root`        | == root directory for this project's files / -- relative to the -- workspace directory <br/> for the initial application at top level of the workspace, empty                        | `string`                                                        | None (required) |
 | `projectType` | One of "application" or "library" An application can run independently in a browser, while a library cannot.                                                                         | `application` \| `library`                                      | None (required) |
-| `sourceRoot`  | The root directory for this project's source files.                                                                                                                                  | `string`                                                        | `''`            |
+| `sourceRoot`  | == root directory for this project's source files                                                                                                                                    | `string`                                                        | `''`            |
 | `prefix`      | A string that Angular prepends to selectors when generating new components, directives, and pipes using `ng generate`. Can be customized to identify an application or feature area. | `string`                                                        | `'app'`         |
 | `schematics`  | A set of schematics that customize the `ng generate` sub-command option defaults for this project. See the [Generation schematics](#schematics) section.                             | See [schematics](#schematics)                                   | `{}`            |
 | `architect`   | Configuration defaults for Architect builder targets for this project.                                                                                                               | See [Configuring builder targets](#configuring-builder-targets) | `{}`            |
