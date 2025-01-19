@@ -1,5 +1,6 @@
-# Workspace and project file structure
+# Angular Workspace & project file structure
 
+* TODO:
 You develop applications in the context of an Angular workspace.
 A workspace contains the files for one or more projects.
 A project is the set of files that comprise an application or a shareable library.
