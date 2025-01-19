@@ -52,3 +52,4 @@
           * Attempt1: add "tsconfig.json" | this path
           * Attempt2: add "tsconfig.json" | "common"
           * Solution: TODO:
+  * [waiting for reply of the question](https://discord.com/channels/748677963142135818/762717176142495814/1330602931694866483)
