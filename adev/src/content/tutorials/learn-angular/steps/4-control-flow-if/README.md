@@ -1,63 +1,32 @@
 # Control Flow in Components - `@if`
 
-Deciding what to display on the screen for a user is a common task in application development. Many times, the decision is made programmatically using conditions.
+* goal
+  * use conditionals | templates
 
-To express conditional displays in templates, Angular uses the `@if` template syntax.
+* `@if`
+  * uses
+    * what to display programmatically
+  * `@` prefix 
+    * == [Angular template syntax](/adev/src/content/guide/templates)
+  * | Angular v16+,
+    * see [Angular documentation for NgIf](/adev/src/content/guide/directives/structural-directives.md)
 
-In this activity, you'll learn how to use conditionals in templates.
+* `@else`
 
-<hr/>
+# How to run locally?
 
-The syntax that enables the conditional display of elements in a template is `@if`.
-
-Here's an example of how to use the `@if` syntax in a component:
-
-```angular-ts
-@Component({
-  ...
-  template: `
-    @if (isLoggedIn) {
-      <p>Welcome back, Friend!</p>
-    }
-  `,
-})
-class AppComponent {
-  isLoggedIn = true;
-}
-```
-
-Two things to take note of:
-
-- There is an `@` prefix for the `if` because it is a special type of syntax called [Angular template syntax](guide/templates)
-- For applications using v16 and older please refer to the [Angular documentation for NgIf](guide/directives/structural-directives) for more information.
-
-<docs-workflow>
-
-<docs-step title="Create a property called `isServerRunning`">
-In the `AppComponent` class, add a `boolean` property called `isServerRunning`, set the initial value to `true`.
-</docs-step>
-
-<docs-step title="Use `@if` in the template">
-Update the template to display the message `Yes, the server is running` if the value of `isServerRunning` is `true`.
-
-</docs-step>
-
-<docs-step title="Use `@else` in the template">
-Now Angular supports native template syntax for defining the else case with the `@else` syntax. Update the template to display the message `No, the server is not running` as the else case.
-
-Here's an example:
-
-```angular-ts
-template: `
-  @if (isServerRunning) { ... }
-  @else { ... }
-`;
-```
-
-Add your code to fill in the missing markup.
-
-</docs-step>
-
-</docs-workflow>
-
-This type of functionality is called conditional control flow. Next you'll learn how to repeat items in a template.
+* ways
+  * see [here](/adev/README.md#how-to-generate-a-specific-example-project-locally)
+    * Solution: TODO:
+  * create an angular project
+    * Attempts:
+      * Attempt1: `npm init @angular final`
+      * Attempt2: `ng new final`
+    * Solution: TODO:
+  * use [existing `common/` Angular skeleton project](../../common)
+    * | "common/", `yarn build`
+      * Problems:
+        * Problem1: "Cannot find tsconfig file "tsconfig.app.json"
+          * Solution: Add reference to ["adev/tsconfig"](/adev/tsconfig.app.json)
+        * Problem2: Files from ALL files are taking in account "../../../../app/core/layout/secondary-navigation/secondary-navigation.component.scss"
+          * Solution: TODO:
