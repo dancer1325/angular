@@ -53,11 +53,12 @@ import {CommentsComponent} from './comments.component';
         </p>
       </article>
 
+      <!-- <comments />       is wrapped -- via -- @defer -->
       @defer (on viewport) {
       <comments />
-      } @placeholder {
+      } @placeholder {      <!-- content displayed | (, BEFORE deferred loading starts),  is wrapped -- via -- @placeholder  -->
       <p>Future comments</p>
-      } @loading (minimum 2s) {
+      } @loading (minimum 2s) { <!-- content displayed | (start loading deferred content, deferred content NOT YET loaded),  is wrapped -- via -- @loading -->
       <p>Loading comments...</p>
       }
     </div>
