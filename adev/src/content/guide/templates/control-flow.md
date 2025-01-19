@@ -1,93 +1,109 @@
 # Control flow
 
-Angular templates support control flow blocks that let you conditionally show, hide, and repeat elements.
+* Angular templates
+  * support control flow blocks / let you conditionally, about elements,
+    * show,
+    * hide,
+    * repeat
+  * | PREVIOUS Angular v,
+    * use the directives
+      * `*ngIf`,
+      * `*ngFor`,
+      * `*ngSwitch`
 
-Note: This was previously accomplished with the *ngIf, *ngFor, and \*ngSwitch directives.
+## Conditionally display content -- via -- `@if`, `@else-if` and `@else`
 
-## Conditionally display content with `@if`, `@else-if` and `@else`
+* `@if` block, `@else if` blocks, `@else` block
+  * 's behavior == control flow's behavior
 
-The `@if` block conditionally displays its content when its condition expression is truthy:
-
-```angular-html
-@if (a > b) {
-  <p>{{a}} is greater than {{b}}</p>
-}
-```
-
-If you want to display alternative content, you can do so by providing any number of `@else if` blocks and a singular `@else` block.
-
-```angular-html
-@if (a > b) {
-  {{a}} is greater than {{b}}
-} @else if (b > a) {
-  {{a}} is less than {{b}}
-} @else {
-  {{a}} is equal to {{b}}
-}
-```
+    ```angular-html
+    @if (a > b) {
+      {{a}} is greater than {{b}}
+    } @else if (b > a) {
+      {{a}} is less than {{b}}
+    } @else {
+      {{a}} is equal to {{b}}
+    }
+    ```
 
 ### Referencing the conditional expression's result
 
-The `@if` conditional supports saving the result of the conditional expression into a variable for reuse inside of the block.
+* `@if` conditional -- supports saving the -- result of the conditional expression | variable  
+  * uses
+    * reuse | block
+      * Reason: 🧠 easier to read and maintain 🧠
 
-```angular-html
-@if (user.profile.settings.startDate; as startDate) {
-  {{ startDate }}
-}
-```
+    ```angular-html
+    @if (user.profile.settings.startDate; as startDate) {
+      {{ startDate }}
+    }
+    ```
 
-This can be useful for referencing longer expressions that would be easier to read and maintain within the template.
+## Repeat content -- via -- `@for` block
 
-## Repeat content with the `@for` block
+* `@for` block
+  * allows
+    * loops -- through a -- collection /
+      * collection -- MUST BE -- ANY JavaScript [iterable](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Iteration_protocols)
+    * renders REPEATEDLY the content of a block 
+  * _Example:_  
 
-The `@for` block loops through a collection and repeatedly renders the content of a block. The collection can be any JavaScript [iterable](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Iteration_protocols), but Angular has additional performance optimizations for `Array` values.
+    ```angular-html
+    @for (item of items; track item.id) {
+      {{ item.name }}
+    }
+    ```
 
-A typical `@for` loop looks like:
+### Why is `track` | `@for` blocks important?
 
-```angular-html
-@for (item of items; track item.id) {
-  {{ item.name }}
-}
-```
+* `track`
+  * == expression 
+    * recommendations
+      * 👀choose property / UNIQUELY identifies EACH item | `track` expression 👀
+        * if your data model includes a uniquely identifying property -> use it, else -> consider adding one 
+      * | static collections / NEVER change,
+        * use `$index` == item's index
+      * | LAST option,
+        * use `identity` == item's reference identity (`===`)
+        * cons
+          * ⚠️slower rendering updates ⚠️
+            * Reason: 🧠 Angular has NO way to map, data item <--> DOM nodes 🧠 
+  * allows 
+    * 💡Angular can maintain a relationship between your data -- & -- page's DOM nodes 💡
+      * -> 👀if data changes, Angular optimizes -- executing the MINIMUM NECESSARY DOM operations -- performance 👀
 
-### Why is `track` in `@for` blocks important?
+### Contextual variables | `@for` blocks
 
-The `track` expression allows Angular to maintain a relationship between your data and the DOM nodes on the page. This allows Angular to optimize performance by executing the minimum necessary DOM operations when the data changes.
+* | `@for` blocks,
+  * variables / ALWAYS AVAILABLE
+    
+    | Variable | Meaning                                       |
+    | -------- | --------------------------------------------- |
+    | `$count` | Number of items in a collection iterated over |
+    | `$index` | Index of the current row                      |
+    | `$first` | Whether the current row is the first row      |
+    | `$last`  | Whether the current row is the last row       |
+    | `$even`  | Whether the current row index is even         |
+    | `$odd`   | Whether the current row index is odd          |
 
-Using track effectively can significantly improve your application's rendering performance when looping over data collections.
+  * you can alias -- via a `let` segment -- these variables
+    * uses
+      * nesting `@for` blocks 
+        * Reason: 🧠read inner `@for` block's variables | outer `@for` block 🧠 
 
-Select a property that uniquely identifies each item in the `track` expression. If your data model includes a uniquely identifying property, commonly `id` or `uuid`, use this value. If your data does not include a field like this, strongly consider adding one.
+          ```angular-html
+          @for (item of items; track item.id; let idx = $index, e = $even) {
+            <p>Item #{{ idx }}: {{ item.name }}</p>
+          }
+          ```
 
-For static collections that never change, you can use `$index` to tell Angular to track each item by its index in the collection.
+### `@empty` block
 
-If no other option is available, you can specify `identity`. This tells Angular to track the item by its reference identity using the triple-equals operator (`===`). Avoid this option whenever possible as it can lead to significantly slower rendering updates, as Angular has no way to map which data item corresponds to which DOM nodes.
-
-### Contextual variables in `@for` blocks
-
-Inside `@for` blocks, several implicit variables are always available:
-
-| Variable | Meaning                                       |
-| -------- | --------------------------------------------- |
-| `$count` | Number of items in a collection iterated over |
-| `$index` | Index of the current row                      |
-| `$first` | Whether the current row is the first row      |
-| `$last`  | Whether the current row is the last row       |
-| `$even`  | Whether the current row index is even         |
-| `$odd`   | Whether the current row index is odd          |
-
-These variables are always available with these names, but can be aliased via a `let` segment:
-
-```angular-html
-@for (item of items; track item.id; let idx = $index, e = $even) {
-  <p>Item #{{ idx }}: {{ item.name }}</p>
-}
-```
-
-The aliasing is useful when nesting `@for` blocks, letting you read variables from the outer `@for` block from an inner `@for` block.
-
-### Providing a fallback for `@for` blocks with the `@empty` block
-
-You can optionally include an `@empty` section immediately after the `@for` block content. The content of the `@empty` block displays when there are no items:
+* OPTIONAL
+  * | IMMEDIATELY AFTER `@for` block content 
+* allows
+  * 👀providing a fallback for `@for` blocks 👀
+    * == if the iterated collection of `@for` is empty -> `@empty` block displayed
 
 ```angular-html
 @for (item of items; track item.name) {
@@ -99,7 +115,9 @@ You can optionally include an `@empty` section immediately after the `@for` bloc
 
 ## Conditionally display content with the `@switch` block
 
-While the `@if` block is great for most scenarios, the `@switch` block provides an alternate syntax to conditionally render data. Its syntax closely resembles JavaScript's `switch` statement.
+* TODO:
+While the `@if` block is great for most scenarios, the `@switch` block provides an alternate syntax to conditionally render data.
+Its syntax closely resembles JavaScript's `switch` statement.
 
 ```angular-html
 @switch (userPermissions) {
@@ -122,6 +140,7 @@ The value of the conditional expression is compared to the case expression using
 
 **`@switch` does not have a fallthrough**, so you do not need an equivalent to a `break` or `return` statement in the block.
 
-You can optionally include a `@default` block. The content of the `@default` block displays if none of the preceding case expressions match the switch value.
+You can optionally include a `@default` block. 
+The content of the `@default` block displays if none of the preceding case expressions match the switch value.
 
 If no `@case` matches the expression and there is no `@default` block, nothing is shown.
