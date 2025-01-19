@@ -11,6 +11,6 @@ export class ChildComponent {
   @Output() addItemEvent = new EventEmitter<string>();
 
   addItem() {
-    this.addItemEvent.emit('🐢');
+    this.addItemEvent.emit('🐢'); // emit events of type string   -- due to -- EventEmitter<string>
   }
 }

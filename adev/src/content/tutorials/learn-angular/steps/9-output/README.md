@@ -1,70 +1,45 @@
 # Component Communication with `@Output`
 
-When working with components it may be required to notify other components that something has happened. Perhaps a button has been clicked, an item has been added/removed from a list or some other important update has occurred. In this scenario components need to communicate with parent components.
+* goal
+  * how to communicate with components -- via --
+    * `@Output` decorator
+    * `EventEmitter`  
 
-Angular uses the `@Output` decorator to enable this type of behavior.
+* `@Output` decorator
+  * use cases
+    * if something has happened -> notify OTHER components
+      * _Examples:_ button has been clicked, item has been added/removed from a list
+    * components -- communicate with -- PARENT components
+  * steps
+    * | child class property, / is `EventEmitter` 
+      * add `@Output`
+    * | parent component's template,
+      * add event binding
 
-In this activity, you'll learn how to use the `@Output` decorator and `EventEmitter` to communicate with components.
+* `EventEmitter<someType>`
+  * generate events of `someType` -- via -- `.emit()`
 
-<hr />
+## How to run locally?
 
-To create the communication path from child to parent components, use the `@Output` decorator on a class property and assign it a value of type `EventEmitter`:
-
-<docs-code header="child.component.ts" language="ts">
-@Component({...})
-class ChildComponent {
-    @Output() incrementCountEvent = new EventEmitter<number>();
-}
-</docs-code>
-
-Now the component can generate events that can be listened to by the parent component. Trigger events by calling the `emit` method:
-
-<docs-code header="child.component.ts" language="ts">
-class ChildComponent {
-    ...
-
-    onClick() {
-        this.count++;
-        this.incrementCountEvent.emit(this.count);
-    }
-
-}
-</docs-code>
-
-The emit function will generate an event with the same type as the `EventEmitter` instance.
-
-Alright, your turn to give this a try. Complete the code by following these tasks:
-
-<docs-workflow>
-
-<docs-step title="Add an `@Output` property">
-Update `child.component.ts` by adding an output property called `addItemEvent`, be sure to set the EventEmitter type to be `string`.
-</docs-step>
-
-<docs-step title="Complete `addItem` method">
-In `child.component.ts` update the `addItem` method; use the following code as the logic:
-
-<docs-code header="child.component.ts" highlight="[2]" language="ts">
-addItem() {
-  this.addItemEvent.emit('🐢');
-}
-</docs-code>
-
-</docs-step>
-
-<docs-step title="Update the `AppComponent` template">
-In `app.component.ts` update the template to listen to the emitted event by adding the following code:
-
-```angular-html
-<app-child (addItemEvent)="addItem($event)" />
-```
-
-Now, the "Add Item" button adds a new item to the list every time the button is clicked.
-
-</docs-step>
-
-</docs-workflow>
-
-Wow, at this point you've completed the component fundamentals - impressive 👏
-
-Keep learning to unlock more of Angular's great features.
+* ways
+  * see [here](/adev/README.md#how-to-generate-a-specific-example-project-locally)
+    * Solution: TODO:
+  * create an angular project
+    * Problems:
+      * Problem1: "Error: This command is not available when running the Angular CLI inside a workspace." The "/adev/angular.json"
+    * Attempts:
+      * Attempt1: `npm init @angular final`
+      * Attempt2: `ng new final`
+    * Solution: TODO:
+  * use [existing `common/` Angular skeleton project](../../common)
+    * | "common/", `yarn build`
+      * Problems:
+        * Problem1: "Cannot find tsconfig file "tsconfig.app.json"
+          * Solution: Add reference to ["adev/tsconfig"](/adev/tsconfig.app.json)
+        * Problem2: Files from ALL files are taking in account "../../../../app/core/layout/secondary-navigation/secondary-navigation.component.scss"
+          * Solution: Create dedicated "tsconfig.json"
+        * Problem3: " Cannot find module '@angular/core'"
+          * Attempt1: add "tsconfig.json" | this path
+          * Attempt2: add "tsconfig.json" | "common"
+          * Solution: TODO:
+  * [waiting for reply of the question](https://discord.com/channels/748677963142135818/762717176142495814/1330602931694866483)
