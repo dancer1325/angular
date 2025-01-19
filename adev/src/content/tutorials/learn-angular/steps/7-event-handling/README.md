@@ -1,51 +1,41 @@
 # Event handling
 
-Event handling enables interactive features on web apps. It gives you the ability as a developer to respond to user actions like button presses, form submissions and more.
+* goal
+  * how to add an event handler 
 
-In this activity, you'll learn how to add an event handler.
+* Event handling
+  * enables interactive features | web apps
+    * _Example:_ respond to user actions (button presses, form submissions, ...)
 
-<hr />
+* event binding -- `(eventName)="eventHandlerFunction()"`
 
-In Angular you bind to events with the parentheses syntax `()`. On a given element, wrap the event you want to bind to with parentheses and set an event handler. Consider this `button` example:
+  ```angular-ts
+  @Component({
+      ...
+      template: `<button (click)="greet()">`
+  })
+  class AppComponent {
+      greet() {
+          console.log('Hello, there 👋');
+      }
+  }
+  ```
 
-```angular-ts
-@Component({
-    ...
-    template: `<button (click)="greet()">`
-})
-class AppComponent {
-    greet() {
-        console.log('Hello, there 👋');
-    }
-}
-```
+# How to run locally?
 
-In this example, the `greet()` function will run every time the button is clicked. Take note that the `greet()` syntax includes the trailing parenthesis.
+* ways
+  * see [here](/adev/README.md#how-to-generate-a-specific-example-project-locally)
+    * Solution: TODO:
+  * create an angular project
+    * Attempts:
+      * Attempt1: `npm init @angular final`
+      * Attempt2: `ng new final`
+    * Solution: TODO:
+  * use [existing `common/` Angular skeleton project](../../common)
+    * | "common/", `yarn build`
+      * Problems:
+        * Problem1: "Cannot find tsconfig file "tsconfig.app.json"
+          * Solution: Add reference to ["adev/tsconfig"](/adev/tsconfig.app.json)
+        * Problem2: Files from ALL files are taking in account "../../../../app/core/layout/secondary-navigation/secondary-navigation.component.scss"
+          * Solution: TODO:
 
-Alright, your turn to give this a try:
-
-<docs-workflow>
-
-<docs-step title="Add an event handler">
-Add the `onMouseOver` event handler function in the `AppComponent` class. Use the following code as the implementation:
-
-```ts
-onMouseOver() {
-    this.message = 'Way to go 🚀';
-}
-```
-
-</docs-step>
-
-<docs-step title="Bind to the template event">
-Update the template code in `app.component.ts` to bind to the `mouseover` event of the `section` element.
-
-```angular-html
-<section (mouseover)="onMouseOver()">
-```
-
-</docs-step>
-
-</docs-workflow>
-
-And with a few steps in the code you've created your first event handler in Angular. Seems like you are getting pretty good at this, keep up the good work.
