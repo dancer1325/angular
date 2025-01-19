@@ -1,41 +1,71 @@
 # Angular CLI builders
 
-A number of Angular CLI commands run a complex process on your code, such as building, testing, or serving your application.
-The commands use an internal tool called Architect to run *CLI builders*, which invoke another tool (bundler, test runner, server) to accomplish the desired task.
-Custom builders can perform an entirely new task, or to change which third-party tool is used by an existing command.
+* goal
+  * how CLI builders -- integrate with the -- workspace configuration file
+  * how to create your OWN builder 
 
-This document explains how CLI builders integrate with the workspace configuration file, and shows how you can create your own builder.
+* SOME Angular CLI commands -- run a -- complex process | your code
+  * _Example:_ building, testing, or serving your application
+  * 👀-- via using under the hood -- Architect 👀
 
-HELPFUL: Find the code from the examples used here in this [GitHub repository](https://github.com/mgechev/cli-builders-demo).
+* CLI builder 
+  * := handler function / 
+    * perform -- via Architect API -- complex process (build / test / ...)
+    * 's code is defined / distributed | npm package
+      * Check the code [here](https://github.com/angular/angular-cli/blob/main/packages/angular_devkit/build_angular/builders.json)
+    * returns `BuilderOutput` /
+      * 's fields
+        * `success: Boolean`
+        * `error`
+          * OPTIONAL
+          * contain an error message 
+      * can be
+        * synchronous (== value),
+        * asynchronous (== `Promise`),
+        * watch and return multiple values (== `Observable`)
+  * ways to run
+    * `ng run specificCommand`
+    * -- via -- schematics     TODO: Check 
+  * types
+    * built-in by Angular
+      * -- used by the -- Angular CLI commands
+        * _Example:_ `ng build`, `ng test`
+    * [custom builders](#creating-a-builder)
+  * you can [publish it | npm](../../tools/libraries/creating-libraries)
+  * _Examples:_
+    * _Example1:_ [BrowserBuilder](https://github.com/angular/angular-cli/tree/main/packages/angular_devkit/build_angular/src/builders/browser) runs a webpack build for a browser target
+    * _Example2:_ [KarmaBuilder](https://github.com/angular/angular-cli/tree/main/packages/angular_devkit/build_angular/src/builders/karma) runs a webpack build for unit tests
+    * see [this GitHub repository](https://github.com/dancer1325/cli-builders-demo)
+  *
+  | Argument  | Type             |
+  |:---       |:---              |
+  | `options` | `JSONObject`     |
+  | `context` | `BuilderContext` |
+  
+    * `options` object
+      * -- provided by the -- CLI 
+        * user's options
+        * configuration
+    * `context` object
+      * -- provided automatically by the -- CLI Builder API
+      * provide access to
+        * the contextual information
+        * a scheduling method -- `context.scheduleTarget()` --
 
-## CLI builders
+* scheduler
+  * executes the CLI builder handler function -- with a -- given target configuration
 
-The internal Architect tool delegates work to handler functions called *builders*.
-A builder handler function receives two arguments:
+* see [default target configurations](../../reference/configs/workspace-config.md#default-architect-builders-and-targets)
 
-| Argument  | Type             |
-|:---       |:---              |
-| `options` | `JSONObject`     |
-| `context` | `BuilderContext` |
+## Builder project structure
 
-The separation of concerns here is the same as with [schematics](tools/cli/schematics-authoring), which are used for other CLI commands that touch your code (such as `ng generate`).
-
-* The `options` object is provided by the CLI user's options and configuration, while the `context` object is provided by the CLI Builder API automatically.
-* In addition to the contextual information, the `context` object also provides access to a scheduling method, `context.scheduleTarget()`.
-    The scheduler executes the builder handler function with a given target configuration.
-
-The builder handler function can be synchronous (return a value), asynchronous (return a `Promise`), or watch and return multiple values (return an `Observable`).
-The return values must always be of type `BuilderOutput`.
-This object contains a Boolean `success` field and an optional `error` field that can contain an error message.
-
-Angular provides some builders that are used by the CLI for commands such as `ng build` and `ng test`.
-Default target configurations for these and other built-in CLI builders can be found and configured in the "architect" section of the [workspace configuration file](reference/configs/workspace-config), `angular.json`.
-Also, extend and customize Angular by creating your own builders, which you can run directly using the [`ng run` CLI command](cli/run).
-
-### Builder project structure
-
-A builder resides in a "project" folder that is similar in structure to an Angular workspace, with global configuration files at the top level, and more specific configuration in a source folder with the code files that define the behavior.
-For example, your `myBuilder` folder could contain the following files.
+* builder
+  * placed | "project/" /
+    * 's structure
+      * == [Angular workspace's structure](../../reference/configs/workspace-config.md)
+      * | top level, global configuration files
+      * | src, specific configuration / define the behavior
+      * _Example:_ `myBuilder/` 
 
 | Files                    | Purpose                                                                                                   |
 |:---                      | :---                                                                                                      |
@@ -46,10 +76,9 @@ For example, your `myBuilder` folder could contain the following files.
 | `package.json`           | Dependencies. See [https://docs.npmjs.com/files/package.json](https://docs.npmjs.com/files/package.json). |
 | `tsconfig.json`          | [TypeScript configuration](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html).              |
 
-Builders can be published to `npm`, see [Publishing your Library](tools/libraries/creating-libraries).
-
 ## Creating a builder
 
+* TODO:
 As an example, create a builder that copies a file to a new location.
 To create a builder, use the `createBuilder()` CLI Builder function, and return a `Promise<BuilderOutput>` object.
 
