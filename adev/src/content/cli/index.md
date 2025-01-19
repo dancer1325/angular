@@ -1,23 +1,27 @@
 # CLI Overview and Command Reference
 
-The Angular CLI is a command-line interface tool that you use to initialize, develop, scaffold, and maintain Angular applications directly from a command shell.
+* Angular CLI
+  * == CL interface tool
+  * uses about Angular applications 
+    * initialize,
+    * develop,
+    * scaffold,
+    * maintain 
 
 ## Installing Angular CLI
 
-Major versions of Angular CLI follow the supported major version of Angular, but minor versions can be released separately.
+* | MAJOR Angular version,
+  * Angular CLI version == Angular version
+* | MINOR Angular versions,
+  * Angular CLI -- is released separately to -- Angular
 
-Install the CLI using the `npm` package manager:
+* `npm install -g` 
 
-<code-example format="shell" language="shell">
-
-npm install -g &commat;angular/cli<aio-angular-dist-tag class="pln"></aio-angular-dist-tag>
-
-</code-example>
-
-For details about changes between versions, and information about updating from previous releases, see the Releases tab on GitHub: https://github.com/angular/angular-cli/releases
+* [Angular CLI GitHub releases](https://github.com/angular/angular-cli/releases)
 
 ## Basic workflow
 
+* TODO:
 Invoke the tool on the command line through the `ng` executable.
 Online help is available on the command line.
 Enter the following to list commands or options for a given command \(such as [new](cli/new)\) with a short description.
