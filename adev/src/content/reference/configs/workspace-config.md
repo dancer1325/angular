@@ -116,13 +116,20 @@ You can update your workspace schema file to set a different default for a sub-c
 
 ## Configuring CLI builders
 
-Architect is the tool that the Angular CLI uses to perform complex tasks, such as compilation and test running.
-Architect is a shell that runs a specified builder to perform a given task, according to a target configuration.
-You can define and configure new builders and targets to extend the Angular CLI.
-See [Angular CLI Builders](tools/cli/cli-builder).
+* Architect
+  * := tool or shell / runs a specific builder
+    * 👀-- with a given -- target configuration 👀
+    * -- to perform a -- given task
+  * code [here](https://github.com/angular/angular-cli/blob/main/packages/angular/cli/lib/config/workspace-schema.json#L225)
+  * uses
+    * 👀-- by Angular CLI to -- perform complex tasks 👀
+      * 💡== run CLI builders 💡
+      * _Example:_ compilation, test running
+  * see [Angular CLI Builders](../../tools/cli/cli-builder)
 
 ### Default Architect builders and targets
 
+* TODO:
 Angular defines default builders for use with specific commands, or with the general `ng run` command.
 The JSON schemas that define the options and defaults for each of these builders are collected in the [`@angular-devkit/build-angular`](https://github.com/angular/angular-cli/blob/main/packages/angular_devkit/build_angular/builders.json) package.
 The schemas configure options for the following builders.
