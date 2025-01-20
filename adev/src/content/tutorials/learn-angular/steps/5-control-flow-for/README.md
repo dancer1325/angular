@@ -24,7 +24,7 @@
       * Attempt2: `ng new final`
     * Solution: 
       * `mkdir final`
-      * 
+      * `ng new 5-control-flow-for --directory=adev/src/content/tutorials/learn-angular/steps/5-control-flow-for/final`
   * use [existing `common/` Angular skeleton project](../../common)
     * | "common/", `yarn build`
       * Problems:
