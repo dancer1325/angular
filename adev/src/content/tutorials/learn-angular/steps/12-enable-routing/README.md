@@ -16,7 +16,8 @@
   export const routes: Routes = [];
   ```
   * configure the app to Angular Router | `app.config.ts` 
-  * add `RouterOutlet` directive | you want to display the content
+  * add `RouterOutlet` directive
+    * 👀display the routed page's content 👀 
 
 ## How to run locally?
 
