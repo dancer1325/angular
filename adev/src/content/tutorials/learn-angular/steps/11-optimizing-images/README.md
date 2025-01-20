@@ -1,101 +1,61 @@
 # Optimizing images
 
-Images are a big part of many applications, and can be a major contributor to application performance problems, including low [Core Web Vitals](https://web.dev/explore/learn-core-web-vitals) scores.
+* goal  
+  * how to use `NgOptimizedImage` -- to ensure -- your images are loaded efficiently
 
-Image optimization can be a complex topic, but Angular handles most of it for you, with the `NgOptimizedImage` directive. In this activity, you'll learn how to use `NgOptimizedImage` to ensure your images are loaded efficiently.
+* context
+  * images -- can cause -- application performance problems + low [Core Web Vitals](https://web.dev/explore/learn-core-web-vitals) scores
+    * Reason: 🧠they are a big part of applications 🧠
 
-<hr>
+* `NgOptimizedImage` 
+  * == directive / 
+    * optimizes image
+    * handled MOST it -- by -- Angular
+    * ALLOWED |
+      * static image sources
+      * dynamic image sources
+        * -- via -- property binding
+    * requirements
+      * set `width` and `height`
+        * if you do NOT want to specify a static value -> use `fill` attribute
+          * requirements
+            * its parent element -- must be styled with -- `position: "relative"`, `position: "fixed"`, or `position: "absolute"` 
+        * Reason: 🧠 prevent [layout shift](https://github.com/dancer1325/web.dev/tree/main/src/site/content/en/metrics/cls) 🧠
+    * [image loader](../../../../guide/image-optimization#configuring-an-image-loader-for-ngoptimizedimage)
+      * allows
+        * formatting (short or relative) URLs for your images
+        * using the FULL capabilities of `NgOptimizedImage`
+      * | [popular CDNs](../../../../guide/image-optimization#configuring-an-image-loader-for-ngoptimizedimage)
+  * steps
+    * add it to `imports`
+    * replace `src` -- by -- `ngSrc` or `[ngSrc]`
+    * prioritize an image / might be ["LCP element"](https://github.com/dancer1325/web.dev/tree/main/src/site/content/en/blog/optimize-lcp)
+      * -- via -- `priority`
 
-<docs-workflow>
+* see [`NgOptimizedImage`](../../../../guide/image-optimization)
 
-<docs-step title="Import the NgOptimizedImage directive">
+## How to run locally?
 
-In order to leverage the `NgOptimizedImage` directive, first import it from the `@angular/common` library and add it to the component `imports` array.
+* ways
+  * see [here](/adev/README.md#how-to-generate-a-specific-example-project-locally)
+    * Solution: TODO:
+  * create an angular project
+    * Problems:
+      * Problem1: "Error: This command is not available when running the Angular CLI inside a workspace." The "/adev/angular.json"
+    * Attempts:
+      * Attempt1: `npm init @angular final`
+      * Attempt2: `ng new final`
+    * Solution: TODO:
+  * use [existing `common/` Angular skeleton project](../../common)
+    * | "common/", `yarn build`
+      * Problems:
+        * Problem1: "Cannot find tsconfig file "tsconfig.app.json"
+          * Solution: Add reference to ["adev/tsconfig"](/adev/tsconfig.app.json)
+        * Problem2: Files from ALL files are taking in account "../../../../app/core/layout/secondary-navigation/secondary-navigation.component.scss"
+          * Solution: Create dedicated "tsconfig.json"
+        * Problem3: " Cannot find module '@angular/core'"
+          * Attempt1: add "tsconfig.json" | this path
+          * Attempt2: add "tsconfig.json" | "common"
+          * Solution: TODO:
+  * [waiting for reply of the question](https://discord.com/channels/748677963142135818/762717176142495814/1330602931694866483)
 
-```ts
-import { NgOptimizedImage } from '@angular/common';
-
-@Component({
-  imports: [NgOptimizedImage],
-  ...
-})
-```
-
-</docs-step>
-
-<docs-step title="Update the src attribute to be ngSrc">
-
-To enable the `NgOptimizedImage` directive, swap out the `src` attribute for `ngSrc`. This applies for both static image sources (i.e., `src`) and dynamic image sources (i.e., `[src]`).
-
-<docs-code language="angular-ts" highlight="[[9], [13]]">
-import { NgOptimizedImage } from '@angular/common';
-
-@Component({
-  template: `
-    ...
-    <li>
-      Static Image:
-      <img ngSrc="/assets/logo.svg" alt="Angular logo" width="32" height="32" />
-    </li>
-    <li>
-      Dynamic Image:
-      <img [ngSrc]="logoUrl" [alt]="logoAlt" width="32" height="32" />
-    </li>
-    ...
-  `,
-  imports: [NgOptimizedImage],
-})
-</docs-code>
-
-</docs-step>
-
-<docs-step title="Add width and height attributes">
-
-Note that in the above code example, each image has both `width` and `height` attributes. In order to prevent [layout shift](https://web.dev/articles/cls), the `NgOptimizedImage` directive requires both size attributes on each image.
-
-In situations where you can't or don't want to specify a static `height` and `width` for images, you can use [the `fill` attribute](https://web.dev/articles/cls) to tell the image to act like a "background image", filling its containing element:
-
-```angular-html
-<div class="image-container"> //Container div has 'position: "relative"'
-  <img ngSrc="www.example.com/image.png" fill />
-</div>
-```
-
-Note: For the `fill` image to render properly, its parent element must be styled with `position: "relative"`, `position: "fixed"`, or `position: "absolute"`.
-
-</docs-step>
-
-<docs-step title="Prioritize important images">
-
-One of the most important optimizations for loading performance is to prioritize any image which might be the ["LCP element"](https://web.dev/articles/optimize-lcp), which is the largest on-screen graphical element when the page loads. To optimize your loading times, make sure to add the `priority` attribute to your "hero image" or any other images that you think could be an LCP element.
-
-```ts
-<img ngSrc="www.example.com/image.png" height="600" width="800" priority />
-```
-
-</docs-step>
-
-<docs-step title="Optional: Use an image loader">
-
-`NgOptimizedImage` allows you to specify an [image loader](guide/image-optimization#configuring-an-image-loader-for-ngoptimizedimage), which tells the directive how to format URLs for your images. Using a loader allows you to define your images with short, relative URLs:
-
-```ts
-providers: [
-  provideImgixLoader('https://my.base.url/'),
-]
-```
-
-Final URL will be 'https://my.base.url/image.png'
-```angular-html
-<img ngSrc="image.png" height="600" width="800" />
-```
-
-Image loaders are for more than just convenience--they allow you to use the full capabilities of `NgOptimizedImage`. Learn more about these optimizations and the built-in loaders for popular CDNs [here](guide/image-optimization#configuring-an-image-loader-for-ngoptimizedimage).
-
-</docs-step>
-
-</docs-workflow>
-
-By adding this directive to your workflow, your images are now loading using best practices with the help of Angular 🎉
-
-If you would like to learn more, check out the [documentation for `NgOptimizedImage`](guide/image-optimization). Keep up the great work and let's learn about routing next.
