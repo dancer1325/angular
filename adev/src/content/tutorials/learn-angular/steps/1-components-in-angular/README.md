@@ -34,13 +34,19 @@
 * ways
   * see [here](/adev/README.md#how-to-generate-a-specific-example-project-locally)
     * Solution: TODO:
-  * create an angular project
+  * create an angular project -- `final/` --
     * Problems:
       * Problem1: "Error: This command is not available when running the Angular CLI inside a workspace." The "/adev/angular.json"
+        * Attempt1: `ng new .` | this path
+        * Attempt2: `ng new adev/src/content/tutorials/learn-angular/steps/1-components-in-angular`
+          * Error "Data path "/name" must match pattern "^(?:@[a-zA-Z0-9-*~][a-zA-Z0-9-*._~]*/)?[a-zA-Z0-9-~][a-zA-Z0-9-._~]*$"."
+        * 
     * Attempts:
       * Attempt1: `npm init @angular final`
       * Attempt2: `ng new final`
-    * Solution: TODO:
+    * Solution: 
+      * `mkdir final`
+      * 💡| root path, `ng new 1-components-in-angular --directory=adev/src/content/tutorials/learn-angular/steps/1-components-in-angular/final` 💡
   * use [existing `common/` Angular skeleton project](../../common)
     * | "common/", `yarn build`
       * Problems:
