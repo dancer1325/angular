@@ -5,7 +5,7 @@
 
 * Forms
   * 👀enable your app -- to accept -- user input 👀
-  * | Angular, types of forms
+  * 👀| Angular, types of forms 👀
     * template-driven
     * reactive 
   * `FormsModule`
