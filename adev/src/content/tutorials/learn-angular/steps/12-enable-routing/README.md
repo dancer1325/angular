@@ -1,76 +1,43 @@
 # Routing Overview
 
-For most apps, there comes a point where the app requires more than a single page. When that time inevitably comes, routing becomes a big part of the performance story for users.
+* goal
+  * how to use Angular Router
+    * setup
+    * configure  
 
-In this activity, you'll learn how to setup and configure your app to use Angular Router.
+* use case
+  * app requires > 1 page
+* steps
+  * add `app.routes.ts` 
+  ```ts
+  import {Routes} from '@angular/router';
+  
+  export const routes: Routes = [];
+  ```
+  * configure the app to Angular Router | `app.config.ts` 
+  * add `RouterOutlet` directive | you want to display the content
 
-<hr>
+## How to run locally?
 
-<docs-workflow>
-
-<docs-step title="Create an app.routes.ts file">
-
-Inside `app.routes.ts`, make the following changes:
-
-1. Import `Routes` from the `@angular/router` package.
-1. Export a constant called `routes` of type `Routes`, assign it `[]` as the value.
-
-```ts
-import {Routes} from '@angular/router';
-
-export const routes: Routes = [];
-```
-
-</docs-step>
-
-<docs-step title="Add routing to provider">
-
-In `app.config.ts`, configure the app to Angular Router with the following steps:
-
-1. Import the `provideRouter` function from `@angular/router`.
-1. Import `routes` from the `./app.routes.ts`.
-1. Call the `provideRouter` function with `routes` passed in as an argument in the `providers` array.
-
-<docs-code language="ts" highlight="[2,3,6]">
-import {ApplicationConfig} from '@angular/core';
-import {provideRouter} from '@angular/router';
-import {routes} from './app.routes';
-
-export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes)],
-};
-</docs-code>
-
-</docs-step>
-
-<docs-step title="Import `RouterOutlet` in the component">
-
-Finally, to make sure your app is ready to use the Angular Router, you need to tell the app where you expect the router to display the desired content. Accomplish that by using the `RouterOutlet` directive from `@angular/router`.
-
-Update the template for `AppComponent` by adding `<router-outlet />`
-
-<docs-code language="angular-ts" highlight="[11]">
-import {RouterOutlet} from '@angular/router';
-
-@Component({
-  ...
-  template: `
-    <nav>
-      <a href="/">Home</a>
-      |
-      <a href="/user">User</a>
-    </nav>
-    <router-outlet />
-  `,
-  imports: [RouterOutlet],
-})
-export class AppComponent {}
-</docs-code>
-
-</docs-step>
-
-</docs-workflow>
-
-Your app is now setup to use Angular Router. Nice work! 🙌
-
-Keep the momentum going to learn the next step of defining the routes for our app.
+* ways
+  * see [here](/adev/README.md#how-to-generate-a-specific-example-project-locally)
+    * Solution: TODO:
+  * create an angular project
+    * Problems:
+      * Problem1: "Error: This command is not available when running the Angular CLI inside a workspace." The "/adev/angular.json"
+    * Attempts:
+      * Attempt1: `npm init @angular final`
+      * Attempt2: `ng new final`
+    * Solution: TODO:
+  * use [existing `common/` Angular skeleton project](../../common)
+    * | "common/", `yarn build`
+      * Problems:
+        * Problem1: "Cannot find tsconfig file "tsconfig.app.json"
+          * Solution: Add reference to ["adev/tsconfig"](/adev/tsconfig.app.json)
+        * Problem2: Files from ALL files are taking in account "../../../../app/core/layout/secondary-navigation/secondary-navigation.component.scss"
+          * Solution: Create dedicated "tsconfig.json"
+        * Problem3: " Cannot find module '@angular/core'"
+          * Attempt1: add "tsconfig.json" | this path
+          * Attempt2: add "tsconfig.json" | "common"
+          * Solution: TODO:
+  * [waiting for reply of the question](https://discord.com/channels/748677963142135818/762717176142495814/1330602931694866483)
