@@ -24,13 +24,15 @@
 * ways
   * see [here](/adev/README.md#how-to-generate-a-specific-example-project-locally)
     * Solution: TODO:
-  * create an angular project
+  * create an angular project -- `final` --
     * Problems:
       * Problem1: "Error: This command is not available when running the Angular CLI inside a workspace." The "/adev/angular.json"
     * Attempts:
       * Attempt1: `npm init @angular final`
       * Attempt2: `ng new final`
-    * Solution: TODO:
+    * Solution: 
+      * `mkdir final`
+      * `ng new 9-output --directory=adev/src/content/tutorials/learn-angular/steps/9-output/final`
   * use [existing `common/` Angular skeleton project](../../common)
     * | "common/", `yarn build`
       * Problems:
