@@ -18,11 +18,13 @@
 * ways
   * see [here](/adev/README.md#how-to-generate-a-specific-example-project-locally)
     * Solution: TODO:
-  * create an angular project
+  * create an angular project -- `final/` --
     * Attempts:
       * Attempt1: `npm init @angular final`
       * Attempt2: `ng new final`
-    * Solution: TODO:
+    * Solution: 
+      * `mkdir final`
+      * 
   * use [existing `common/` Angular skeleton project](../../common)
     * | "common/", `yarn build`
       * Problems:
