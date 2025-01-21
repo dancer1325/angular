@@ -7,5 +7,5 @@ import {CarService} from './car.service';
   standalone: true,
 })
 export class AppComponent {
-  carService = inject(CarService);
+  carService = inject(CarService); // inject service | class' property
 }
