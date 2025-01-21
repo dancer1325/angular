@@ -1,0 +1,18 @@
+import {Component, inject} from '@angular/core';
+import {CarService} from './car.service';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <p>Car Listing: {{ display }}</p>
+  `,
+})
+export class AppComponent {
+  display = '';
+  carService = inject(CarService); // inject service | class' property
+  // carService ==  class' property  == instance of CarService     !=      CarService == class
+
+  constructor() {
+    this.display = this.carService.getCars().join(' ⭐️ ');
+  }
+}
