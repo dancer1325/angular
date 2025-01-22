@@ -34,9 +34,6 @@
   * `tsconfig.*`
     * == app's configuration -- to the -- TypeScript compiler
 
-* Angular component
-  * == basic Angular application's building block 
-  
 * steps
   * | `index.html`,
     * replace the title
