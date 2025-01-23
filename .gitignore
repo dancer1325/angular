@@ -57,4 +57,5 @@ baseline.json
 # Ignore cache created with the Angular CLI.
 .angular/
 /adev/src/content/tutorials/learn-angular/steps/*/final/.vscode/
-/adev/src/content/tutorials/first-app/steps/*/.vscode/
+/adev/src/content/tutorials/first-app/steps/*/*/.vscode/
+/
