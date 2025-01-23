@@ -1,5 +1,4 @@
 import {Component} from '@angular/core';
-import {RouterOutlet} from '@angular/router';
 import {HomeComponent} from './home/home.component';
 
 @Component({
@@ -16,7 +15,7 @@ import {HomeComponent} from './home/home.component';
   `,
   standalone: true,
   styleUrl: './app.component.css',
-  imports: [HomeComponent, HomeComponent, HomeComponent],
+  imports: [HomeComponent],
 })
 export class AppComponent {
   title = '03-HousingLocation';
