@@ -5,11 +5,17 @@
     * show,
     * hide,
     * repeat
-  * | PREVIOUS Angular v,
+  * | PREVIOUS Angular v17-,
     * use the directives
       * `*ngIf`,
       * `*ngFor`,
       * `*ngSwitch`
+  * | NEW Angular v17+
+    * 👀MORE ergonomic syntax 👀/
+      * close to JavaScript
+      * better type checking
+    * if you want to use `*ngFor`, `*ngIf` and `*ngSwitch` -> ❌NO need to import `CommonModule` ❌
+      * Reason: 🧠NEW syntax is baked | template 🧠
 
 ## Conditionally display content -- via -- `@if`, `@else-if` and `@else`
 
