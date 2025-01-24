@@ -1,13 +1,15 @@
 # Migrations
 
-Learn about how you can migrate your existing angular project to the latest features incrementally.
+* goal
+  * how to migrate your EXISTING angular project -- to the -- latest features incrementally
 
-<docs-card-container>
+* see
+  * TODO:
+  * [Control Flow Syntax](control-flow.md)
+
+  * <docs-card-container>
   <docs-card title="Standalone" link="Migrate now" href="reference/migrations/standalone">
     Standalone components provide a simplified way to build Angular applications. Standalone components specify their dependencies directly instead of getting them through NgModules.
-  </docs-card>
-  <docs-card title="Control Flow Syntax" link="Migrate now" href="reference/migrations/control-flow">
-    Built-in Control Flow Syntax allows you to use more ergonomic syntax which is close to JavaScript and has better type checking. It replaces the need to import `CommonModule` to use functionality like `*ngFor`, `*ngIf` and `*ngSwitch`.
   </docs-card>
   <docs-card title="inject() Function" link="Migrate now" href="reference/migrations/inject-function">
     Angular's `inject` function offers more accurate types and better compatibility with standard decorators, compared to constructor-based injection.
