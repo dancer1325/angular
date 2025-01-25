@@ -33,11 +33,11 @@
 
 * 👀MOST common attribute directives are 👀
   
-  | Common directives                                             | Details                                            |
-  | :------------------------------------------------------------ |:---------------------------------------------------|
-  | [`NgClass`](#adding-and-removing-classes-with-ngclass)        | 💡adds and removes a set of CSS classes 💡         |
-  | [`NgStyle`](#setting-inline-styles-with-ngstyle)              | adds and removes a set of HTML styles              |
-  | [`NgModel`](#displaying-and-updating-properties-with-ngmodel) | Adds two-way data binding to an HTML form element. |
+  | Common directives                                             | Details                                                 |
+  | :------------------------------------------------------------ |:--------------------------------------------------------|
+  | [`NgClass`](#adding-and-removing-classes-with-ngclass)        | 💡adds and removes a set of CSS classes 💡              |
+  | [`NgStyle`](#setting-inline-styles-with-ngstyle)              | adds and removes a set of HTML styles                   |
+  | [`NgModel`](#displaying-and-updating-properties-with-ngmodel) | adds two-way data binding -- to an -- HTML form element |
 
 ### `NgClass` -- to -- add and remove CSS classes
 
@@ -80,9 +80,14 @@ For this use case, Angular applies the styles upon initialization and in case of
 To do this, the full example calls `setCurrentStyles()` initially with `ngOnInit()` and when the dependent properties change through a button click.
 However, these steps are not necessary to implement `ngStyle` on its own.
 
-## Displaying and updating properties with `ngModel`
+### `NgModel` -- to -- display and update properties 
 
-Use the `NgModel` directive to display a data property and update that property when the user makes changes.
+* uses
+  * display a data property
+  * update that property | user makes changes
+
+* steps
+  * add `FormsModule` | Component's `imports`
 
 1. Import `FormsModule` and add it to the AppComponent's `imports` list.
 
@@ -104,7 +109,7 @@ Here are all variations in action, including the uppercase version:
 
 <img alt="NgModel variations" src="assets/images/guide/built-in-directives/ng-model-anim.gif">
 
-### `NgModel` and value accessors
+-- `NgModel` and value accessors --
 
 The `NgModel` directive works for an element supported by a [ControlValueAccessor](api/forms/ControlValueAccessor).
 Angular provides _value accessors_ for all of the basic HTML form elements.
@@ -117,44 +122,43 @@ HELPFUL: When you write an Angular component, you don't need a value accessor or
 
 ## Built-in structural directives
 
-Structural directives are responsible for HTML layout.
-They shape or reshape the DOM's structure, typically by adding, removing, and manipulating the host elements to which they are attached.
+* Structural directives
+  * := directive / 👀changes DOM layout 👀 -- via --
+    * adding host elements / -- attached to -- DOM layout 
+    * removing host elements / -- attached to -- DOM layout
+  * ⚠️1 structural directive / HTML component ⚠️
+    * if you want to use several -> wrap | ANOTHER HTML element
+    * see [here](structural-directives.md#one-structural-directive-per-element)
 
-This section introduces the most common built-in structural directives:
+* 👀MOST common built-in structural directives 👀
+  
+  | Common built-in structural directives              | Details                                               |
+  | :------------------------------------------------- |:------------------------------------------------------|
+  | [`NgIf`](#adding-or-removing-an-element-with-ngif) | conditionally creates subviews -- from the -- template |
+  | [`NgFor`](#listing-items-with-ngfor)               | repeat a node / EACH list's item                      |
+  | [`NgSwitch`](#switching-cases-with-ngswitch)       | == set of directives / switch AMONG ALTERNATIVE views |
 
-| Common built-in structural directives              | Details                                                          |
-| :------------------------------------------------- | :--------------------------------------------------------------- |
-| [`NgIf`](#adding-or-removing-an-element-with-ngif) | Conditionally creates or disposes of subviews from the template. |
-| [`NgFor`](#listing-items-with-ngfor)               | Repeat a node for each item in a list.                           |
-| [`NgSwitch`](#switching-cases-with-ngswitch)       | A set of directives that switch among alternative views.         |
+* see [Structural Directives](structural-directives)
 
-For more information, see [Structural Directives](guide/directives/structural-directives).
-
-## Adding or removing an element with `NgIf`
+### `NgIf` -- to -- add or remove an element  
 
 Add or remove an element by applying an `NgIf` directive to a host element.
 
 When `NgIf` is `false`, Angular removes an element and its descendants from the DOM.
 Angular then disposes of their components, which frees up memory and resources.
 
-### Import `NgIf` in the component
-
-To use `NgIf`, add it to the component's `imports` list.
-
-<docs-code header="src/app/app.component.ts (NgIf import)" path="adev/src/content/examples/built-in-directives/src/app/app.component.ts" visibleRegion="import-ng-if"/>
-
-### Using `NgIf`
-
-To add or remove an element, bind `*ngIf` to a condition expression such as `isActive` in the following example.
+* steps 
+  * add `NgIf` | Component's `imports`
+  * bind `*ngIf` -- to a -- condition expression
 
 <docs-code header="src/app/app.component.html" path="adev/src/content/examples/built-in-directives/src/app/app.component.html" visibleRegion="NgIf-1"/>
 
 When the `isActive` expression returns a truthy value, `NgIf` adds the `ItemDetailComponent` to the DOM.
 When the expression is falsy, `NgIf` removes the `ItemDetailComponent` from the DOM and disposes of the component and all of its subcomponents.
 
-For more information on `NgIf` and `NgIfElse`, see the [NgIf API documentation](api/common/NgIf).
+* see [NgIf API documentation](api/common/NgIf) 
 
-### Guarding against `null`
+-- Guarding against `null` --
 
 By default, `NgIf` prevents display of an element bound to a null value.
 
@@ -168,98 +172,7 @@ In this example, Angular does not display the `nullCustomer` because it is `null
 
 <docs-code header="src/app/app.component.html" path="adev/src/content/examples/built-in-directives/src/app/app.component.html" visibleRegion="NgIf-2b"/>
 
-## Listing items with `NgFor`
-
-Use the `NgFor` directive to present a list of items.
-
-### Import `NgFor` in the component
-
-To use `NgFor`, add it to the component's `imports` list.
-
-<docs-code header="src/app/app.component.ts (NgFor import)" path="adev/src/content/examples/built-in-directives/src/app/app.component.ts" visibleRegion="import-ng-for"/>
-
-### Using `NgFor`
-
-To use `NgFor`, you have to:
-
-1. Define a block of HTML that determines how Angular renders a single item.
-1. To list your items, assign the shorthand `let item of items` to `*ngFor`.
-
-<docs-code header="src/app/app.component.html" path="adev/src/content/examples/built-in-directives/src/app/app.component.html" visibleRegion="NgFor-1"/>
-
-The string `"let item of items"` instructs Angular to do the following:
-
-- Store each item in the `items` array in the local `item` looping variable
-- Make each item available to the templated HTML for each iteration
-- Translate `"let item of items"` into an `<ng-template>` around the host element
-- Repeat the `<ng-template>` for each `item` in the list
-
-For more information see the [Structural directive shorthand](guide/directives/structural-directives#structural-directive-shorthand) section of [Structural directives](guide/directives/structural-directives).
-
-### Repeating a component view
-
-To repeat a component element, apply `*ngFor` to the selector.
-In the following example, the selector is `<app-item-detail>`.
-
-<docs-code header="src/app/app.component.html" path="adev/src/content/examples/built-in-directives/src/app/app.component.html" visibleRegion="NgFor-2"/>
-
-Reference a template input variable, such as `item`, in the following locations:
-
-- Within the `ngFor` host element
-- Within the host element descendants to access the item's properties
-
-The following example references `item` first in an interpolation and then passes in a binding to the `item` property of the `<app-item-detail>` component.
-
-<docs-code header="src/app/app.component.html" path="adev/src/content/examples/built-in-directives/src/app/app.component.html" visibleRegion="NgFor-1-2"/>
-
-For more information about template input variables, see [Structural directive shorthand](guide/directives/structural-directives#structural-directive-shorthand).
-
-### Getting the `index` of `*ngFor`
-
-Get the `index` of `*ngFor` in a template input variable and use it in the template.
-
-In the `*ngFor`, add a semicolon and `let i=index` to the shorthand.
-The following example gets the `index` in a variable named `i` and displays it with the item name.
-
-<docs-code header="src/app/app.component.html" path="adev/src/content/examples/built-in-directives/src/app/app.component.html" visibleRegion="NgFor-3"/>
-
-The index property of the `NgFor` directive context returns the zero-based index of the item in each iteration.
-
-Angular translates this instruction into an `<ng-template>` around the host element,
-then uses this template repeatedly to create a new set of elements and bindings for each `item`
-in the list.
-For more information about shorthand, see the [Structural Directives](guide/directives/structural-directives#structural-directive-shorthand) guide.
-
-## Repeating elements when a condition is true
-
-To repeat a block of HTML when a particular condition is true, put the `*ngIf` on a container element that wraps an `*ngFor` element.
-
-For more information see [one structural directive per element](guide/directives/structural-directives#one-structural-directive-per-element).
-
-### Tracking items with `*ngFor` `trackBy`
-
-Reduce the number of calls your application makes to the server by tracking changes to an item list.
-With the `*ngFor` `trackBy` property, Angular can change and re-render only those items that have changed, rather than reloading the entire list of items.
-
-1. Add a method to the component that returns the value `NgFor` should track.
-In this example, the value to track is the item's `id`.
-If the browser has already rendered `id`, Angular keeps track of it and doesn't re-query the server for the same `id`.
-
-<docs-code header="src/app/app.component.ts" path="adev/src/content/examples/built-in-directives/src/app/app.component.ts" visibleRegion="trackByItems"/>
-
-1. In the shorthand expression, set `trackBy` to the `trackByItems()` method.
-
-<docs-code header="src/app/app.component.html" path="adev/src/content/examples/built-in-directives/src/app/app.component.html" visibleRegion="trackBy"/>
-
-**Change ids** creates new items with new `item.id`s.
-In the following illustration of the `trackBy` effect, **Reset items** creates new items with the same `item.id`s.
-
-- With no `trackBy`, both buttons trigger complete DOM element replacement.
-- With `trackBy`, only changing the `id` triggers element replacement.
-
-<img alt="Animation of trackBy" src="assets/images/guide/built-in-directives/ngfor-trackby.gif">
-
-## Hosting a directive without a DOM element
+-- Hosting a directive without a DOM element --
 
 The Angular `<ng-container>` is a grouping element that doesn't interfere with styles or layout because Angular doesn't put it in the DOM.
 
@@ -281,12 +194,29 @@ Here's a conditional paragraph using `<ng-container>`.
 
    <img alt="ngcontainer options work properly" src="assets/images/guide/structural-directives/select-ngcontainer-anim.gif">
 
-## Switching cases with `NgSwitch`
+### `NgFor` -- from a list of items, to -- repeat a node 
+
+* uses
+  * display a list of items
+  * repeat an Angular component
+
+* steps
+  * add `NgFor` | Component's `imports`
+  * see [Structural directives](structural-directives)
+
+* `*ngFor`
+  * 's `index`
+    * start from 0
+  * `trackBy`
+    * == `*ngFor`'s property / track items
+      * -> 👀Angular change & re-render ONLY those items / have changed != reload ALL items 👀
+    * `*ngFor=" .... ; trackBy: methodName"`
+      * methodName(index:number, item: ItemInterfaceOrAny): typeTrackedByNgFor {}
+
+### `NgSwitch` -- to switch -- cases
 
 Like the JavaScript `switch` statement, `NgSwitch` displays one element from among several possible elements, based on a switch condition.
 Angular puts only the selected element into the DOM.
-
-<!--todo: API Flagged -->
 
 `NgSwitch` is a set of three directives:
 
@@ -300,7 +230,7 @@ To use the directives, add the `NgSwitch`, `NgSwitchCase` and `NgSwitchDefault` 
 
 <docs-code header="src/app/app.component.ts (NgSwitch imports)" path="adev/src/content/examples/built-in-directives/src/app/app.component.ts" visibleRegion="import-ng-switch"/>
 
-### Using `NgSwitch`
+* steps
 
 1. On an element, such as a `<div>`, add `[ngSwitch]` bound to an expression that returns the switch value, such as `feature`.
    Though the `feature` value in this example is a string, the switch value can be of any type.
@@ -325,11 +255,3 @@ Switch directives also work with built-in HTML elements and web components.
 For example, you could replace the `<app-best-item>` switch case with a `<div>` as follows.
 
 <docs-code header="src/app/app.component.html" path="adev/src/content/examples/built-in-directives/src/app/app.component.html" visibleRegion="NgSwitch-div"/>
-
-## What's next
-
-<docs-pill-row>
-  <docs-pill href="guide/directives/attribute-directives" title="Attribute Directives"/>
-  <docs-pill href="guide/directives/structural-directives" title="Structural Directives"/>
-  <docs-pill href="guide/directives/directive-composition-api" title="Directive composition API"/>
-</docs-pill-row>
