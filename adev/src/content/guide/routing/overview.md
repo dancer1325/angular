@@ -1,6 +1,6 @@
 * Routing
   * allows, | single-page app
-    * changing content displayed to the user  -- via -- showing or hiding components' portions
+    * changing content displayed | user  -- via -- showing or hiding components' portions
       * 👀!= server rendering 👀
   * how does Router work?
     * -- via -- interpreting a browser URL 
