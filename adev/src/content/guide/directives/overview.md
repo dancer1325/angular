@@ -1,79 +1,68 @@
-<docs-decorative-header title="Built-in directives" imgSrc="adev/src/assets/images/directives.svg"> <!-- markdownlint-disable-line -->
-Directives are classes that add additional behavior to elements in your Angular applications.
-</docs-decorative-header>
+* goal
+  * directives overview
+  * [attribute directives](#built-in-attribute-directives)
+  * [structural directives](#built-in-structural-directives)
 
-Use Angular's built-in directives to manage forms, lists, styles, and what users see.
+* Directives
+  * 👀:= classes / add additional behavior | your Angular applications' elements  👀
+    * see [code](/packages/core/src/metadata/directives.md)
 
-The different types of Angular directives are as follows:
+* Angular's built-in directives
+  * allows managing
+    * forms
+    * lists
+    * styles
+    * what users see
+  * ⚠️use ONLY public APIs ⚠️
 
-| Directive Types                                          | Details                                                                           |
-| :------------------------------------------------------- | :-------------------------------------------------------------------------------- |
-| [Components](guide/components)                           | Used with a template. This type of directive is the most common directive type.   |
-| [Attribute directives](#built-in-attribute-directives)   | Change the appearance or behavior of an element, component, or another directive. |
-| [Structural directives](#built-in-structural-directives) | Change the DOM layout by adding and removing DOM elements.                        |
-
-This guide covers built-in [attribute directives](#built-in-attribute-directives) and [structural directives](#built-in-structural-directives).
+| Directive Types                                          | Details                                                                                |
+|:---------------------------------------------------------|:---------------------------------------------------------------------------------------|
+| [Components](../components)                              | used -- with a -- template <br/> MOST common directive type                            |
+| [Attribute directives](#built-in-attribute-directives)   | change the appearance or behavior -- of an -- element, component, or another directive |
+| [Structural directives](#built-in-structural-directives) | change the DOM layout -- by -- adding and removing DOM elements                        |
 
 ## Built-in attribute directives
 
-Attribute directives listen to and modify the behavior of other HTML elements, attributes, properties, and components.
+* := directive / 👀modifies the behavior 👀 
+  * -- via -- listening to
+  * of HTML
+    * element
+    * attributes
+    * properties
+    * components
 
-The most common attribute directives are as follows:
+* 👀MOST common attribute directives are 👀
+  
+  | Common directives                                             | Details                                            |
+  | :------------------------------------------------------------ |:---------------------------------------------------|
+  | [`NgClass`](#adding-and-removing-classes-with-ngclass)        | 💡adds and removes a set of CSS classes 💡         |
+  | [`NgStyle`](#setting-inline-styles-with-ngstyle)              | adds and removes a set of HTML styles              |
+  | [`NgModel`](#displaying-and-updating-properties-with-ngmodel) | Adds two-way data binding to an HTML form element. |
 
-| Common directives                                             | Details                                            |
-| :------------------------------------------------------------ | :------------------------------------------------- |
-| [`NgClass`](#adding-and-removing-classes-with-ngclass)        | Adds and removes a set of CSS classes.             |
-| [`NgStyle`](#setting-inline-styles-with-ngstyle)              | Adds and removes a set of HTML styles.             |
-| [`NgModel`](#displaying-and-updating-properties-with-ngmodel) | Adds two-way data binding to an HTML form element. |
+### `NgClass` -- to -- add and remove CSS classes
 
-HELPFUL: Built-in directives use only public APIs. They do not have special access to any private APIs that other directives can't access.
+* recommendations
+  * 👀if you want to add or remove 1! class -> use [class binding](../templates/class-binding) rather than `NgClass` 👀
 
-## Adding and removing classes with `NgClass`
+* steps
+  * add `NgClass` | Component's `imports`
+  * `[ngClass]=`
+    * `"expression"`
+    * `"classProperty"` / modified -- via -- method
 
-Add or remove multiple CSS classes simultaneously with `ngClass`.
+* ALLOWED values
+  * HTML global attribute `class`
+  * object / 
+    * key == className
+    * value == boolean / add or remove CSS class
 
-HELPFUL: To add or remove a _single_ class, use [class binding](guide/templates/class-binding) rather than `NgClass`.
+* _Example:_ [built-in-directives/ngClass](../../examples/built-in-directives/ngClass)
 
-### Import `NgClass` in the component
+### `NgStyle` -- to -- add or remove CSS inline styles 
 
-To use `NgClass`, add it to the component's `imports` list.
-
-<docs-code header="src/app/app.component.ts (NgClass import)" path="adev/src/content/examples/built-in-directives/src/app/app.component.ts" visibleRegion="import-ng-class"/>
-
-### Using `NgClass` with an expression
-
-On the element you'd like to style, add `[ngClass]` and set it equal to an expression.
-In this case, `isSpecial` is a boolean set to `true` in `app.component.ts`.
-Because `isSpecial` is true, `ngClass` applies the class of `special` to the `<div>`.
-
-<docs-code header="src/app/app.component.html" path="adev/src/content/examples/built-in-directives/src/app/app.component.html" visibleRegion="special-div"/>
-
-### Using `NgClass` with a method
-
-1. To use `NgClass` with a method, add the method to the component class.
-   In the following example, `setCurrentClasses()` sets the property `currentClasses` with an object that adds or removes three classes based on the `true` or `false` state of three other component properties.
-
-   Each key of the object is a CSS class name.
-   If a key is `true`, `ngClass` adds the class.
-   If a key is `false`, `ngClass` removes the class.
-
-   <docs-code header="src/app/app.component.ts" path="adev/src/content/examples/built-in-directives/src/app/app.component.ts" visibleRegion="setClasses"/>
-
-1. In the template, add the `ngClass` property binding to `currentClasses` to set the element's classes:
-
-<docs-code header="src/app/app.component.html" path="adev/src/content/examples/built-in-directives/src/app/app.component.html" visibleRegion="NgClass-1"/>
-
-For this use case, Angular applies the classes on initialization and in case of changes caused by reassigning the `currentClasses` object.
-The full example calls `setCurrentClasses()` initially with `ngOnInit()` when the user clicks on the `Refresh currentClasses` button.
-These steps are not necessary to implement `ngClass`.
-
-## Setting inline styles with `NgStyle`
-
-### Import `NgStyle` in the component
-
-To use `NgStyle`, add it to the component's `imports` list.
-
-<docs-code header="src/app/app.component.ts (NgStyle import)" path="adev/src/content/examples/built-in-directives/src/app/app.component.ts" visibleRegion="import-ng-style"/>
+* steps
+  * add `NgStyle` | Component's `imports`
+  * TODO:
 
 Use `NgStyle` to set multiple inline styles simultaneously, based on the state of the component.
 
