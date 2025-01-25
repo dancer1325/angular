@@ -22,15 +22,13 @@
 
 * Routing
   * == ability / from one component -- navigate to -- another component
-  * | [SPA](guide/routing),
+  * | [SPA](../../../../guide/routing),
     * ONLY SOME parts of the page -- are -- updated 
 
-## Conceptual preview of routing
-
-* [Angular Router](guide/routing)
+* [Angular Router](../../../../guide/routing)
   * enables
     * declare routes / if that route is requested -- specify the -- component to display
 
 * see
-  * [Routing in Angular Overview](guide/routing)
-  * [Common Routing Tasks](guide/routing/common-router-tasks)
+  * [Routing in Angular Overview](../../../../guide/routing)
+  * [Common Routing Tasks](../../../../guide/routing/common-router-tasks)
