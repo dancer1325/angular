@@ -18,7 +18,8 @@
   * -- render the -- routed views
 
 * `routerLink="/routeRegisteredToSomeComponent"`
-  * == HTML attribute 
+  * == HTML attribute /
+    * 👀HTML element -- can be connected to a -- defined route 👀
 
 * _Example:_ [common router tasks](/adev/src/content/examples/router/common-router-tasks)
   * create SEVERAL Angular components
@@ -85,92 +86,35 @@
 
 ## Setting up redirects
 
-* TODO:
-To set up a redirect, configure a route with the `path` you want to redirect from, 
-the `component` you want to redirect to, and a `pathMatch` value that tells the router how to match the URL.
+* see [router-tutorial](router-tutorial.md#adding-a-redirect)
+* `redirectTo`
+  * ALLOWED values
+    * static redirect
+    * function / returns a string or `UrlTree`
 
-```ts
-const routes: Routes = [
-  { path: 'first-component', component: FirstComponent },
-  { path: 'second-component', component: SecondComponent },
-  { path: '',   redirectTo: '/first-component', pathMatch: 'full' }, // redirect to `first-component`
-  { path: '**', component: PageNotFoundComponent },  // Wildcard route for a 404 page
-];
-```
-
-In this example, the third route is a redirect so that the router defaults to the `first-component` route.
-Notice that this redirect precedes the wildcard route.
-Here, `path: ''` means to use the initial relative URL \(`''`\).
-
-Sometimes a redirect is not a simple, static redirect. The `redirectTo` property can also be a function
-with more complex logic that returns a string or `UrlTree`.
-
-```ts
-const routes: Routes = [
-  { path: "first-component", component: FirstComponent },
-  {
-    path: "old-user-page",
-    redirectTo: ({ queryParams }) => {
-      const errorHandler = inject(ErrorHandler);
-      const userIdParam = queryParams['userId'];
-      if (userIdParam !== undefined) {
-        return `/user/${userIdParam}`;
-      } else {
-        errorHandler.handleError(new Error('Attempted navigation to user page without user ID.'));
-        return `/not-found`;
-      }
-    },
-  },
-  { path: "user/:userId", component: OtherComponent },
-];
-```
+* _Example:_ [router tutorial](/adev/src/content/examples/router-tutorial) 
 
 ## Nesting routes
 
-As your application grows more complex, you might want to create routes that are relative to a component other than your root component.
-These types of nested routes are called child routes.
-This means you're adding a second `<router-outlet>` to your app, because it is in addition to the `<router-outlet>` in `AppComponent`.
+* child routes
+  * 👀routes / relative to a component != root component 👀
+    * -> 
+      * use 2 `<router-outlet>` | your app
+      * 👀configuration 
+        * | `children`
+        * == ANOTHER route 👀
 
-In this example, there are two additional child components, `child-a`, and `child-b`.
-Here, `FirstComponent` has its own `<nav>` and a second `<router-outlet>` in addition to the one in `AppComponent`.
-
-```angular-html
-<h2>First Component</h2>
-
-<nav>
-  <ul>
-    <li><a routerLink="child-a">Child A</a></li>
-    <li><a routerLink="child-b">Child B</a></li>
-  </ul>
-</nav>
-
-<router-outlet></router-outlet>
-```
-
-A child route is like any other route, in that it needs both a `path` and a `component`.
-The one difference is that you place child routes in a `children` array within the parent route.
-
-```ts
-const routes: Routes = [
-  {
-    path: 'first-component',
-    component: FirstComponent, // this is the component with the <router-outlet> in the template
-    children: [
-      {
-        path: 'child-a', // child route path
-        component: ChildAComponent, // child route component that the router renders
-      },
-      {
-        path: 'child-b',
-        component: ChildBComponent, // another child route component that the router renders
-      },
-    ],
-  },
-];
-```
+* steps
+  * `ng generate component child-a` & `ng generate component child-b`
+  * | `FirstComponent`,
+    * add another `<router-outlet>`
+    * import `RouterOutlet`, `RouterLink`
+  * | `app.routes.ts`
+    * add routes | `children`
 
 ## Setting the page title
 
+* TODO:
 Each page in your application should have a unique title so that they can be identified in the browser history.
 The `Router` sets the document's title using the `title` property from the `Route` config.
 
