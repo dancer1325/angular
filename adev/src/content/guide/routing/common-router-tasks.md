@@ -3,222 +3,91 @@
 * goal
   * how to implement typical Angular routing's tasks
 
-## Generate an application with routing enabled
-
-The following command uses the Angular CLI to generate a basic Angular application with application routes. 
-The application name in the following example is `routing-app`.
-
-```shell
-ng new routing-app
-```
-
-### Adding components for routing
-
-To use the Angular router, an application needs to have at least two components so that it can navigate from one to the other. 
-To create a component using the CLI, enter the following at the command line where `first` is the name of your component:
-
-```shell
-ng generate component first
-```
-
-Repeat this step for a second component but give it a different name. Here, the new name is `second`.
-
-<docs-code language="shell">
-
-ng generate component second
-
-</docs-code>
-
-The CLI automatically appends `Component`, so if you were to write `first-component`, your component would be `FirstComponentComponent`.
-
-<docs-callout title="`base href`">
-
-This guide works with a CLI-generated Angular application. 
-If you are working manually, make sure that you have `<base href="/">` in the `<head>` of your index.html file.
-This assumes that the `app` folder is the application root, and uses `"/"`.
-
-</docs-callout>
-
-### Importing your new components
-
-To use your new components, import them into `app.routes.ts` at the top of the file, as follows:
-
-<docs-code language="ts">
-
-import {FirstComponent} from './first/first.component';
-import {SecondComponent} from './second/second.component';
-
-</docs-code>
-
-## Defining a basic route
-
-There are three fundamental building blocks to creating a route.
-
-Import the routes into `app.config.ts` and add it to the `provideRouter` function. 
-The following is the default `ApplicationConfig` using the CLI.
-
-<docs-code language="ts">
-
-export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes)]
-};
-
-</docs-code>
-
-The Angular CLI performs this step for you. However, if you are creating an application manually or working with an existing, non-CLI application, verify that the imports and configuration are correct.
-
-<docs-workflow>
-
-<docs-step title="Set up a `Routes` array for your routes">
-
-The Angular CLI performs this step automatically.
-
-```ts
-import { Routes } from '@angular/router';
-
-export const routes: Routes = [];
-```
-
-</docs-step>
-
-<docs-step title="Define your routes in your `Routes` array">
-
-Each route in this array is a JavaScript object that contains two properties.
-The first property, `path`, defines the URL path for the route. The second property, `component`, defines the component Angular should use for the corresponding path.
-
-```ts
-const routes: Routes = [
-  { path: 'first-component', component: FirstComponent },
-  { path: 'second-component', component: SecondComponent },
-];
-```
-
-</docs-step>
-
-<docs-step title="Add your routes to your application">
-
-Now that you have defined your routes, add them to your application. First, add links to the two components. Assign the anchor tag that you want to add the route to the `routerLink` attribute. Set the value of the attribute to the component to show when a user clicks on each link. Next, update your component template to include `<router-outlet>`. This element informs Angular to update the application view with the component for the selected route.
-
-```angular-html
-<h1>Angular Router App</h1>
-<nav>
-  <ul>
-    <li><a routerLink="/first-component" routerLinkActive="active" ariaCurrentWhenActive="page">First Component</a></li>
-    <li><a routerLink="/second-component" routerLinkActive="active" ariaCurrentWhenActive="page">Second Component</a></li>
-  </ul>
-</nav>
-<!-- The routed views render in the <router-outlet>-->
-<router-outlet></router-outlet>
-```
-
-You also need to add the `RouterLink`, `RouterLinkActive`, and `RouterOutlet` to the `imports` array of `AppComponent`.
-
-```ts
-@Component({
-  selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
-})
-export class AppComponent {
-  title = 'routing-app';
-}
-```
-
-</docs-step>
-
-</docs-workflow>
-
-### Route order
-
-The order of routes is important because the `Router` uses a first-match wins strategy when matching routes, so more specific routes should be placed above less specific routes.
-List routes with a static path first, followed by an empty path route, which matches the default route.
-The [wildcard route](guide/routing/common-router-tasks#setting-up-wildcard-routes) comes last because it matches every URL and the `Router` selects it only if no other routes match first.
-
-## Getting route information
-
-Often, as a user navigates your application, you want to pass information from one component to another.
-For example, consider an application that displays a shopping list of grocery items.
-Each item in the list has a unique `id`.
-To edit an item, users click an Edit button, which opens an `EditGroceryItem` component.
-You want that component to retrieve the `id` for the grocery item so it can display the right information to the user.
-
-Use a route to pass this type of information to your application components.
-To do so, you use the [withComponentInputBinding](api/router/withComponentInputBinding) feature with `provideRouter` or the `bindToComponentInputs` option of `RouterModule.forRoot`.
-
-To get information from a route:
-
-<docs-workflow>
-
-<docs-step title="Add `withComponentInputBinding`">
-
-Add the `withComponentInputBinding` feature to the `provideRouter` method.
-
-```ts
-providers: [
-  provideRouter(appRoutes, withComponentInputBinding()),
-]
-```
-
-</docs-step>
-
-<docs-step title="Add an `Input` to the component">
-
-Update the component to have an `Input` matching the name of the parameter.
-
-```ts
-@Input()
-set id(heroId: string) {
-  this.hero$ = this.service.getHero(heroId);
-}
-```
-
-NOTE: You can bind all route data with key, value pairs to component inputs: static or resolved route data, path parameters, matrix parameters, and query parameters.
-If you want to use the parent components route info you will need to set the router `paramsInheritanceStrategy` option:
-`withRouterConfig({paramsInheritanceStrategy: 'always'})`
-
-</docs-step>
-
-</docs-workflow>
-
-## Setting up wildcard routes
-
-A well-functioning application should gracefully handle when users attempt to navigate to a part of your application that does not exist.
-To add this functionality to your application, you set up a wildcard route.
-The Angular router selects this route any time the requested URL doesn't match any router paths.
-
-To set up a wildcard route, add the following code to your `routes` definition.
-
-<docs-code>
-
-{ path: '**', component: <component-name> }
-
-</docs-code>
-
-The two asterisks, `**`, indicate to Angular that this `routes` definition is a wildcard route.
-For the component property, you can define any component in your application.
-Common choices include an application-specific `PageNotFoundComponent`, which you can define to [display a 404 page](guide/routing/common-router-tasks#displaying-a-404-page) to your users; or a redirect to your application's main component.
-A wildcard route is the last route because it matches any URL.
-For more detail on why order matters for routes, see [Route order](guide/routing/common-router-tasks#route-order).
-
-## Displaying a 404 page
-
-To display a 404 page, set up a [wildcard route](guide/routing/common-router-tasks#setting-up-wildcard-routes) with the `component` property set to the component you'd like to use for your 404 page as follows:
-
-```ts
-const routes: Routes = [
-  { path: 'first-component', component: FirstComponent },
-  { path: 'second-component', component: SecondComponent },
-  { path: '**', component: PageNotFoundComponent },  // Wildcard route for a 404 page
-];
-```
-
-The last route with the `path` of `**` is a wildcard route.
-The router selects this route if the requested URL doesn't match any of the paths earlier in the list and sends the user to the `PageNotFoundComponent`.
+* 👀fundamental building blocks to create a route 👀
+  * `ApplicationConfig`
+  * `provideRouter()`
+  * `Routes`
+    * == `Route[]`
+      * Route == { path: "URLpathForTheRoute", component: AngularComponentForThePath }
+      * order is IMPORTANT 
+        * ⚠️MORE specific routes should be placed FIRST -- above -- LESS specific ⚠️
+          * Reason: 🧠`Router` uses a first-match wins strategy 🧠 
+          * -> place [wildcard route](#setting-up-wildcard-routes) | LAST one
+
+* `<router-outlet>`
+  * -- render the -- routed views
+
+* `routerLink="/routeRegisteredToSomeComponent"`
+  * == HTML attribute 
+
+* _Example:_ [common router tasks](/adev/src/content/examples/router/common-router-tasks)
+  * create SEVERAL Angular components
+    ```
+    ng generate component first
+    ng generate component second
+    ```
+  * | `index.html`, 
+    * ⚠️`<base href="someValue">` -- must match with -- application root's URL ⚠️
+      ```
+      ...
+      <head>
+        <base href="/">
+      </head>
+      ...
+      ```
+  * | `app.routes.ts`,
+    * add `Route` / EACH PREVIOUS created Angular component 
+  * | AppComponent,
+    * add links -- to the -- components
+
+## How to get route information?
+
+* use case
+  * | user navigates,
+    * pass information from one component -- to -- another component
+
+* ways -- via -- using a route
+  * [withComponentInputBinding](api/router/withComponentInputBinding) + `provideRouter` or
+    * see [routing with url matcher](routing-with-urlmatcher.md)
+  * `RouterModule.forRoot`'s `bindToComponentInputs` option
+    * TODO: Which example to test it?
+
+* types of route data key, value pairs / -- can be bound to -- component inputs
+  * static
+  * resolved route data
+  * path parameters,
+  * matrix parameters,
+  * query parameters
+
+* if you want to use the parent components route info -> set `withRouterConfig({paramsInheritanceStrategy: 'always'})`
+
+* steps
+  * | `app.config.ts`,
+    * pass `withComponentInputBinding` | `provideRouter` method 
+  * | Angular component
+    * add an input property / 👀matches the parameter name 👀
+
+## Setting up wildcard routes -- `**` --
+
+* use case
+  * users -- try to navigate to a -- part of your application / does NOT exist
+
+* ALTERNATIVES to pages to redirect
+  * specific 404 page
+  * main component
+
+* steps
+  * `ng generate component PageNotFound`
+    * == 404 page
+  * | `app.routes.ts`
+    * add a wildcard route -- to a -- generic error component / place the LAST one | list
+      * Reason to place last: 🧠route order is important 🧠
 
 ## Setting up redirects
 
-To set up a redirect, configure a route with the `path` you want to redirect from, the `component` you want to redirect to, and a `pathMatch` value that tells the router how to match the URL.
+* TODO:
+To set up a redirect, configure a route with the `path` you want to redirect from, 
+the `component` you want to redirect to, and a `pathMatch` value that tells the router how to match the URL.
 
 ```ts
 const routes: Routes = [
