@@ -41,7 +41,5 @@
   * if you want to test custom URL matcher -> click on "my profile"
     * TODO: Why nothing happens?
 
-## Test your custom URL matcher
-
 * see 
   * [Custom Route Matching -- with the -- Angular Router](https://medium.com/@brandontroberts/custom-route-matching-with-the-angular-router-fbdd48665483)
