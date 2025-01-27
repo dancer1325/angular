@@ -1,75 +1,86 @@
 # NgModules
 
+* goal
+  * understand `@NgModule`
+
 * uses
   * | Angular v16-
     * widely used -- to -- 
       * configure the injector & the compiler
       * help organize related things together
+  * | Angular v16+,
+    * recommendations
+      * 💡use [standalone components](guide/components/anatomy-of-components#-imports-in-the-component-decorator) -- instead of -- `NgModule` 💡
+
+* NgModule
+  * := class / marked by the `@NgModule`
+  * 👀tells Angular, how to 👀
+    * compile component templates
+    * configure dependency injection
+  * MAIN responsibilities
+    * declare NgModule's
+      * components,
+      * directives,
+      * pipes 
+    * add providers to the injector | components, directives, and pipes / imported by the NgModule
+
+* steps
+  * 👀`ng generate module moduleName` 👀
+    * create a NgModule
+    * _Example:_ `ng generate module customMenu`
+
+  ```typescript
+  import {NgModule} from '@angular/core';
+  
+  @NgModule({
+    // Metadata goes here
+  })
+  export class CustomMenuModule { }
+  ```
+
+## ALLOWED metadata
+### `declarations`
+
+* `declarations`
+  * == `@NgModule` metadata's property /
+    * 👀declares the NgModule's 👀 
+      * components,
+      * directives,
+      * pipes 
+  * ways to pass the values
+    * 1 by 1
+    * array
+
+* _Example:_ 
+  ```typescript
+  const SOME_COMPONENTS_IN_ARRAY = [CustomMenuComponent, CustomMenuItemComponent];
+  
+  @NgModule({
+    /* ... */
+    // This NgModule declares all of CustomMenu, CustomMenuItem,
+    // CustomSlider, and CustomCheckbox.
+    declarations: [SOME_COMPONENTS_IN_ARRAY, CustomSliderComponent, CustomCheckboxComponent],
+  })
+  export class CustomMenuModule { }
+  ```
+
+* ⚠️if SOME components, directives, or pipes declared | >1 NgModule -> throws an error ⚠️
+* requirements | NgModule's components, directives, or pipes
+  * ⚠️mark it as `standalone: false` ⚠️
+    * if you mark as `standalone: true` -> compile & run, BUT highlight as an ERROR
+    * _Example:_ 
+  ```typescript
+  @Component({
+    // Mark this component as `standalone: false` so that it can be declared in an NgModule.
+    standalone: false,
+    /* ... */
+  })
+  export class CustomMenu { /* ... */ }
+  ```
+
+### `imports`
 
 * TODO:
-IMPORTANT: The Angular team recommends using [standalone components](guide/components/anatomy-of-components#-imports-in-the-component-decorator) instead of `NgModule` for all new code.
-Use this guide to understand existing code built with `@NgModule`.
-
-An NgModule is a class marked by the `@NgModule` decorator. This decorator accepts *metadata* that tells Angular how to compile component templates and configure dependency injection.
-
-```typescript
-import {NgModule} from '@angular/core';
-
-@NgModule({
-  // Metadata goes here
-})
-export class CustomMenuModule { }
-```
-
-An NgModule has two main responsibilities:
-* Declaring components, directives, and pipes that belong to the NgModule
-* Add providers to the injector for components, directives, and pipes that import the NgModule
-
-## Declarations
-
-The `declarations` property of the `@NgModule` metadata declares the components, directives, and pipes that belong to the NgModule.
-
-```typescript
-@NgModule({
-  /* ... */
-  // CustomMenu and CustomMenuItem are components.
-  declarations: [CustomMenu, CustomMenuItem],
-})
-export class CustomMenuModule { }
-```
-
-In the example above, the components `CustomMenu` and `CustomMenuItem` belong to `CustomMenuModule`.
-
-The `declarations` property additionally accepts _arrays_ of components, directives, and pipes. These arrays, in turn, may also contain other arrays.
-
-```typescript
-const MENU_COMPONENTS = [CustomMenu, CustomMenuItem];
-const WIDGETS = [MENU_COMPONENTS, CustomSlider];
-
-@NgModule({
-  /* ... */
-  // This NgModule declares all of CustomMenu, CustomMenuItem,
-  // CustomSlider, and CustomCheckbox.
-  declarations: [WIDGETS, CustomCheckbox],
-})
-export class CustomMenuModule { }
-```
-
-If Angular discovers any components, directives, or pipes declared in more than one NgModule, it reports an error.
-
-Any components, directives, or pipes must be explicitly marked as `standalone: false` in order to be declared in an NgModule.
-
-```typescript
-@Component({
-  // Mark this component as `standalone: false` so that it can be declared in an NgModule.
-  standalone: false,
-  /* ... */
-})
-export class CustomMenu { /* ... */ }
-```
-
-### imports
-
 Components declared in an NgModule may depend on other components, directives, and pipes. Add these dependencies to the `imports` property of the `@NgModule` metadata.
 
 ```typescript
@@ -84,7 +95,7 @@ export class CustomMenuModule { }
 
 The `imports` array accepts other NgModules, as well as standalone components, directives, and pipes.
 
-### exports
+### `exports`
 
 An NgModule can _export_ its declared components, directives, and pipes such that they're available to other components and NgModules.
 
