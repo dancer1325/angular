@@ -12,6 +12,8 @@
     * recommendations
       * 💡use [standalone components](guide/components/anatomy-of-components#-imports-in-the-component-decorator) -- instead of -- `NgModule` 💡
 
+* _Example:_ [here](/adev/src/content/examples/ngModules)
+
 * NgModule
   * := class / marked by the `@NgModule`
   * 👀tells Angular, how to 👀
@@ -126,36 +128,34 @@ export class CustomMenuModule { }
 
 ## `NgModule` providers
 
-Tip: See the [Dependency Injection guide](guides/di) for information on dependency injection and providers.
+* see [Dependency Injection guide](../di)
+* providers
+  * -- used by -- injected dependencies / are
+    * standalone, inherited & imported by NgModule,
+      * component, 
+      * directive,
+      * pipe
 
-An `NgModule` can specify `providers` for injected dependencies. These providers are available to:
-* Any standalone component, directive, or pipe that imports the NgModule, and
-* The `declarations` and `providers` of any _other_ NgModule that imports the NgModule.
+* _Example:_
 
-```typescript
-@NgModule({
-  imports: [PopupTrigger, SelectionIndicator],
-  declarations: [CustomMenu, CustomMenuItem],
-
-  // Provide the OverlayManager service
-  providers: [OverlayManager],
-  /* ... */
-})
-export class CustomMenuModule { }
-
-@NgModule({
-  imports: [CustomMenuModule],
-  declarations: [UserProfile],
-  providers: [UserDataClient],
-})
-export class UserProfileModule { }
-```
-
-In the example above:
-* The `CustomMenuModule` provides `OverlayManager`.
-* The `CustomMenu` and `CustomMenuItem` components can inject `OverlayManager` because they're declared in `CustomMenuModule`.
-* `UserProfile` can inject `OverlayManager` because its NgModule imports `CustomMenuModule`.
-* `UserDataClient` can inject `OverlayManager` because its NgModule imports `CustomMenuModule`.
+  ```typescript
+  @NgModule({
+    imports: [PopupTrigger, SelectionIndicator],
+    declarations: [CustomMenu, CustomMenuItem],
+  
+    // Provide the OverlayManager service
+    providers: [OverlayManager],
+    /* ... */
+  })
+  export class CustomMenuModule { }
+  
+  @NgModule({
+    imports: [CustomMenuModule],
+    declarations: [UserProfile],
+    providers: [UserDataClient],
+  })
+  export class UserProfileModule { }
+  ```
 
 ### The `forRoot` and `forChild` pattern
 
@@ -185,23 +185,38 @@ export class UserProfile { /* ... */ }
 
 ## Bootstrapping an application
 
-IMPORTANT: The Angular team recommends using [bootstrapApplication](api/platform-browser/bootstrapApplication) instead of `bootstrapModule` for all new code. Use this guide to understand existing applications bootstrapped with `@NgModule`.
+* recommendations
+  * | Angular v16+,
+    * 👀use BETTER [bootstrapApplication](api/platform-browser/bootstrapApplication) -- instead of -- `bootstrapModule` 👀
 
-The `@NgModule` decorator accepts an optional `bootstrap` array that may contain one or more components.
+* `bootstrap`
+  * == `@NgModule` metadata's property /
+    * optional
+    * == `[ofComponents]`
+      * ALL these components -> automatically included | `declarations`
 
-You can use the [`bootstrapModule`](https://angular.dev/api/core/PlatformRef#bootstrapModule) method from either [`platformBrowser`](api/platform-browser/platformBrowser) or [`platformServer`](api/platform-server/platformServer) to start an Angular application. When run, this function locates any elements on the page with a CSS selector that matches the listed componet(s) and renders those components on the page.
+* | bootstrap an Angular application -- via -- `NgModule`
+  * ways 
+    * [`platformBrowser`](api/platform-browser/platformBrowser) `.bootstrapModule(ngModuleName)` 
+    * [`platformServer`](api/platform-server/platformServer) `.bootstrapModule(ngModuleName)`
+  * 👀collected `providers` + ALL its `imports`' `providers` -- are eagerly --
+    * loaded
+    * available to inject | ENTIRE application 👀
 
-```typescript
-import {platformBrowser} from '@angular/platform-browser';
+* `bootstrapModule(ngModuleName)`
+  * see [`bootstrapModule`](https://angular.dev/api/core/PlatformRef#bootstrapModule)
+  * how does it work?
+    * locates any elements | page / CSS selector -- matches the -- listed component(s)
+    * renders those components | page
 
-@NgModule({
-  bootstrap: [MyApplication],
-})
-export class MyApplciationModule { }
-
-platformBrowser().bootstrapModule(MyApplicationModule);
-```
-
-Components listed in `bootstrap` are automatically included in the NgModule's declarations.
-
-When you bootstrap an application from an NgModule, the collected `providers` of this module and all of the `providers` of its `imports` are eagerly loaded and available to inject for the entire application.
+* _Example:_ 
+  ```typescript
+  import {platformBrowser} from '@angular/platform-browser';
+  
+  @NgModule({
+    bootstrap: [MyApplication],
+  })
+  export class MyApplciationModule { }
+  
+  platformBrowser().bootstrapModule(MyApplicationModule);
+  ```

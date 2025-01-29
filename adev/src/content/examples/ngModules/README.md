@@ -7,9 +7,9 @@
 * | root path,
   * `ng new ngModules --directory=adev/src/content/examples/ngModules`
 * | this folder
-  * `ng generate module customMenu`
+  * `ng generate module customMenu` & `ng generate module userProfile`
     * create the NgModule `CustomMenuModule`
-  * `ng generate component CustomMenu`, `ng generate component CustomMenuItem`, `ng generate component CustomSlider` & `ng generate component CustomCheckbox`
+  * `ng generate component CustomMenu`, `ng generate component CustomMenuItem`, `ng generate component CustomSlider`, `ng generate component CustomCheckbox` & `ng generate component user-profile`
 * | `CustomMenuModule`,
   * add `declarations`
 
