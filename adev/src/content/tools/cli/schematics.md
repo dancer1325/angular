@@ -1,49 +1,63 @@
 # Generating code using schematics
 
-A schematic is a template-based code generator that supports complex logic.
-It is a set of instructions for transforming a software project by generating or modifying code.
-Schematics are packaged into collections and installed with npm.
+* := Tools / simplify the development | large scale
+  * == rules or instructions / transform -- by generating or modifying code, a -- software project 
+  * == template-based code generator / supports complex logic
+  * -- Example:_ 
+    * automated scaffolding
+      * === how to generate / transform a programming project
+    * refactoring
+    * update
+  * 👀uses / built-in by Angular CLI 👀 
+    * generate Angular web-projects 
+      ```
+      ng generate
+      ```
+      * _Examples:_
+        * _Example1:_ generate -- via predefined templates or layouts -- commonly-used UI patterns 
+    * modify Angular web-projects
+      ```
+      ng add
+      ```
+    * -- enforce -- architectural rules and conventions   
+* see [source code](https://github.com/dancer1325/angular-cli/tree/main/packages/schematics/angular)
+* packaged | collections
+* installed -- via -- npm
 
-The schematic collection can be a powerful tool for creating, modifying, and maintaining any software project, but is particularly useful for customizing Angular projects to suit the particular needs of your own organization.
-You might use schematics, for example, to generate commonly-used UI patterns or specific components, using predefined templates or layouts.
-Use schematics to enforce architectural rules and conventions, making your projects consistent and interoperative.
+## Schematics | Angular CLI
 
-## Schematics for the Angular CLI
+* allows
+  * -- transforms to a -- web-app project
+  * update your code / fix breaking changes | dependency,
+  * add a NEW configuration option or framework | EXISTING project
 
-Schematics are part of the Angular ecosystem.
-The Angular CLI  uses schematics to apply transforms to a web-app project.
-You can modify these schematics, and define new ones to do things like update your code to fix breaking changes in a dependency, for example, or to add a new configuration option or framework to an existing project.
+* [`@schematics/angular`](https://github.com/dancer1325/angular-cli/tree/main/packages/schematics/angular)
+  * == collection of schematics /
+    * subcomands are specified
+  * they are run -- via -- 
+    * `ng generate`
+    * `ng add`
 
-Schematics that are included in the `@schematics/angular` collection are run by default by the commands `ng generate` and `ng add`.
-The package contains named schematics that configure the options that are available to the CLI for `ng generate` sub-commands, such as `ng generate component` and `ng generate service`.
-The sub-commands for `ng generate` are shorthand for the corresponding schematic.
-To specify and generate a particular schematic, or a collection of schematics, using the long form:
+* [angular material's schematics](https://github.com/angular/components/tree/main/src/material/schematics)
 
-<docs-code language="shell">
-
-ng generate my-schematic-collection:my-schematic-name
-
-</docs-code>
-
-or
-
-<docs-code language="shell">
-
-ng generate my-schematic-name --collection collection-name
-
-</docs-code>
+* if you want to generate a particular schematic OR a collection of schematics -> run
+  ```
+  ng generate my-schematic-collection:my-schematic-name
+  ng generate my-schematic-name --collection collection-name
+  ```
 
 ### Configuring CLI schematics
 
-A JSON schema associated with a schematic tells the Angular CLI what options are available to commands and sub-commands, and determines the defaults.
-These defaults can be overridden by providing a different value for an option on the command line.
-See [Workspace Configuration](reference/configs/workspace-config) for information about how to change the generation option defaults for your workspace.
-
-The JSON schemas for the default schematics used by the CLI to generate projects and parts of projects are collected in the package [`@schematics/angular`](https://github.com/angular/angular-cli/tree/main/packages/schematics/angular).
-The schema describes the options available to the CLI for each of the `ng generate` sub-commands, as shown in the `--help` output.
+* 👀schematic's JSON schema 👀
+  * indicates to Angular CLI
+    * AVAILABLE 
+      * commands' options & default ones
+      * sub-commands' options & default ones
+  * see [Workspace Configuration](../../reference/configs/workspace-config)
 
 ## Developing schematics for libraries
 
+* TODO:
 As a library developer, you can create your own collections of custom schematics to integrate your library with the Angular CLI.
 
 * An *add schematic* lets developers install your library in an Angular workspace using `ng add`
