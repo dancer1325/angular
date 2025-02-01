@@ -1,69 +1,49 @@
 # Creating libraries
 
-This page provides a conceptual overview of how to create and publish new libraries to extend Angular functionality.
+* goal
+  * how to create and publish NEW libraries / extend Angular functionality
 
-If you find that you need to solve the same problem in more than one application \(or want to share your solution with other developers\), you have a candidate for a library.
-A simple example might be a button that sends users to your company website, that would be included in all applications that your company builds.
+* use cases (to create a library)
+  * solve the SAME problem | >1 application
+    * _Example:_ button / 
+      * sends users -- to -- your company website & 
+      * MUST be included | ALL your company's applications
 
 ## Getting started
 
-Use the Angular CLI to generate a new library skeleton in a new workspace with the following commands.
+* generate a NEW library skeleton | NEW workspace -- via -- Angular CLI
+  ```
+  ng new my-workspace --no-create-application
+  cd my-workspace
+  ng generate library my-lib-name
+  ```
+  * `ng generate`
+    * creates the `projects/my-lib/` | your workspace
+      * == 1 component + 1 service | NgModule
+      * -> `angular.json` -- is updated with a -- project of type `library`
+    * see [Project File Structure](../../reference/configs/file-structure)
+  * ⚠️`my-lib-name` chooses it CAREFULLY ⚠️
+    * recommendations
+      * avoid using `ng-`
+        * Reason: 🧠reserved keyword -- from the -- Angular framework 🧠
+      * use `ngx-`
+        * Reason: 🧠== library -- is suitable for use with -- Angular 🧠
+    * Reason: 🧠used AFTERWARD, publish | public package registry 🧠
+  * 👀if you are going to use the SAME workspace | MULTIPLE projects -> use the monorepo model 👀
+    * see [here](../../reference/configs/file-structure#multiple-projects)
 
-<docs-code language="shell">
-
-ng new my-workspace --no-create-application
-cd my-workspace
-ng generate library my-lib
-
-</docs-code>
-
-<docs-callout title="Naming your library">
-
-You should be very careful when choosing the name of your library if you want to publish it later in a public package registry such as npm.
-See [Publishing your library](tools/libraries/creating-libraries#publishing-your-library).
-
-Avoid using a name that is prefixed with `ng-`, such as `ng-library`.
-The `ng-` prefix is a reserved keyword used from the Angular framework and its libraries.
-The `ngx-` prefix is preferred as a convention used to denote that the library is suitable for use with Angular.
-It is also an excellent indication to consumers of the registry to differentiate between libraries of different JavaScript frameworks.
-
-</docs-callout>
-
-The `ng generate` command creates the `projects/my-lib` folder in your workspace, which contains a component and a service inside an NgModule.
-
-HELPFUL: For more details on how a library project is structured, refer to the [Library project files](reference/configs/file-structure#library-project-files) section of the [Project File Structure guide](reference/configs/file-structure).
-
-Use the monorepo model to use the same workspace for multiple projects.
-See [Setting up for a multi-project workspace](reference/configs/file-structure#multiple-projects).
-
-When you generate a new library, the workspace configuration file, `angular.json`, is updated with a project of type `library`.
-
-<docs-code language="json">
-
-"projects": {
-  …
-  "my-lib": {
-    "root": "projects/my-lib",
-    "sourceRoot": "projects/my-lib/src",
-    "projectType": "library",
-    "prefix": "lib",
-    "architect": {
-      "build": {
-        "builder": "@angular-devkit/build-angular:ng-packagr",
-        …
-
-</docs-code>
-
-Build, test, and lint the project with CLI commands:
-
-<docs-code language="shell">
-
+```
+# build
 ng build my-lib --configuration development
+
+# test
 ng test my-lib
+
+# lint
 ng lint my-lib
+```
 
-</docs-code>
-
+* TODO:
 Notice that the configured builder for the project is different from the default builder for application projects.
 This builder, among other things, ensures that the library is always built with the [AOT compiler](tools/cli/aot-compiler).
 
@@ -131,22 +111,18 @@ For more information, see [Schematics Overview](tools/cli/schematics) and [Schem
 
 ## Publishing your library
 
-Use the Angular CLI and the npm package manager to build and publish your library as an npm package.
+* 👀if you want to build & publish your library -- as an -- npm package -> use Angular CLI + npm package manager 👀
+  * Angular CLI, from your compiled code, creates -- via the tool [ng-packagr](https://github.com/ng-packagr/ng-packagr/blob/master/README.md), -- packages / can be published | npm
+    * see [here](#publishing-libraries)
+  * libraries for distribution -- should be built, via -- `production` configuration
+    * Reason: 🧠generated output -- uses the -- appropriate optimizations & correct package format for npm 🧠
 
-Angular CLI uses a tool called [ng-packagr](https://github.com/ng-packagr/ng-packagr/blob/master/README.md) to create packages from your compiled code that can be published to npm.
-See [Building libraries with Ivy](tools/libraries/creating-libraries#publishing-libraries) for information on the distribution formats supported by `ng-packagr` and guidance on how
-to choose the right format for your library.
-
-You should always build libraries for distribution using the `production` configuration.
-This ensures that generated output uses the appropriate optimizations and the correct package format for npm.
-
-<docs-code language="shell">
-
-ng build my-lib
-cd dist/my-lib
-npm publish
-
-</docs-code>
+* steps
+  ```
+  ng build my-lib
+  cd dist/my-lib
+  npm publish  
+  ```
 
 ## Managing assets in a library
 
@@ -248,16 +224,15 @@ TypeScript path mappings should *not* point to the library source `.ts` files.
 
 ## Publishing libraries
 
-There are two distribution formats to use when publishing a library:
+* goal
+  * distribution formats / -- supported by -- `ng-packagr`
+  * how to choose the right format | your library
 
-| Distribution formats        | Details |
-|:---                         |:---     |
-| Partial-Ivy \(recommended\) | Contains portable code that can be consumed by Ivy applications built with any version of Angular from v12 onwards. |
-| Full-Ivy                    | Contains private Angular Ivy instructions, which are not guaranteed to work across different versions of Angular. This format requires that the library and application are built with the *exact* same version of Angular. This format is useful for environments where all library and application code is built directly from source. |
 
-For publishing to npm use the partial-Ivy format as it is stable between patch versions of Angular.
-
-Avoid compiling libraries with full-Ivy code if you are publishing to npm because the generated Ivy instructions are not part of Angular's public API, and so might change between patch versions.
+| Distribution formats            | Details                                                                                                                                                                                                                                                                                             |
+|:--------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Partial-Ivy \(👀recommended👀\) | == portable code / can be consumed by Ivy applications -- built with -- Angular v12+ <br/> use cases: publish to npm Reason: 🧠it's STABLE BETWEEN patch versions of Angular 🧠                                                                                                                     |
+| Full-Ivy                        | == private Angular Ivy instructions / ⚠️ NOT guaranteed to work ACROSS DIFFERENT versions of Angular ⚠️ <br/> requirements: Angular version / build library === Angular version / build application <br/> use cases: environments / from source -- is built directly -- ALL library and application |
 
 ## Ensuring library version compatibility
 
