@@ -430,36 +430,39 @@ The link parameters array affords the flexibility to represent any routing depth
 
 ## `LocationStrategy` and browser URL styles
 
-When the router navigates to a new component view, it updates the browser's location and history with a URL for that view.
+* | router -- navigates to a -- NEW component view,
+  * router
+    * updates the browser's location
+    * adds the URL | browser's history
+    * loads & renders the appropriate component
 
-Modern HTML5 browsers support [history.pushState](https://developer.mozilla.org/docs/Web/API/History_API/Working_with_the_History_API#adding_and_modifying_history_entries 'HTML5 browser history push-state'), a technique that changes a browser's location and history without triggering a server page request.
-The router can compose a "natural" URL that is indistinguishable from one that would otherwise require a page load.
+* browsers
+  * Modern HTML5 browsers 
+    * support [history.pushState](https://developer.mozilla.org/docs/Web/API/History_API/Working_with_the_History_API#adding_and_modifying_history_entries)
+      * == technique / 👀changes a browser's location and history -- WITHOUT -- triggering a server page request 👀
+      * 💡== "HTML5 pushState" style 💡
+      * _Example:_ Crisis Center URL  -- localhost:3002/crisis-center --
+  * old browsers
+    * 💡== "hash URL" style 💡
+    * if location URL 
+      * 👀BEFORE #, changes -> send -- page requests to the -- server 👀
+      * 👀AFTER #, changes -> NO send -- page requests to the -- server 👀
+    * _Example:_ "hash URL" / routes to the Crisis Center  -- localhost:3002/src/#/crisis-center --
 
-Here's the Crisis Center URL in this "HTML5 pushState" style:
+* Angular Router
+  * 👀supports BOTH styles -- via -- `LocationStrategy` providers 👀
+  
+  | Providers              | Details                            |
+  | :--------------------- |:-----------------------------------|
+  | `PathLocationStrategy` | == default "HTML5 pushState" style |
+  | `HashLocationStrategy` | == "hash URL" style                |
 
-```text
-localhost:3002/crisis-center
-```
+  * 👀`RouterModule.forRoot()` -> `LocationStrategy` == `PathLocationStrategy` == default strategy 👀
+    * 👀if you want to switch to `HashLocationStrategy` -> override | bootstrapping process 👀
 
-Older browsers send page requests to the server when the location URL changes unless the change occurs after a "#" \(called the "hash"\).
-Routers can take advantage of this exception by composing in-application route URLs with hashes.
-Here's a "hash URL" that routes to the Crisis Center.
+* _Example:_ [app.config.ts' 3. case](../../examples/router/common-router-tasks/src/app/app.config.ts)
 
-```text
-localhost:3002/src/#/crisis-center
-```
-
-The router supports both styles with two `LocationStrategy` providers:
-
-| Providers              | Details                              |
-| :--------------------- | :----------------------------------- |
-| `PathLocationStrategy` | The default "HTML5 pushState" style. |
-| `HashLocationStrategy` | The "hash URL" style.                |
-
-The `RouterModule.forRoot()` function sets the `LocationStrategy` to the `PathLocationStrategy`, which makes it the default strategy.
-You also have the option of switching to the `HashLocationStrategy` with an override during the bootstrapping process.
-
-HELPFUL: For more information on providers and the bootstrap process, see [Dependency Injection](guide/di/dependency-injection-providers).
+* see [Dependency Injection](guide/di/dependency-injection-providers)
 
 ## Choosing a routing strategy
 
@@ -554,3 +557,5 @@ For more complete information on how `<base href>` is used to construct target U
         ]
       ...
       ```
+
+* _Example:_ [app.config.ts' 3. case](../../examples/router/common-router-tasks/src/app/app.config.ts)
