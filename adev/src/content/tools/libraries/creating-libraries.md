@@ -32,82 +32,86 @@
   * 👀if you are going to use the SAME workspace | MULTIPLE projects -> use the monorepo model 👀
     * see [here](../../reference/configs/file-structure#multiple-projects)
 
-```
-# build
-ng build my-lib --configuration development
+* typical commands
+  ```
+  # build
+  ng build my-lib --configuration development
+  
+  # test
+  ng test my-lib
+  
+  # lint
+  ng lint my-lib
+  ```
 
-# test
-ng test my-lib
+* project's configured builder -- `@angular-devkit/build-angular:browser` --
+  * != application projects' default builder -- `@angular-devkit/build-angular:application` --
+  * -> library -- is ALWAYS built with -- [AOT compiler](../cli/aot-compiler)
 
-# lint
-ng lint my-lib
-```
+* 👀define a library's public API 👀 -- `public-api.ts` -- 
+  * Reason: 🧠make library code reusable 🧠 
+  * == what is available -- to -- consumers of your library
+    * MINIMUM public functionality / could be accessed
+      * NgModules,
+      * service providers
+      * general utility functions
+  * ==  ALL exported | `public-api.ts`
+  * 👀if you want to expose services and components -> use an NgModule 👀
 
-* TODO:
-Notice that the configured builder for the project is different from the default builder for application projects.
-This builder, among other things, ensures that the library is always built with the [AOT compiler](tools/cli/aot-compiler).
+## application's parts / -- want to be refactored to a -- library
 
-To make library code reusable you must define a public API for it.
-This "user layer" defines what is available to consumers of your library.
-A user of your library should be able to access public functionality \(such as NgModules, service providers and general utility functions\) through a single import path.
+* good practices
+  * ❌NOT application-specific code-dependant ❌
+  * declarations (== `NgModule`'s `declarations` -- _Example:_ components, pipes --) -- should be designed as -- stateless
+    * == NOT
+      * -- rely on -- external variables
+      * -- alter -- external variables
+    * Reason: 🧠if you rely on state -> you need to decide EACH case whether it is application state OR state / library would manage 🧠
+  * observables / components subscribe to internally -- should be -- cleaned up and disposed | lifecycle of those components
+  * components -- should expose -- their
+    * interactions -- through -- inputs
+    * outputs / communicate events -- to -- OTHER components
+  * check ALL internal dependencies
+    * | custom classes or interfaces / used | components or service,
+      * check whether they -- depend on -- ADDITIONAL classes or interfaces 
+        * -> NEED to migrate them
+    * if your library code -- depends on a -- service -> that service -- needs to be -- migrated
+    * If your library code OR its templates -- depend on -- OTHER libraries (_Example:_ Angular Material) -> configure your library -- with -- those dependencies
+  * way to provide services | client applications
+    * services -- should declare -- their OWN providers
+      * != declaring providers | NgModule or a component
+      * -> 👀service is *tree-shakable* 👀
+        * -> ⚠️if service NEVER gets injected | application / imports the library -> compiler leave the service -- out of the -- bundle ⚠️ 
+        * see [Tree-shakable providers](../../guide/di/lightweight-injection-tokens)
+    * 👀if you register global service providers OR share providers | MULTIPLE NgModules -> use [`RouterModule.forRoot()` and `RouterModule.forChild()` design patterns](../../guide/ngmodules/overview.md) 👀
+    * if your library provides OPTIONAL services / might NOT be used by ALL client applications -- via [lightweight token design pattern](../../guide/di/lightweight-injection-tokens), support -- proper tree-shaking 
 
-The public API for your library is maintained in the `public-api.ts` file in your library folder.
-Anything exported from this file is made public when your library is imported into an application.
-Use an NgModule to expose services and components.
+## Integrating -- via code-generation schematics, with the -- CLI 
 
-Your library should supply documentation \(typically a README file\) for installation and maintenance.
+* | library's npm package,
+  * 👀you can include schematics 👀
+    * uses
+      * provide information to Angular CLI -- to -- generate a component 
+    * _Example:_ [Angular Material's navigation schematic](https://material.angular.io/guide/schematics#navigation-schematic)
+      * configures the CDK's [BreakpointObserver](https://material.angular.io/cdk/layout/overview#breakpointobserver)
+      * -- used with --
+        * Material's [MatSideNav](https://material.angular.io/components/sidenav/overview) components
+        * Material's [MatToolbar](https://material.angular.io/components/toolbar/overview) components
+    * recommended schematics -- to -- include
+      * installation schematic
+        * Reason: 🧠 `ng add` -- can add -- your library | project 🧠
+      * generation schematics
+        * Reason: 🧠 `ng generate` -- can scaffold -- your defined artifacts (components, services, tests) | project
+      * update schematic
+        * Reason: 🧠`ng update` -- can 
+          * update -- your library's dependencies
+          * provide -- migrations for new releases' breaking changes 🧠 
+    * -- depend on -- your tasks
+      * MORE complex the customization -> MORE useful the schematic approach
 
-## Refactoring parts of an application into a library
-
-To make your solution reusable, you need to adjust it so that it does not depend on application-specific code.
-Here are some things to consider in migrating application functionality to a library.
-
-* Declarations such as components and pipes should be designed as stateless, meaning they don't rely on or alter external variables.
-    If you do rely on state, you need to evaluate every case and decide whether it is application state or state that the library would manage.
-
-* Any observables that the components subscribe to internally should be cleaned up and disposed of during the lifecycle of those components
-* Components should expose their interactions through inputs for providing context, and outputs for communicating events to other components
-
-* Check all internal dependencies.
-  * For custom classes or interfaces used in components or service, check whether they depend on additional classes or interfaces that also need to be migrated
-  * Similarly, if your library code depends on a service, that service needs to be migrated
-  * If your library code or its templates depend on other libraries \(such as Angular Material, for instance\), you must configure your library with those dependencies
-
-* Consider how you provide services to client applications.
-
-  * Services should declare their own providers, rather than declaring providers in the NgModule or a component.
-        Declaring a provider makes that service *tree-shakable*.
-        This practice lets the compiler leave the service out of the bundle if it never gets injected into the application that imports the library.
-        For more about this, see [Tree-shakable providers](guide/di/lightweight-injection-tokens).
-
-  * If you register global service providers or share providers across multiple NgModules, use the [`forRoot()` and `forChild()` design patterns](guide/ngmodules/singleton-services) provided by the [RouterModule](api/router/RouterModule)
-  * If your library provides optional services that might not be used by all client applications, support proper tree-shaking for that case by using the [lightweight token design pattern](guide/di/lightweight-injection-tokens)
-
-## Integrating with the CLI using code-generation schematics
-
-A library typically includes *reusable code* that defines components, services, and other Angular artifacts \(pipes, directives\) that you import into a project.
-A library is packaged into an npm package for publishing and sharing.
-This package can also include schematics that provide instructions for generating or transforming code directly in your project, in the same way that the CLI creates a generic new component with `ng generate component`.
-A schematic that is packaged with a library can, for example, provide the Angular CLI with the information it needs to generate a component that configures and uses a particular feature, or set of features, defined in that library.
-One example of this is [Angular Material's navigation schematic](https://material.angular.io/guide/schematics#navigation-schematic) which configures the CDK's [BreakpointObserver](https://material.angular.io/cdk/layout/overview#breakpointobserver) and uses it with Material's [MatSideNav](https://material.angular.io/components/sidenav/overview) and [MatToolbar](https://material.angular.io/components/toolbar/overview) components.
-
-Create and include the following kinds of schematics:
-
-* Include an installation schematic so that `ng add` can add your library to a project
-* Include generation schematics in your library so that `ng generate` can scaffold your defined artifacts \(components, services, tests\) in a project
-* Include an update schematic so that `ng update` can update your library's dependencies and provide migrations for breaking changes in new releases
-
-What you include in your library depends on your task.
-For example, you could define a schematic to create a dropdown that is pre-populated with canned data to show how to add it to an application.
-If you want a dropdown that would contain different passed-in values each time, your library could define a schematic to create it with a given configuration.
-Developers could then use `ng generate` to configure an instance for their own application.
-
-Suppose you want to read a configuration file and then generate a form based on that configuration.
-If that form needs additional customization by the developer who is using your library, it might work best as a schematic.
-However, if the form will always be the same and not need much customization by developers, then you could create a dynamic component that takes the configuration and generates the form.
-In general, the more complex the customization, the more useful the schematic approach.
-
-For more information, see [Schematics Overview](tools/cli/schematics) and [Schematics for Libraries](tools/cli/schematics-for-libraries).
+* see
+  * [Schematics Overview](../cli/schematics)
+  * [Schematics for Libraries](../cli/schematics-for-libraries)
 
 ## Publishing your library
 
@@ -124,36 +128,33 @@ For more information, see [Schematics Overview](tools/cli/schematics) and [Schem
   npm publish  
   ```
 
-## Managing assets in a library
+## Library's assets
 
-In your Angular library, the distributable can include additional assets like theming files, Sass mixins, or documentation \(like a changelog\).
-For more information [copy assets into your library as part of the build](https://github.com/ng-packagr/ng-packagr/blob/master/docs/copy-assets.md) and [embed assets in component styles](https://github.com/ng-packagr/ng-packagr/blob/master/docs/embed-assets-css.md).
-
-IMPORTANT: When including additional assets like Sass mixins or pre-compiled CSS.
-You need to add these manually to the conditional ["exports"](tools/libraries/angular-package-format#quotexportsquot) in the `package.json` of the primary entrypoint.
-
-`ng-packagr` will merge handwritten `"exports"` with the auto-generated ones, allowing for library authors to configure additional export subpaths, or custom conditions.
-
-<docs-code language="json">
-
-"exports": {
-  ".": {
-    "sass": "./_index.scss",
-  },
-  "./theming": {
-    "sass": "./_theming.scss"
-  },
-  "./prebuilt-themes/indigo-pink.css": {
-    "style": "./prebuilt-themes/indigo-pink.css"
-  }
-}
-
-</docs-code>
-
-The above is an extract from the [@angular/material](https://unpkg.com/browse/@angular/material/package.json) distributable.
+* | library's npm package,
+  * 👀you can include additional assets (_Example:_ theming files, Sass mixins, or documentation \(like a changelog\)) 👀
+    * see
+      * [copy assets | your library -- as part of the -- build](https://github.com/ng-packagr/ng-packagr/blob/master/docs/copy-assets.md)
+      * [embed assets | component styles](https://github.com/ng-packagr/ng-packagr/blob/master/docs/embed-assets-css.md)
+    * ⚠️if you include ADDITIONAL assets (_Example:_ Sass mixins or pre-compiled CSS) -> add them MANUALLY | [`package.json`'s "exports"](angular-package-format.md) ⚠️
+      * 👀`ng-packagr` -- will merge -- handwritten `"exports"` + auto-generated ones 👀
+      * _Example:_ [@angular/material](https://unpkg.com/browse/@angular/material/package.json) distributable
+        ```.json, tittle=package.json
+            "exports": {
+                ".": {
+                "sass": "./_index.scss",
+                },
+                "./theming": {
+                "sass": "./_theming.scss"
+                },
+                "./prebuilt-themes/indigo-pink.css": {
+                "style": "./prebuilt-themes/indigo-pink.css"
+                }
+            }
+        ```
 
 ## Peer dependencies
 
+* TODO:
 Angular libraries should list any `@angular/*` dependencies the library depends on as peer dependencies.
 This ensures that when modules ask for Angular, they all get the exact same module.
 If a library lists `@angular/core` in `dependencies` instead of `peerDependencies`, it might get a different Angular module instead, which would cause your application to break.
