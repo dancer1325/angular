@@ -82,20 +82,11 @@
 
 ### `imports`
 
-* TODO:
-Components declared in an NgModule may depend on other components, directives, and pipes. Add these dependencies to the `imports` property of the `@NgModule` metadata.
-
-```typescript
-@NgModule({
-  /* ... */
-  // CustomMenu and CustomMenuItem depend on the PopupTrigger and SelectorIndicator components.
-  imports: [PopupTrigger, SelectionIndicator],
-  declarations: [CustomMenu, CustomMenuItem],
-})
-export class CustomMenuModule { }
-```
-
-The `imports` array accepts other NgModules, as well as standalone components, directives, and pipes.
+* uses
+  * `NgModule`'s `declarations` components -- depend on -- `NgModule`'s `imports` components, directives and pipes 
+* ALLOWED values
+  * OTHER NgModules,
+  * standalone components, directives, and pipes
 
 ### `exports`
 
