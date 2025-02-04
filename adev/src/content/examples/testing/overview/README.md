@@ -23,6 +23,14 @@
 
 * -- via -- [Karma](https://karma-runner.github.io) test runner
 * `ng test`
+  * Problems:
+    * Problem1: "An unhandled exception occurred: error TS500: Error: ENOENT: no such file or directory, stat"
+      * Attempt1: `npm install`
+      * Attempt2: `rm -rf node_modules`, `rm -rf node_modules`, `npm install` & `ng test`
+      * Attempt3: `npm cache clean --force` & `ng cache clean`
+      * Attempt4: `rm -rf .angular/cache/`
+      * Attempt5: `npx ng cache clean`
+      * Solution: TODO:
 
 ## Running end-to-end tests
 
