@@ -30,6 +30,7 @@
       * Attempt3: `npm cache clean --force` & `ng cache clean`
       * Attempt4: `rm -rf .angular/cache/`
       * Attempt5: `npx ng cache clean`
+      * Attempt6: `ng generate config karma` -> create "karma.conf.json"
       * Solution: TODO:
 
 ## Running end-to-end tests
