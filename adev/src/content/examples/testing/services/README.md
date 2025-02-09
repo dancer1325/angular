@@ -31,6 +31,8 @@
       * Attempt4: `rm -rf .angular/cache/`
       * Attempt5: `npx ng cache clean`
       * Attempt6: `ng generate config karma` -> create "karma.conf.json"
+      * Attempt7: `./node_modules/karma/bin/karma start`
+        * == start Karma
       * Solution: TODO:
 
 ## Running end-to-end tests
