@@ -1,54 +1,41 @@
 # Testing services
 
-To check that your services are working as you intend, you can write tests specifically for them.
+## Testing WITHOUT Angular testing utilities 
 
-Services are often the smoothest files to unit test.
-Here are some synchronous and asynchronous unit tests of the `ValueService` written without assistance from Angular testing utilities.
+* _Example:_ [here](../../examples/testing/services/src/app/value.service.spec.ts)
 
-<docs-code header="app/demo/demo.spec.ts" path="adev/src/content/examples/testing/src/app/demo/demo.spec.ts" visibleRegion="ValueService"/>
+## Services / dependencies -- WITHOUT -- Angular testing functionalities
 
-## Services with dependencies
+* ways
+  * real service
+    * 👀if there are SEVERAL services to inject -> NOT recommended 👀
+  * fake service
+  * create a [spy](https://jasmine.github.io/tutorials/your_first_suite#section-Spies)
+    * spy == recommended way to mock a service
+* recommendations
+  * if there are SEVERAL 
+* _Example:_ [`MasterService`](../../examples/testing/services/src/app/master.service.spec.ts)
 
-Services often depend on other services that Angular injects into the constructor.
-In many cases, you can create and *inject* these dependencies by hand while calling the service's constructor.
+* recommendations
+  * 👀use Angular's `TestBed` rather than this approach 👀 
+    * Reason: 🧠ALWAYS inject services | application classes -- via -- Angular dependency injection 🧠
 
-The `MasterService` is a simple example:
+## Testing services -- via -- `TestBed`
 
-<docs-code header="app/demo/demo.ts" path="adev/src/content/examples/testing/src/app/demo/demo.ts" visibleRegion="MasterService"/>
-
-`MasterService` delegates its only method, `getValue`, to the injected `ValueService`.
-
-Here are several ways to test it.
-
-<docs-code header="app/demo/demo.spec.ts" path="adev/src/content/examples/testing/src/app/demo/demo.spec.ts" visibleRegion="MasterService"/>
-
-The first test creates a `ValueService` with `new` and passes it to the `MasterService` constructor.
-
-However, injecting the real service rarely works well as most dependent services are difficult to create and control.
-
-Instead, mock the dependency, use a dummy value, or create a [spy](https://jasmine.github.io/tutorials/your_first_suite#section-Spies) on the pertinent service method.
-
-HELPFUL: Prefer spies as they are usually the best way to mock services.
-
-These standard testing techniques are great for unit testing services in isolation.
-
-However, you almost always inject services into application classes using Angular dependency injection and you should have tests that reflect that usage pattern.
-Angular testing utilities make it straightforward to investigate how injected services behave.
-
-## Testing services with the `TestBed`
-
-Your application relies on Angular [dependency injection (DI)](guide/di) to create services.
+* Angular creates -- via [dependency injection (DI)](guide/di), -- services
+* TODO:
 When a service has a dependent service, DI finds or creates that dependent service.
 And if that dependent service has its own dependencies, DI finds-or-creates them as well.
 
 As a service *consumer*, you don't worry about any of this.
 You don't worry about the order of constructor arguments or how they're created.
 
-As a service *tester*, you must at least think about the first level of service dependencies but you *can* let Angular DI do the service creation and deal with constructor argument order when you use the `TestBed` testing utility to provide and create services.
+As a service *tester*, you must at least think about the first level of service dependencies but you *can* let Angular DI do the service creation and
+deal with constructor argument order when you use the `TestBed` testing utility to provide and create services.
 
 ## Angular `TestBed`
 
-The `TestBed` is the most important of the Angular testing utilities.
+* 👀MOST important Angular testing utilities 👀
 The `TestBed` creates a dynamically-constructed Angular *test* module that emulates an Angular [@NgModule](guide/ngmodules).
 
 The `TestBed.configureTestingModule()` method takes a metadata object that can have most of the properties of an [@NgModule](guide/ngmodules).
@@ -103,7 +90,8 @@ Notice how the test uses [*destructuring assignment*](https://developer.mozilla.
 
 Many developers feel this approach is cleaner and more explicit than the traditional `beforeEach()` style.
 
-Although this testing guide follows the traditional style and the default [CLI schematics](https://github.com/angular/angular-cli) generate test files with `beforeEach()` and `TestBed`, feel free to adopt *this alternative approach* in your own projects.
+Although this testing guide follows the traditional style and the default [CLI schematics](https://github.com/angular/angular-cli) generate test files with `beforeEach()` and `TestBed`, 
+feel free to adopt *this alternative approach* in your own projects.
 
 ## Testing HTTP services
 
