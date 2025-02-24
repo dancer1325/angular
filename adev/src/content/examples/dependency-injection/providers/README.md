@@ -7,7 +7,7 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 * | root path,
   * `ng new final --directory=adev/src/content/examples/dependency-injection/providers`
 * | this path,
-  * `ng generate service Logger`
+  * `ng generate service Logger` & `ng generate service evenBetterLogger` & `ng generate service newLogger` & `ng generate service oldLogger` 
   * `ng generate component another`
 
 ## How to run local development server?

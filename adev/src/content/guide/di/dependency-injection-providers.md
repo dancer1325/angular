@@ -118,54 +118,18 @@ Capturing the factory provider in the exported variable, `heroServiceProvider`, 
 ## Using an `InjectionToken` object
 
 * `InjectionToken` object
-  * 👀== provider token -- for -- non-class dependencies 👀
+  * == provider token -- for -- 👀non-class dependencies 👀
   * `InjectionToken<OptionalTypeParameter>('tokenDescription');`
     * `OptionalTypeParameter` & `tokenDescription` specify the token's purpose 
-  * _Example:_
-    ```src/app/app.config.ts
-    import { InjectionToken } from '@angular/core';
-    
-    export interface AppConfig {
-      title: string;
-    }
-    
-    // defines a token, `APP_CONFIG`. of type `InjectionToken`
-    export const APP_CONFIG = new InjectionToken<AppConfig>('app.config description');
-    ```
-    register the dependency provider | component / use the `InjectionToken` object of `APP_CONFIG`
-    ```src/app/app.component.ts
-    const MY_APP_CONFIG_VARIABLE: AppConfig = {
-    title: 'Hello',
-    };
+  * uses
+    * inject the configuration object | constructor -- via -- `@Inject()` parameter decorator
 
-    providers: [{ provide: APP_CONFIG, useValue: MY_APP_CONFIG_VARIABLE }]
-    ```
-    inject the configuration object | constructor -- via -- `@Inject()` parameter decorator
-    ```src/app/app.component.ts
-    export class AppComponent {
-      constructor(@Inject(APP_CONFIG) config: AppConfig) {
-      this.title = config.title;
-      }
-    }
-    ```
-
-### Interfaces and DI
+### Interfaces & DI
 
 * `AppConfig` interface
   * | TypeScript,
     * supports typing
     * == design-time artifact != runtime representation, or token / DI can use  
-  * 👀plays NO role in DI 👀
+  * 👀| DI, plays NO role 👀
   * ❌interface can NOT be a token -> you can NOT inject it! ❌
     * Reason: 🧠 TypeScript -- transpiles to -- JavaScript -> interface disappears 🧠
-    * _Example:_ 
-      ```src/app/app.component.ts
-      // interface -- can NOT be used as -- provider token
-      [{ provide: AppConfig, useValue: MY_APP_CONFIG_VARIABLE })]
-      ```
-      ```src/app/app.component.ts
-      export class AppComponent {
-      // Can NOT inject using the interface as the parameter type
-        constructor(private config: AppConfig) {}
-      }
-      ```
