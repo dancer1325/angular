@@ -438,6 +438,8 @@ Several options can be used to fine-tune the optimization of an application.
 
 #### Styles optimization options
 
+* TODO:
+
 | Options          | Details                                                                                                                  | Value type | Default value |
 |:---              |:---                                                                                                                      |:---        |:---           |
 | `minify`         | Minify CSS definitions by removing extraneous whitespace and comments, merging identifiers, and minimizing values.       | `boolean`  | `true`        |
