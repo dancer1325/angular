@@ -97,10 +97,13 @@ The navigation paths are fixed, so you can assign a string as a one-time binding
 Had the navigation path been more dynamic, you could have bound to a template expression that returned an array of route link parameters; that is, the [link parameters array](guide/routing/common-router-tasks#link-parameters-array).
 The router resolves that array into a complete URL.
 
-## Active router links
+## Active router links -- `RouterLinkActive` --
 
-The `RouterLinkActive` directive toggles CSS classes for active `RouterLink` bindings based on the current `RouterState`.
+* := directive / 
+  * 👀apply specific CSS classes | active `RouterLink` bindings -- based on the -- CURRENT `RouterState` 👀
+* `routerLinkActive="cssClassName"`
 
+* TODO:
 On each anchor tag, you see a [property binding](guide/templates/property-binding) to the `RouterLinkActive` directive that looks like
 
 <docs-code hideCopy language="html">
@@ -123,8 +126,10 @@ Active route links cascade down through each level of the route tree, so parent 
 To override this behavior, bind to the `[routerLinkActiveOptions]` input binding with the `{ exact: true }` expression.
 By using `{ exact: true }`, a given `RouterLink` is only active if its URL is an exact match to the current URL.
 
-`RouterLinkActive` also allows you to easily apply the `aria-current` attribute to the active element, thus providing a more accessible experience for all users. For more information see the Accessibility Best Practices [Active links identification section](/best-practices/a11y#active-links-identification).
-
+* `routerLinkActive`'s `ariaCurrentWhenActive`
+  * == `aria-current` attribute | active element / provide a MORE accessible experience
+  * see Accessibility Best Practices [Active links identification section](../../best-practices/a11y#active-links-identification)
+ 
 ## Router state
 
 After the end of each successful navigation lifecycle, the router builds a tree of `ActivatedRoute` objects that make up the current state of the router.
