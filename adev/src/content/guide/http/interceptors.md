@@ -1,14 +1,25 @@
 # Interceptors
 
-`HttpClient` supports a form of middleware known as _interceptors_.
-
-TLDR: Interceptors are middleware that allows common patterns around retrying, caching, logging, and authentication to be abstracted away from individual requests.
-
-`HttpClient` supports two kinds of interceptors: functional and DI-based. Our recommendation is to use functional interceptors because they have more predictable behavior, especially in complex setups. Our examples in this guide use functional interceptors, and we cover [DI-based interceptors](#di-based-interceptors) in their own section at the end.
+* Interceptors
+  * == middleware / 
+    * -- supported by -- `HttpClient` /
+      * kinds of interceptors
+        * functional
+          * 👀recommended to use this one 👀
+            * Reason: 🧠| complex setups, MORE predictable behavior 🧠  
+        * DI-based 
+    * allows
+      * common patterns , / abstracted away from individual requests, around
+        * retrying,
+        * caching,
+        * logging,
+        * authentication
 
 ## Interceptors
 
-Interceptors are generally functions which you can run for each request, and have broad capabilities to affect the contents and overall flow of requests and responses. You can install multiple interceptors, which form an interceptor chain where each interceptor processes the request or response before forwarding it to the next interceptor in the chain.
+* TODO:
+Interceptors are generally functions which you can run for each request, and have broad capabilities to affect the contents and overall flow of requests and responses. 
+You can install multiple interceptors, which form an interceptor chain where each interceptor processes the request or response before forwarding it to the next interceptor in the chain.
 
 You can use interceptors to implement a variety of common patterns, such as:
 
