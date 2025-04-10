@@ -1,7 +1,9 @@
 # Debugging tests
 
-If your tests aren't working as you expect them to, you can inspect and debug them in the browser.
+* approach
+  * debug your tests | browser
 
+* TODO:
 Debug specs in the browser in the same way that you debug an application.
 
 1. Reveal the Karma browser window.

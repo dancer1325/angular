@@ -1,9 +1,11 @@
 # Component testing scenarios
 
-This guide explores common component testing use cases.
+* goal
+  * common component testing use cases
 
 ## Component binding
 
+* TODO:
 In the example application, the `BannerComponent` presents static title text in the HTML template.
 
 After a few changes, the `BannerComponent` presents a dynamic title by binding to the component's `title` property like this.

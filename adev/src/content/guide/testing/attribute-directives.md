@@ -1,4 +1,3 @@
-
 # Testing Attribute Directives
 
 An *attribute directive* modifies the behavior of an element, component or another directive.

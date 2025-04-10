@@ -1,9 +1,10 @@
 # Testing Pipes
 
-You can test [pipes](guide/templates/pipes) without the Angular testing utilities.
+* ❌NO need to use Angular testing utilities ❌
 
 ## Testing the `TitleCasePipe`
 
+* TODO:
 A pipe class has one method, `transform`, that manipulates the input value into a transformed output value.
 The `transform` implementation rarely interacts with the DOM.
 Most pipes have no dependence on Angular other than the `@Pipe` metadata and an interface.

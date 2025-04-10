@@ -1,55 +1,44 @@
 # Basics of testing components
 
-A component, unlike all other parts of an Angular application, combines an HTML template and a TypeScript class.
-The component truly is the template and the class *working together*.
-To adequately test a component, you should test that they work together as intended.
+* test a component approaches
+  * [Component DOM testing](#component-dom-testing)
+    * == test template + TypeScript class work TOGETHER as intended
+      * == 
+        * component state displays properly | appropriate times,
+        * simulate user interaction / affect to the component
+    * 👀MORE precise one 👀
+  * test ONLY TypeScript class
+    * == NO DOM involved == out of the scope
+      * component rendering 
+      * -- respond to -- user input and gestures
+      * -- integrate with -- its parent and child components
 
-Such tests require creating the component's host element in the browser DOM, as Angular does, and investigating the component class's interaction with the DOM as described by its template.
-
-The Angular `TestBed` facilitates this kind of testing as you'll see in the following sections.
-But in many cases, *testing the component class alone*, without DOM involvement, can validate much of the component's behavior in a straightforward, more obvious way.
+* _Example:_ [source code](../../examples/testing/componentsBasics)
 
 ## Component DOM testing
 
-A component is more than just its class.
-A component interacts with the DOM and with other components.
-Classes alone cannot tell you if the component is going to render properly, respond to user input and gestures, or integrate with its parent and child components.
-
-* Is `Lightswitch.clicked()` bound to anything such that the user can invoke it?
-* Is the `Lightswitch.message` displayed?
-* Can the user actually select the hero displayed by `DashboardHeroComponent`?
-* Is the hero name displayed as expected \(such as uppercase\)?
-* Is the welcome message displayed by the template of `WelcomeComponent`?
-
-These might not be troubling questions for the preceding simple components illustrated.
-But many components have complex interactions with the DOM elements described in their templates, causing HTML to appear and disappear as the component state changes.
-
-To answer these kinds of questions, you have to create the DOM elements associated with the components, you must examine the DOM to confirm that component state displays properly at the appropriate times, and you must simulate user interaction with the screen to determine whether those interactions cause the component to behave as expected.
-
-To write these kinds of test, you'll use additional features of the `TestBed` as well as other testing helpers.
+* requirements
+  * create the component's host element | browser DOM
+    * == Angular does
+    * == DOM elements -- associated with the -- components 
+  * test component class's interaction -- with the -- DOM
+* -- via -- `TestBed` + OTHER testing helpers
 
 ### CLI-generated tests
 
-The CLI creates an initial test file for you by default when you ask it to generate a new component.
+* `ng generate component componentName` -> 💡creates an INITIAL test file 💡
 
-For example, the following CLI command generates a `BannerComponent` in the `app/banner` folder \(with inline template and styles\):
-
-<docs-code language="shell">
-
-ng generate component banner --inline-template --inline-style --module app
-
-</docs-code>
-
-It also generates an initial test file for the component, `banner-external.component.spec.ts`, that looks like this:
-
-<docs-code header="app/banner/banner-external.component.spec.ts (initial)" path="adev/src/content/examples/testing/src/app/banner/banner-initial.component.spec.ts" visibleRegion="v1"/>
-
-HELPFUL: Because `compileComponents` is asynchronous, it uses the [`waitForAsync`](api/core/testing/waitForAsync) utility function imported from `@angular/core/testing`.
-
-Refer to the [waitForAsync](guide/testing/components-scenarios#waitForAsync) section for more details.
+* `TestBed.compileComponents`
+  * asynchronous -- thanks to -- wrapped it by 
+    * | old versions,
+      * -- via -- [`@angular/core/testing` `waitForAsync`](api/core/testing/waitForAsync)
+        * see [waitForAsync](components-scenarios.md)
+    * | NEW versions,
+      * `async` JS
 
 ### Reduce the setup
 
+* TODO:
 Only the last three lines of this file actually test the component and all they do is assert that Angular can create the component.
 
 The rest of the file is boilerplate setup code anticipating more advanced tests that *might* become necessary if the component evolves into something substantial.
