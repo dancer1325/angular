@@ -27,14 +27,18 @@ The structural directive can wait for the data to become available and then rend
 
 HELPFUL: Note that Angular's `<ng-template>` element defines a template that doesn't render anything by default, if you just wrap elements in an `<ng-template>` without applying a structural directive those elements will not be rendered.
 
-For more information, see the [ng-template API](api/core/ng-template) documentation.
+* see the [ng-template API](api/core/ng-template)
 
 ## Structural directive shorthand
 
-Angular supports a shorthand syntax for structural directives which avoids the need to explicitly author an `<ng-template>` element.
-
-Structural directives can be applied directly on an element by prefixing the directive attribute selector with an asterisk (`*`), such as `*select`. 
-Angular transforms the asterisk in front of a structural directive into an `<ng-template>` that hosts the directive and surrounds the element and its descendants.
+* shorthand syntax -- `*structuralDirectiveName` --
+  * ⚠️ONLY valid | STRUCTURAL Directive ⚠️
+  * 👀avoids explicitly author an `<ng-template>` element 👀
+  * _Example:_ `*select` 
+  * how does it work under the hood?
+    * 👀`*` -- is transformed by Angular into a -- `<ng-template>` 👀/
+      * hosts the directive
+      * surrounds the element & its descendants
 
 You can use this with `SelectDirective` as follows:
 
