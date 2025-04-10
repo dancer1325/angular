@@ -294,18 +294,5 @@ npm link dist/my-lib
 
 ### Run the schematic
 
-Now that your library is installed, run the schematic using the `ng generate` command.
-
-<docs-code language="shell">
-
-ng generate my-lib:my-service --name my-data
-
-</docs-code>
-
-In the console, you see that the schematic was run and the `my-data.service.ts` file was created in your application folder.
-
-<docs-code language="shell" hideCopy>
-
-CREATE src/app/my-data.service.ts (208 bytes)
-
-</docs-code>
+* `ng generate my-lib:my-service --name my-data`
+  * `my-data.service.ts` created | your application folder
