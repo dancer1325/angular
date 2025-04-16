@@ -15,45 +15,18 @@
 * | MINOR Angular versions,
   * Angular CLI -- is released separately to -- Angular
 
-* `npm install -g` 
-
-* [Angular CLI GitHub releases](https://github.com/angular/angular-cli/releases)
+* `npm install -g`
 
 ## Basic workflow
 
-* TODO:
-Invoke the tool on the command line through the `ng` executable.
-Online help is available on the command line.
-Enter the following to list commands or options for a given command \(such as [new](cli/new)\) with a short description.
-
-<code-example format="shell" language="shell">
-
-ng --help
-ng new --help
-
-</code-example>
-
-To create, build, and serve a new, basic Angular project on a development server, go to the parent directory of your new workspace use the following commands:
-
-<code-example format="shell" language="shell">
-
-ng new my-first-project
-cd my-first-project
-ng serve
-
-</code-example>
-
-In your browser, open http://localhost:4200/ to see the new application run.
-When you use the [ng serve](cli/serve) command to build an application and serve it locally, the server automatically rebuilds the application and reloads the page when you change any of the source files.
-
-<div class="docs-alert docs-alert-helpful">
-
-When you run `ng new my-first-project` a new folder, named `my-first-project`, will be created in the current working directory.
-Since you want to be able to create files inside that folder, make sure you have sufficient rights in the current working directory before running the command.
-
-If the current working directory is not the right place for your project, you can change to a more appropriate directory by running `cd <path-to-other-directory>`.
-
-</div>
+* 
+  ```
+  ng new my-first-project
+  cd my-first-project
+  ng serve
+  ```
+* | your browser,
+  * open http://localhost:4200/
 
 ## Workspaces and project files
 
@@ -89,27 +62,22 @@ Option names in the configuration file must use [camelCase](guide/glossary#case-
 
 ## CLI command-language syntax
 
-Command syntax is shown as follows:
-
-`ng` *<command-name>* *<required-arg>* [*optional-arg*] `[options]`
-
-*   Most commands, and some options, have aliases.
-    Aliases are shown in the syntax statement for each command.
-
-*   Option names are prefixed with a double dash \(`--`\) characters.
-    Option aliases are prefixed with a single dash \(`-`\) character.
-    Arguments are not prefixed.
-    For example:
-
-    <code-example format="shell" language="shell">
-
+* `ng <command-name> <required-arg> [*optional-arg*] [options]`
+  * aliases
+    * EXIST | 
+      * MOST commands
+      * SOME options  
+    * shown | syntax statement / EACH command
+  * Option names
+    * prefixed with `--`
+  * Option aliases
+    * prefixed with `-`
+  * arguments NOT prefixed
+    ```
     ng build my-app -c production
-
-    </code-example>
-
-*   Typically, the name of a generated artifact can be given as an argument to the command or specified with the `--name` option.
-
-*   Arguments and option names must be given in [dash-case](guide/glossary#case-types).
+    ```
+* TODO: Typically, the name of a generated artifact can be given as an argument to the command or specified with the `--name` option.
+* Arguments and option names must be given in [dash-case](guide/glossary#case-types).
     For example: `--my-option-name`
 
 ### Boolean options
