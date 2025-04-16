@@ -1,45 +1,38 @@
 # Deployment
 
-When you are ready to deploy your Angular application to a remote server, you have various options.
+* goal
+  * ways to deploy your Angular application | remote server
 
-## Automatic deployment with the CLI
+## AUTOMATIC deployment -- via -- CLI == `ng deploy` 
 
-The Angular CLI command `ng deploy` executes the `deploy` [CLI builder](tools/cli/cli-builder) associated with your project.
-A number of third-party builders implement deployment capabilities to different platforms.
-You can add any of them to your project with `ng add`.
+* `ng deploy`
+  * executes the `deploy` [CLI builder](tools/cli/cli-builder) / -- associated with -- your project
+    * 👀EXIST SEVERAL third-party builders / implement deployment | DIFFERENT platforms👀
+      * if you add a builder (-- via -- `ng add`) -> AUTOMATICALLY add a `deploy` section | your workspace configuration (`angular.json` file)
+    * _Example:_ [Firebase](https://firebase.google.com/)
+      * create a Firebase account
+      * 
+        ```
+        ng add @angular/fire
+        
+        ng deploy
+        # prompt -- to select a -- Firebase project | deploy 
+        ```
+  * if you want to deploy | self-managed server OR NO EXIST builder / your cloud platform -> 
+    * [create a builder](tools/cli/cli-builder) / allows you to use `ng deploy` command, OR
+    * [MANUALLY deploy your application](#manual-deployment-to-a-remote-server)
 
-When you add a package with deployment capability, it will automatically update your workspace configuration (`angular.json` file) with a `deploy` section for the selected project.
-You can then use the `ng deploy` command to deploy that project.
-
-For example, the following command automatically deploys a project to [Firebase](https://firebase.google.com/).
-
-<docs-code language="shell">
-
-ng add @angular/fire
-ng deploy
-
-</docs-code>
-
-The command is interactive.
-In this case, you must have or create a Firebase account and authenticate using it.
-The command prompts you to select a Firebase project for deployment before building your application and uploading the production assets to Firebase.
-
-The table below lists tools which implement deployment functionality to different platforms.
-The `deploy` command for each package may require different command line options.
-You can read more by following the links associated with the package names below:
-
-| Deployment to                                                     | Setup Command                                                                              |
-|:---                                                               |:---                                                                                  |
-| [Firebase hosting](https://firebase.google.com/docs/hosting)      | [`ng add @angular/fire`](https://npmjs.org/package/@angular/fire)                           |
-| [Vercel](https://vercel.com/solutions/angular)                    | [`vercel init angular`](https://github.com/vercel/vercel/tree/main/examples/angular) |
-| [Netlify](https://www.netlify.com)                                | [`ng add @netlify-builder/deploy`](https://npmjs.org/package/@netlify-builder/deploy)       |
-| [GitHub pages](https://pages.github.com)                          | [`ng add angular-cli-ghpages`](https://npmjs.org/package/angular-cli-ghpages)               |
-| [Amazon Cloud S3](https://aws.amazon.com/s3/?nc2=h_ql_prod_st_s3) | [`ng add @jefiozie/ngx-aws-deploy`](https://www.npmjs.com/package/@jefiozie/ngx-aws-deploy) |
-
-If you're deploying to a self-managed server or there's no builder for your favorite cloud platform, you can either [create a builder](tools/cli/cli-builder) that allows you to use the `ng deploy` command, or read through this guide to learn how to manually deploy your application.
+  | Deployment \|                                                     | Setup Command                                                                              |
+  |:------------------------------------------------------------------|:---                                                                                  |
+  | [Firebase hosting](https://firebase.google.com/docs/hosting)      | [`ng add @angular/fire`](https://npmjs.org/package/@angular/fire)                           |
+  | [Vercel](https://vercel.com/solutions/angular)                    | [`vercel init angular`](https://github.com/vercel/vercel/tree/main/examples/angular) |
+  | [Netlify](https://www.netlify.com)                                | [`ng add @netlify-builder/deploy`](https://npmjs.org/package/@netlify-builder/deploy)       |
+  | [GitHub pages](https://pages.github.com)                          | [`ng add angular-cli-ghpages`](https://npmjs.org/package/angular-cli-ghpages)               |
+  | [Amazon Cloud S3](https://aws.amazon.com/s3/?nc2=h_ql_prod_st_s3) | [`ng add @jefiozie/ngx-aws-deploy`](https://www.npmjs.com/package/@jefiozie/ngx-aws-deploy) |
 
 ## Manual deployment to a remote server
 
+* TODO:
 To manually deploy your application, create a production build and copy the output directory to a web server or content delivery network (CDN).
 By default, `ng build` uses the `production` configuration.
 If you have customized your build configurations, you may want to confirm [production optimizations](tools/cli/deployment#production-optimizations) are being applied before deploying.
@@ -120,15 +113,16 @@ Building your application with `ng build` by default uses the `production` confi
 
 ## `--deploy-url`
 
-`--deploy-url` is a command line option used to specify the base path for resolving relative URLs for assets such as images, scripts, and style sheets at *compile* time.
-
-<docs-code language="shell">
-
-ng build --deploy-url /my/assets
-
-</docs-code>
-
-The effect and purpose of `--deploy-url` overlaps with [`<base href>`](guide/routing/common-router-tasks). Both can be used for initial scripts, stylesheets, lazy scripts, and css resources.
-
-Unlike `<base href>` which can be defined in a single place at runtime, the `--deploy-url` needs to be hard-coded into an application at build time.
-Prefer `<base href>` where possible.
+* == CL option /
+  * ⭐️== base path -- for resolving -- relative URLs of assets (_Example:_ images, scripts, and style sheets | compile time) ⭐️
+  * _Example:_ `ng build --deploy-url /my/assets`
+  * vs [`<base href>`](guide/routing/common-router-tasks) 
+    * COMMON use cases
+      * initial scripts, stylesheets, lazy scripts, and css resources
+    * DIFFERENT way to configure
+      * `<base href>`
+        * define | 1! | runtime
+      * `--deploy-url`
+        * hard-code | application | build time 
+    * recommendation
+      * 💡use `<base href>` 💡
