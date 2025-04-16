@@ -49,10 +49,6 @@
 * [Angular Command Line (CLI)][cli]
 * [Angular Material][angularmaterial]
 
-## Changelog
-
-* [Changelog][changelog]
-
 ## Built-in scripts
 
 * tools used
@@ -61,15 +57,6 @@
     * build targets
     * run tests
 * 👀SOME should be executed | [adev](adev/README.md#built-in-scripts) 👀
-
-## Community
-
-- [X (formerly Twitter)][X (formerly Twitter)]
-- [Discord][discord]
-- [Gitter][gitter]
-- [YouTube][youtube]
-- [StackOverflow][stackoverflow]
-- Find a Local [Meetup][meetup]
 
 [contributing]: CONTRIBUTING.md
 [changelog]: CHANGELOG.md
