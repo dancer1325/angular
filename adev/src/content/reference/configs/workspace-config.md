@@ -440,22 +440,19 @@ Several options can be used to fine-tune the optimization of an application.
 
 * TODO:
 
-| Options          | Details                                                                                                                  | Value type | Default value |
-|:---              |:---                                                                                                                      |:---        |:---           |
-| `minify`         | Minify CSS definitions by removing extraneous whitespace and comments, merging identifiers, and minimizing values.       | `boolean`  | `true`        |
-| `inlineCritical` | Extract and inline critical CSS definitions to improve [First Contentful Paint](https://web.dev/first-contentful-paint). | `boolean`  | `true`        |
-| `removeSpecialComments` | Remove comments in global CSS that contains `@license` or `@preserve` or that starts with `//!` or `/*!`.         | `boolean`  | `true`        |
+| Options          | Details                                                                                                               | Value type | Default value |
+|:---              |:----------------------------------------------------------------------------------------------------------------------|:---        |:---           |
+| `minify`         | Minify CSS definitions by removing extraneous whitespace and comments, merging identifiers, and minimizing values.    | `boolean`  | `true`        |
+| `inlineCritical` | Extract & inline critical CSS definitions / improve [First Contentful Paint](https://web.dev/first-contentful-paint). | `boolean`  | `true`        |
+| `removeSpecialComments` | Remove comments in global CSS that contains `@license` or `@preserve` or that starts with `//!` or `/*!`.             | `boolean`  | `true`        |
 
 #### Fonts optimization options
 
-| Options  | Details                                                                                                                                                                                                             | Value type | Default value |
-|:---      |:---                                                                                                                                                                                                                 |:---        |:---           |
-| `inline` | Reduce [render blocking requests](https://web.dev/render-blocking-resources) by inlining external Google Fonts and Adobe Fonts CSS definitions in the application's HTML index file. This requires internet access. | `boolean`  | `true`        |
+| Options  | Details                                                                                                                                                                                                                 | Value type                                                         | Default value |
+|:---      |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------|:---           |
+| `inline` | reduce [render blocking requests](https://web.dev/render-blocking-resources) -- by -- inlining external Google Fonts & Adobe Fonts CSS definitions \| application's HTML index file <br/> requirements: internet access | `boolean`  | `true`        |
 
-You can supply a value such as the following to apply optimization to one or the other:
-
-<docs-code language="json">
-
+```
 {
   "projects": {
     "my-app": {
@@ -477,8 +474,7 @@ You can supply a value such as the following to apply optimization to one or the
     }
   }
 }
-
-</docs-code>
+```
 
 ### Source map configuration
 
