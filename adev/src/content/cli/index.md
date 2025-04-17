@@ -2,7 +2,7 @@
 
 * Angular CLI
   * == CL interface tool
-  * uses about Angular applications 
+  * allows, about Angular applications 
     * initialize,
     * develop,
     * scaffold,
@@ -13,7 +13,7 @@
 * | MAJOR Angular version,
   * Angular CLI version == Angular version
 * | MINOR Angular versions,
-  * Angular CLI -- is released separately to -- Angular
+  * ⚠️Angular CLI -- is released separately to -- Angular ⚠️
 
 * `npm install -g`
 
@@ -28,21 +28,34 @@
 * | your browser,
   * open http://localhost:4200/
 
-## Workspaces and project files
+## Workspaces & project files
 
-The [ng new](cli/new) command creates an *Angular workspace* folder and generates a new application skeleton.
-A workspace can contain multiple applications and libraries.
-The initial application created by the [ng new](cli/new) command is at the top level of the workspace.
-When you generate an additional application or library in a workspace, it goes into a `projects/` subfolder.
+* [`ng new`](cli/new)
+  * creates an Angular workspace folder
+  * generates a NEW application skeleton 
+    * == root module + root component + root template
 
-A newly generated application contains the source files for a root module, with a root component and template.
-Each application has a `src` folder that contains the logic, data, and assets.
+* workspace
+  * == MULTIPLE applications & libraries /
+    * initial application / created by [`ng new`](cli/new)
+      * is | top level of the workspace
+    * if you generate an ADDITIONAL application OR library | workspace -> goes | `projects/` subfolder
+    * applications'
+      * `src/` == logic + data + assets
 
-You can edit the generated files directly, or add to and modify them using CLI commands.
-Use the [ng generate](cli/generate) command to add new files for additional components and services, and code for new pipes, directives, and so on.
-Commands such as [add](cli/add) and [generate](cli/generate), which create or operate on applications and libraries, must be executed from within a workspace or project folder.
+* [`ng generate`](cli/generate)
+  * add NEW 
+    * components
+    * services
+    * pipes,
+    * directives,
+  * ALTERNATIVE 
+    * add MANUALLY
 
-*   See more about the [Workspace file structure](guide/file-structure).
+* [`ng add`](cli/add) & [`ng generate`](cli/generate) 's requirements
+  * execute | workspace OR project folder
+
+* [MORE here](guide/file-structure)
 
 ### Workspace and project configuration
 
@@ -82,27 +95,26 @@ Option names in the configuration file must use [camelCase](guide/glossary#case-
 
 ### Boolean options
 
-Boolean options have two forms: `--this-option` sets the flag to `true`, `--no-this-option` sets it to `false`.
-If neither option is supplied, the flag remains in its default state, as listed in the reference documentation.
+* forms
+  * `--this-option`
+    * == set to `true`
+  * `--no-this-option`
+    * == set to `false`
 
 ### Array options
 
-Array options can be provided in two forms: `--option value1 value2` or `--option value1 --option value2`.
-
-### Relative paths
-
-Options that specify files can be given as absolute paths, or as paths relative to the current working directory, which is generally either the workspace or project root.
+* forms
+  * `--option value1 value2` OR
+  * `--option value1 --option value2`
 
 ### Schematics
 
-The [ng generate](cli/generate) and [ng add](cli/add) commands take, as an argument, the artifact or library to be generated or added to the current project.
-In addition to any general options, each artifact or library defines its own options in a *schematic*.
-Schematic options are supplied to the command in the same format as immediate command options.
-
-<!-- links -->
-
-<!-- external links -->
-
-<!-- end links -->
+* [ng generate](cli/generate) OR [ng add](cli/add) commands'
+  * argument
+    * artifact OR library / generated OR added | current project
+* EACH artifact or library
+  * defines its OWN options | a schematic
+    * == Schematic options
+    * ' format to supply == IMMEDIATE command options' format to supply
 
 @reviewed 2022-02-28
