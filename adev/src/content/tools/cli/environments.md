@@ -1,59 +1,54 @@
 # Configuring application environments
 
-You can define different named build configurations for your project, such as `development` and `staging`, with different defaults.
+* goal
+  * define DIFFERENT named build configurations | your project 
+    * _Example:_ `development`, `staging`, ... 
+    * / DIFFERENT defaults | options / apply | builder targets
 
-Each named configuration can have defaults for any of the options that apply to the various builder targets, such as `build`, `serve`, and `test`.
-The [Angular CLI](tools/cli) `build`, `serve`, and `test` commands can then replace files with appropriate versions for your intended target environment.
+## Angular CLI configurations == `configurations`
 
-## Angular CLI configurations
-
-Angular CLI builders support a `configurations` object, which allows overwriting specific options for a builder based on the configuration provided on the command line.
-
-<docs-code language="json">
-
-{
-  "projects": {
-    "my-app": {
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:browser",
-          "options": {
-            // By default, disable source map generation.
-            "sourceMap": false
-          },
-          "configurations": {
-            // For the `debug` configuration, enable source maps.
-            "debug": {
-              "sourceMap": true
-            }
+* Angular CLI builders' `configurations`
+  * == object
+    * [here](https://github.com/dancer1325/angular-cli/blob/main/packages/angular_devkit/architect/src/targets-schema.json#L23-L27)
+  * allows
+    * ⚠️overwriting SPECIFIC options / builder -- based on the -- configuration provided | CL ⚠️
+  * _Example:_ `ng build --configuration debug`
+    ``` 
+    {
+      "projects": {
+        "my-app": {
+          "architect": {
+            "build": {
+              "builder": "@angular-devkit/build-angular:browser",
+              "options": {
+                // ⚠️By default, disable source map generation⚠️
+                "sourceMap": false
+              },
+              "configurations": {
+                // ⚠️| `debug` configuration, enable source maps⚠️
+                "debug": {
+                  "sourceMap": true
+                }
+              }
+            },
+            …
           }
-        },
-        …
+        }
       }
     }
-  }
-}
-
-</docs-code>
-
-You can choose which configuration to use with the `--configuration` option.
-
-<docs-code language="shell">
-
-ng build --configuration debug
-
-</docs-code>
-
-Configurations can be applied to any Angular CLI builder. Multiple configurations can be specified with a comma separator. The configurations are applied in order, with conflicting options using the value from the last configuration.
-
-<docs-code language="shell">
-
-ng build --configuration debug,production,customer-facing
-
-</docs-code>
+    ```
+  * uses
+    * | ANY Angular CLI builder 
+  * if you want to apply MULTIPLE configurations -> specify -- with a -- `,` separator /
+    * applied in order
+    * if there are conflicting options -> use LAST configuration's value
+    ```
+    ng build --configuration debug,production,customer-facing
+    ```
 
 ## Configure environment-specific defaults
 
+* TODO:
 `@angular-devkit/build-angular:browser` supports file replacements, an option for substituting source files before executing a build.
 Using this in combination with `--configuration` provides a mechanism for configuring environment-specific data in your application.
 
