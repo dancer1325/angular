@@ -1,0 +1,25 @@
+{
+  "name": "copybuilder",
+  "version": "1.0.0",
+  "description": "Custom cli builder which copy files | NEW location",
+  "builders": "builders.json",
+  "scripts": {
+    "build": "tsc",
+    "test": "ts-node node_modules/jasmine/bin/jasmine src/my-builder.spec.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@angular-devkit/architect": "^0.1902.8",
+    "@angular-devkit/core": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/jasmine": "^5.1.7",
+    "@types/node": "^22.14.1",
+    "jasmine": "^5.6.0",
+    "jasmine-node": "^3.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
