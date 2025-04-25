@@ -1,104 +1,128 @@
 # Ahead-of-time (AOT) compilation
 
-An Angular application consists mainly of components and their HTML templates.
-Because the components and templates provided by Angular cannot be understood by the browser directly, Angular applications require a compilation process before they can run in a browser.
+* goal
+  * compile your applications -- via -- AOT compiler / you can specify
+    * metadata &
+    * compiler options
 
-The Angular ahead-of-time (AOT) compiler converts your Angular HTML and TypeScript code into efficient JavaScript code during the build phase *before* the browser downloads and runs that code.
-Compiling your application during the build process provides a faster rendering in the browser.
+* Angular 
+  * compilation process of Angular's components & templates 
+    * | BEFORE running 
+    * Reason: 🧠can NOT be understood -- DIRECTLY, by the -- browser 🧠
+  * ahead-of-time (AOT) compiler
+    * | build phase / BEFORE browser downloads & runs the code,
+      * 💡Angular HTML & TypeScript code -- is converted into -- efficient JavaScript code 💡
 
-This guide explains how to specify metadata and apply available compiler options to compile your applications efficiently using the AOT compiler.
+| Reasons                                 | Details                                                                                                                                                                                                                 |
+|:----------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Faster rendering                        | browser -- downloads an -- application's pre-compiled version == WITHOUT waiting -- to compile the -- application first                                                                                                 |
+| Fewer asynchronous requests             | compiler -- inlines -- EXTERNAL HTML templates & CSS style sheets \| application JavaScript / <br/> &nbsp;&nbsp; eliminate separate ajax requests / those source files                                                  |
+| Smaller Angular framework download size | if the application is ALREADY compiled -> ❌NO need to download the Angular compiler ❌<br/> compiler's size == (NORMALLY) half of Angular's size                                                                         |
+| Detect template errors earlier          | \| build phase, AOT compiler can detects & reports template binding errors                                                                                                                                              |
+| Better security                         | FEWER injection attacks' opportunities <br/> &nbsp;&nbsp; Reason: 🧠HTML templates & Angular components -- are converted into -- JavaScript files🧠|
 
-HELPFUL: [Watch Alex Rickabaugh explain the Angular compiler](https://www.youtube.com/watch?v=anphffaCZrQ) at AngularConnect 2019.
-
-Here are some reasons you might want to use AOT.
-
-| Reasons                                 | Details |
-|:---                                     |:---     |
-| Faster rendering                        | With AOT, the browser downloads a pre-compiled version of the application. The browser loads executable code so it can render the application immediately, without waiting to compile the application first.                                       |
-| Fewer asynchronous requests             | The compiler *inlines* external HTML templates and CSS style sheets within the application JavaScript, eliminating separate ajax requests for those source files.                                                                                  |
-| Smaller Angular framework download size | There's no need to download the Angular compiler if the application is already compiled. The compiler is roughly half of Angular itself, so omitting it dramatically reduces the application payload.                                              |
-| Detect template errors earlier          | The AOT compiler detects and reports template binding errors during the build step before users can see them.                                                                                                                                      |
-| Better security                         | AOT compiles HTML templates and components into JavaScript files long before they are served to the client. With no templates to read and no risky client-side HTML or JavaScript evaluation, there are fewer opportunities for injection attacks. |
+* [Angular compiler explanation](https://www.youtube.com/watch?v=anphffaCZrQ)
+  * TODO:
 
 ## Choosing a compiler
 
-Angular offers two ways to compile your application:
+* ways to compile your Angular's application
 
-| Angular compile       | Details |
-|:---                   |:---     |
-| Just-in-Time \(JIT\)  | Compiles your application in the browser at runtime. This was the default until Angular 8.        |
-| Ahead-of-Time \(AOT\) | Compiles your application and libraries at build time. This is the default starting in Angular 9. |
+| Angular compile       | Details                                                                                   |
+|:----------------------|:------------------------------------------------------------------------------------------|
+| Just-in-Time \(JIT\)  | \| runtime, compiles your application \| browser <br/> by default, \| Angular 8-          |
+| Ahead-of-Time \(AOT\) | \| build time, compiles your application & libraries  <br/> by default, \| Angular v9+ |
 
-When you run the [`ng build`](cli/build) \(build only\) or [`ng serve`](cli/serve) \(build and serve locally\) CLI commands, the type of compilation \(JIT or AOT\) depends on the value of the `aot` property in your build configuration specified in `angular.json`.
-By default, `aot` is set to `true` for new CLI applications.
+* uses
+  * | [`ng build`](cli/build) (== ONLY build)
+  * | [`ng serve`](cli/serve) (== build & serve locally) 
 
-See the [CLI command reference](cli) and [Building and serving Angular apps](tools/cli/build) for more information.
+* way to specify
+  * `angular.json`'s `aot` property
+    * | Angular v9+
+      * by default, `aot=true`
 
 ## How AOT works
 
-The Angular AOT compiler extracts **metadata** to interpret the parts of the application that Angular is supposed to manage.
-You can specify the metadata explicitly in **decorators** such as `@Component()` and `@Input()`, or implicitly in the constructor declarations of the decorated classes.
-The metadata tells Angular how to construct instances of your application classes and interact with them at runtime.
+* extracts metadata 1! -- to interpret the -- Angular application's parts / supposed to manage
+  * ways to specify metadata
+    * | **decorators**
+      * _Example:_ `@Component()` & `@Input()`
+    * | decorated classes' constructor declarations
+  * metadata's information
+    * how to
+      * construct your application classes' instances
+      * interact your application classes' instances | runtime
 
-In the following example, the `@Component()` metadata object and the class constructor tell Angular how to create and display an instance of `TypicalComponent`.
-
-<docs-code language="typescript">
-
-@Component({
-  selector: 'app-typical',
-  template: '<div>A typical component for {{data.name}}</div>'
-})
-export class TypicalComponent {
-  @Input() data: TypicalData;
-  constructor(private someService: SomeService) { … }
-}
-
-</docs-code>
-
-The Angular compiler extracts the metadata *once* and generates a *factory* for `TypicalComponent`.
-When it needs to create a `TypicalComponent` instance, Angular calls the factory, which produces a new visual element, bound to a new instance of the component class with its injected dependency.
+* _Example:_
+  ```typescript
+  @Component({
+    selector: 'app-typical',
+    template: '<div>A typical component for {{data.name}}</div>'
+  })
+  export class TypicalComponent {
+    @Input() data: TypicalData;
+    constructor(private someService: SomeService) { … }
+  }
+  ```
+  * Angular compiler 
+    * -- extracts -- 1! the metadata 
+    * -- generates a -- factory for `TypicalComponent`
+      * if your Angular application needs to create a `TypicalComponent` instance -> Angular -- calls the -- factory /
+        * produces a NEW visual element,
+        * NEW element -- is bound to a -- NEW component class' instance + its injected dependency
 
 ### Compilation phases
 
-There are three phases of AOT compilation.
-
-|     | Phase                  | Details                                                                                                                                                                                                                                                                                                        |
-|:--- |:---                    |:---                                                                                                                                                                                                                                                                                                            |
-| 1   | code analysis          | In this phase, the TypeScript compiler and *AOT collector* create a representation of the source. The collector does not attempt to interpret the metadata it collects. It represents the metadata as best it can and records errors when it detects a metadata syntax violation.                              |
-| 2   | code generation        | In this phase, the compiler's `StaticReflector` interprets the metadata collected in phase 1, performs additional validation of the metadata, and throws an error if it detects a metadata restriction violation.                                                                                              |
-| 3   | template type checking | In this optional phase, the Angular *template compiler* uses the TypeScript compiler to validate the binding expressions in templates. You can enable this phase explicitly by setting the `strictTemplates` configuration option; see [Angular compiler options](reference/configs/angular-compiler-options). |
+|     | Phase                  | Details                                                                                                                                                                                                                                                                                                  |
+|:--- |:---                    |:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 1   | code analysis          | TypeScript compiler & AOT collector -- create a -- source's representation <br/> &nbsp;&nbsp; ❌NOT attempt to interpret the metadata ❌ <br/> if there is a metadata syntax violation -> records errors                                                                                                   |
+| 2   | code generation        | compiler's `StaticReflector` <br/> &nbsp;&nbsp; -- interprets the -- metadata / collected \| PREVIOUS phase <br/> &nbsp;&nbsp; performs ADDITIONAL validation of the metadata <br/> &nbsp;&nbsp; if it detects a metadata restriction violation -> throws an error                                       |
+| 3   | template type checking | OPTIONAL phase <br/> &nbsp;&nbsp; if you want to enable -> set `strictTemplates` configuration option <br/> Angular *template compiler* -- , via TypeScript compiler, validates the -- binding expressions \| templates <br/> see [Angular compiler options](reference/configs/angular-compiler-options) |
 
 ### Metadata restrictions
 
-You write metadata in a *subset* of TypeScript that must conform to the following general constraints:
+* write metadata | TypeScript's subset 
+  * required constraints
+    * limit [expression syntax](#expression-syntax-limitations) | JavaScript's supported subset
+    * | AFTER [code folding](#code-folding),
+      * ONLY reference exported symbols 
+    * call [functions supported](#supported-classes-and-functions) -- ONLY by the -- compiler
+    * Input/Outputs & data-bound class members -- MUST be -- public OR protected
+    * see [Angular: Writing AOT-friendly applications](https://medium.com/sparkles-blog/angular-writing-aot-friendly-applications-7b64c8afbe3f)
 
-* Limit [expression syntax](#expression-syntax-limitations) to the supported subset of JavaScript
-* Only reference exported symbols after [code folding](#code-folding)
-* Only call [functions supported](#supported-classes-and-functions) by the compiler
-* Input/Outputs and data-bound class members must be public or protected.For additional guidelines and instructions on preparing an application for AOT compilation, see [Angular: Writing AOT-friendly applications](https://medium.com/sparkles-blog/angular-writing-aot-friendly-applications-7b64c8afbe3f).
-
-HELPFUL: Errors in AOT compilation commonly occur because of metadata that does not conform to the compiler's requirements \(as described more fully below\).
-For help in understanding and resolving these problems, see [AOT Metadata Errors](tools/cli/aot-metadata-errors).
+* Errors | AOT compilation
+  * Reason: 🧠 COMMONLY, because metadata NOT meet compiler's requirements🧠
+  * see [AOT Metadata Errors](tools/cli/aot-metadata-errors)
 
 ### Configuring AOT compilation
 
-You can provide options in the [TypeScript configuration file](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) that controls the compilation process.
-See [Angular compiler options](reference/configs/angular-compiler-options) for a complete list of available options.
+* [TypeScript configuration file](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) -- controls the -- compilation process
+* see [Angular compiler options](reference/configs/angular-compiler-options)
 
 ## Phase 1: Code analysis
 
-The TypeScript compiler does some of the analytic work of the first phase.
-It emits the `.d.ts` *type definition files* with type information that the AOT compiler needs to generate application code.
-At the same time, the AOT **collector** analyzes the metadata recorded in the Angular decorators and outputs metadata information in **`.metadata.json`** files, one per `.d.ts` file.
+* TypeScript compiler 
+  * -- makes -- SOME analytic work
+  * -- emits -- `.d.ts` /
+    * type information -- , used by the AOT compiler, to generate -- application code
+* AOT **collector**
+  * analyzes the metadata recorded | Angular decorators
+  * outputs metadata information | **`.metadata.json`** files
+    * 1 / `.d.ts` file
 
-You can think of `.metadata.json` as a diagram of the overall structure of a decorator's metadata, represented as an [abstract syntax tree (AST)](https://en.wikipedia.org/wiki/Abstract_syntax_tree).
+* `.metadata.json`
+  * == decorator's metadata's OVERALL structure's diagram
+  * == [abstract syntax tree (AST)](https://en.wikipedia.org/wiki/Abstract_syntax_tree)
 
-HELPFUL: Angular's [schema.ts](https://github.com/angular/angular/blob/main/packages/compiler-cli/src/metadata/schema.ts) describes the JSON format as a collection of TypeScript interfaces.
+* Angular's [schema.ts](https://github.com/angular/angular/blob/main/packages/compiler-cli/src/metadata/schema.ts) 
+  * == JSON format == collection of TypeScript interfaces
 
 ### Expression syntax limitations
 
-The AOT collector only understands a subset of JavaScript.
-Define metadata objects with the following limited syntax:
+* AOT collector 
+  * ONLY understands JavaScript's a subset
+  * == metadata objects
 
 | Syntax                    | Example |
 |:---                       |:---     |
@@ -120,61 +144,53 @@ Define metadata objects with the following limited syntax:
 | Conditional operator      | `a ? b : c`                                                            |
 | Parentheses               | `(a+b)`                                                                |
 
-If an expression uses unsupported syntax, the collector writes an error node to the `.metadata.json` file.
-The compiler later reports the error if it needs that piece of metadata to generate the application code.
+* if an expression uses unsupported syntax -> AOT collector writes an error node | `.metadata.json` file
+  * AFTER,
+    * if compiler needs that piece of metadata -- to generate the -- application code -> compiler -- reports the -- error 
+  * 👀if you want `ngc` report syntax errors IMMEDIATELY (!= produce `.metadata.json` / has errors) -> set `strictMetadataEmit` option | TypeScript configuration file 👀
+    ```
+    "angularCompilerOptions": {
+      …
+      "strictMetadataEmit" : true
+    }
+    ```
+    * recommendations
+      * build libraries
 
-HELPFUL: If you want `ngc` to report syntax errors immediately rather than produce a `.metadata.json` file with errors, set the `strictMetadataEmit` option in the TypeScript configuration file.
+### NO arrow functions
 
-<docs-code language="json">
+* AOT compiler 
+  * ❌does NOT support
+    * [function expressions](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Operators/function)
+    * [arrow functions](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Functions/Arrow_functions) ❌
+    * Solution: 👀use export function 👀
+      * | Angular v5+,
+        * | emite .js, done AUTOMATICALLY 
 
-"angularCompilerOptions": {
-  …
-  "strictMetadataEmit" : true
-}
-
-</docs-code>
-
-Angular libraries have this option to ensure that all Angular `.metadata.json` files are clean and it is a best practice to do the same when building your own libraries.
-
-### No arrow functions
-
-The AOT compiler does not support [function expressions](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Operators/function)
-and [arrow functions](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Functions/Arrow_functions), also called *lambda* functions.
-
-Consider the following component decorator:
-
-<docs-code language="typescript">
-
-@Component({
-  …
-  providers: [{provide: server, useFactory: () => new Server()}]
-})
-
-</docs-code>
-
-The AOT collector does not support the arrow function, `() => new Server()`, in a metadata expression.
-It generates an error node in place of the function.
-When the compiler later interprets this node, it reports an error that invites you to turn the arrow function into an *exported function*.
-
-You can fix the error by converting to this:
-
-<docs-code language="typescript">
-
-export function serverFactory() {
-  return new Server();
-}
-
-@Component({
-  …
-  providers: [{provide: server, useFactory: serverFactory}]
-})
-
-</docs-code>
-
-In version 5 and later, the compiler automatically performs this rewriting while emitting the `.js` file.
+* _Example:_ 
+  ```
+  @Component({
+    …
+    providers: [{provide: server, useFactory: () => new Server()}]
+    // () => new Server()   AOT collector does NOT support it -> generates an error 
+  })
+  ```
+  
+  solution
+  ```
+  export function serverFactory() {
+    return new Server();
+  }
+  
+  @Component({
+    …
+    providers: [{provide: server, useFactory: serverFactory}]
+  })
+  ```
 
 ### Code folding
 
+* TODO:
 The compiler can only resolve references to ***exported*** symbols.
 The collector, however, can evaluate an expression during collection and record the result in the `.metadata.json`, rather than the original expression.
 This allows you to make limited use of non-exported symbols within expressions.
@@ -272,79 +288,89 @@ If an expression is not foldable, the collector writes it to `.metadata.json` as
 
 ## Phase 2: code generation
 
-The collector makes no attempt to understand the metadata that it collects and outputs to `.metadata.json`.
-It represents the metadata as best it can and records errors when it detects a metadata syntax violation.
-It's the compiler's job to interpret the `.metadata.json` in the code generation phase.
-
-The compiler understands all syntax forms that the collector supports, but it may reject *syntactically* correct metadata if the *semantics* violate compiler rules.
+* AOT collector
+  * NOT try to understand metadata / outputs | `.metadata.json`
+* AOT compiler
+  * | code generation phase,
+    * interpret the `.metadata.json`
+      * if the semantics violate compiler rules ALTHOUGH *syntactically* correct metadata -> it may be rejected
 
 ### Public or protected symbols
 
-The compiler can only reference *exported symbols*.
+* compiler
+  * ⚠️can -- ONLY reference -- exported symbols ⚠️
 
-* Decorated component class members must be public or protected.
-    You cannot make an `@Input()` property private.
+* Decorated component class members
+  * requirements
+    * public or
+    * protected
+    * _Example:_ `private @Input()` == NOT ALLOWED
 
-* Data bound properties must also be public or protected
+* Data bound properties
+  * requirements
+    * public or
+    * protected
 
-### Supported classes and functions
+### Supported classes & functions
 
-The collector can represent a function call or object creation with `new` as long as the syntax is valid.
-The compiler, however, can later refuse to generate a call to a *particular* function or creation of a *particular* object.
+* AOT collector
+  * can represent a 
+    * function call OR
+    * object creation -- via -- `new`
 
-The compiler can only create instances of certain classes, supports only core decorators, and only supports calls to macros \(functions or static methods\) that return expressions.
+* AOT compiler
+  * ⚠️can refuse to
+    * generate a call | particular function 
+    * create a particular object ⚠️
+  * ONLY can
+    * create core decorators classes' instances
+    * call to macros ( == functions OR static methods) / return expressions
 
-| Compiler action      | Details |
-|:---                  |:---     |
-| New instances        | The compiler only allows metadata that create instances of the class `InjectionToken` from `@angular/core`.                                            |
-| Supported decorators | The compiler only supports metadata for the [Angular decorators in the `@angular/core` module](api/core#decorators).                                   |
-| Function calls       | Factory functions must be exported, named functions. The AOT compiler does not support lambda expressions \("arrow functions"\) for factory functions. |
+| Compiler action      | Details                                                                                                                                               |
+|:---                  |:------------------------------------------------------------------------------------------------------------------------------------------------------|
+| New instances        | compiler ONLY allows metadata / create instances -- from -- `@angular/core`'s `InjectionToken`                                                        |
+| Supported decorators | compiler ONLY supports metadata / [`@angular/core` module's decorators](api/core#decorators)                                                          |
+| Function calls       | Factory functions must be exported named functions <br/> ❌AOT compiler does NOT support lambda expressions \("arrow functions"\) / factory functions❌ |
 
-### Functions and static method calls
+### Functions & static method calls
 
-The collector accepts any function or static method that contains a single `return` statement.
-The compiler, however, only supports macros in the form of functions or static methods that return an *expression*.
+* AOT collector 
+  * ONLY ALLOWS function OR static method / contains 1! `return` statement
+* Compiler
+  * ONLY ALLOWS functions OR static methods / return an expression
 
-For example, consider the following function:
+* _Example:_
+  ```
+  export function wrapInArray<T>(value: T): T[] {
+    return [value];      // expression returned -> can be used | metadata definition  
+  }
+  ```
+  use  `wrapInArray()`
+  ```
+  @NgModule({
+    declarations: wrapInArray(TypicalComponent)
+  })
+  export class TypicalModule {}
+  ```
+  Compiler treats this -- as --
+  ```
+  @NgModule({
+    declarations: [TypicalComponent]
+  })
+  export class TypicalModule {}
+  ```
 
-<docs-code language="typescript">
-
-export function wrapInArray<T>(value: T): T[] {
-  return [value];
-}
-
-</docs-code>
-
-You can call the `wrapInArray` in a metadata definition because it returns the value of an expression that conforms to the compiler's restrictive JavaScript subset.
-
-You might use  `wrapInArray()` like this:
-
-<docs-code language="typescript">
-
-@NgModule({
-  declarations: wrapInArray(TypicalComponent)
-})
-export class TypicalModule {}
-
-</docs-code>
-
-The compiler treats this usage as if you had written:
-
-<docs-code language="typescript">
-
-@NgModule({
-  declarations: [TypicalComponent]
-})
-export class TypicalModule {}
-
-</docs-code>
-
-The Angular [`RouterModule`](api/router/RouterModule) exports two macro static methods, `forRoot` and `forChild`, to help declare root and child routes.
-Review the [source code](https://github.com/angular/angular/blob/main/packages/router/src/router_module.ts#L139 "RouterModule.forRoot source code")
-for these methods to see how macros can simplify configuration of complex [NgModules](guide/ngmodules).
+* macros 
+  * allows
+    * simplifying [NgModules' configuration](guide/ngmodules)
+  * _Example:_ Angular [`RouterModule`](api/router/RouterModule) exported macro static methods
+    * `forRoot`
+    * `forChild`
+    * see [source code](https://github.com/angular/angular/blob/main/packages/router/src/router_module.ts#L139 "RouterModule.forRoot source code")
 
 ### Metadata rewriting
 
+* TODO:
 The compiler treats object literals containing the fields `useClass`, `useValue`, `useFactory`, and `data` specially, converting the expression initializing one of these fields into an exported variable that replaces the expression.
 This process of rewriting these expressions removes all the restrictions on what can be in them because
 the compiler doesn't need to know the expression's value — it just needs to be able to generate a reference to the value.
@@ -390,38 +416,27 @@ And it does not interfere with the ES module's exported API.
 
 ## Phase 3: Template type checking
 
-One of the Angular compiler's most helpful features is the ability to type-check expressions within templates, and catch any errors before they cause crashes at runtime.
-In the template type-checking phase, the Angular template compiler uses the TypeScript compiler to validate the binding expressions in templates.
+* == type-check expressions | templates
+  * -> | BEFORE runtime crashes, catch any errors
+    * _Example:_ 
+      ```
+      @Component({
+        selector: 'my-component',
+        template: '{{person.addresss.street}}'
+      })
+      class MyComponent {
+        person?: Person;
+      }
+      ```
+      produces the error "my.component.ts.MyComponent.html(1,1): : Property 'addresss' does not exist on type 'Person'. Did you mean 'address'?"
 
-Enable this phase explicitly by adding the compiler option `"fullTemplateTypeCheck"` in the `"angularCompilerOptions"` of the project's TypeScript configuration file
-(see [Angular Compiler Options](reference/configs/angular-compiler-options)).
+* == Angular compiler's features
+  * validate binding expressions | templates -- via -- TypeScript compiler 
+  * if you want to enable -> | project's TypeScript configuration file,
+    * add `"angularCompilerOptions"`' `"fullTemplateTypeCheck"`
+      * see [Angular Compiler Options](reference/configs/angular-compiler-options)
 
-Template validation produces error messages when a type error is detected in a template binding
-expression, similar to how type errors are reported by the TypeScript compiler against code in a `.ts`
-file.
-
-For example, consider the following component:
-
-<docs-code language="typescript">
-
-@Component({
-  selector: 'my-component',
-  template: '{{person.addresss.street}}'
-})
-class MyComponent {
-  person?: Person;
-}
-
-</docs-code>
-
-This produces the following error:
-
-<docs-code hideCopy language="shell">
-
-my.component.ts.MyComponent.html(1,1): : Property 'addresss' does not exist on type 'Person'. Did you mean 'address'?
-
-</docs-code>
-
+TODO:
 The file name reported in the error message, `my.component.ts.MyComponent.html`, is a synthetic file
 generated by the template compiler that holds contents of the `MyComponent` class template.
 The compiler never writes this file to disk.
