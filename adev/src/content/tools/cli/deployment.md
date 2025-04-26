@@ -32,84 +32,85 @@
 
 ## Manual deployment to a remote server
 
-* TODO:
-To manually deploy your application, create a production build and copy the output directory to a web server or content delivery network (CDN).
-By default, `ng build` uses the `production` configuration.
-If you have customized your build configurations, you may want to confirm [production optimizations](tools/cli/deployment#production-optimizations) are being applied before deploying.
-
-`ng build` outputs the built artifacts to `dist/my-app/` by default, however this path can be configured with the `outputPath` option in the `@angular-devkit/build-angular:browser` builder.
-Copy this directory to the server and configure it to serve the directory.
-
-While this is a minimal deployment solution, there are a few requirements for the server to serve your Angular application correctly.
+* steps
+  * `ng build`
+    * create a production build | `dist/my-app/`
+      * Reason: 🧠by default, uses the `production` configuration🧠
+      * if you want to customize the path -> configure `@angular-devkit/build-angular:browser` builder's `outputPath` 
+  * copy the output directory | 
+    * web server OR
+    * content delivery network (CDN)
 
 ## Server configuration
 
-This section covers changes you may need to configure on the server to run your Angular application.
+* == ⚠️MANDATORY server's configuration -- to run -- your Angular application ⚠️
 
-### Routed apps must fall back to `index.html`
+### Routed apps -- MUST fall back to -- `index.html`
 
-Client-side rendered Angular applications are perfect candidates for serving with a static HTML server because all the content is static and generated at build time.
+* if your Angular application
+  * client-side rendered -> use static HTML server 
+    * Reason: 🧠ALL content is 
+      * static
+      * generated | build time 🧠
+  * uses the Angular router & ask for a file / NOT have -> ⚠️server -- MUST return the -- application's host page (`index.html`) == server's SPA mode⚠️
+    * Reason: 🧠routed application -- should support -- deep links 🧠
+    * if [404 pages implemented | Angular router](guide/routing/common-router-tasks#displaying-a-404-page) -> ❌server does NOT require any additional configuration ❌
 
-If the application uses the Angular router, you must configure the server to return the application's host page (`index.html`) when asked for a file that it does not have.
+* deep link
+  * 👀:= URL / specifies a path -- to an -- application's component 👀
+    * -- handled by the -- browser / 
+      * direct request | server
+        * ⚠️== bypass Angular's router⚠️
+      * ANYWHERE | deep link is
+        * _Example:_ 
+          * email, 
+          * enter it | browser address bar,
+          * refresh the browser / ALREADY | deep linked page  
+  * _Example:_ `http://my-app.test/users/42` 
+    * deep link -- to the -- user detail page / `id=42`
 
-A routed application should support "deep links".
-A *deep link* is a URL that specifies a path to a component inside the application.
-For example, `http://my-app.test/users/42` is a *deep link* to the user detail page that displays the user with `id` 42.
+* Angular router
+  * performs the navigation | client-side
+    * ❌NOT request a NEW HTML page❌
 
-There is no issue when the user initially loads the index page and then navigates to that URL from within a running client.
-The Angular router performs the navigation *client-side* and does not request a new HTML page.
+### Requesting data -- from a -- DIFFERENT server (CORS)
 
-But clicking a deep link in an email, entering it in the browser address bar, or even refreshing the browser while already on the deep linked page will all be handled by the browser itself, *outside* the running application.
-The browser makes a direct request to the server for `/users/42`, bypassing Angular's router.
-
-A static server routinely returns `index.html` when it receives a request for `http://my-app.test/`.
-But most servers by default will reject `http://my-app.test/users/42` and returns a `404 - Not Found` error *unless* it is configured to return `index.html` instead.
-Configure the fallback route or 404 page to `index.html` for your server, so Angular is served for deep links and can display the correct route.
-Some servers call this fallback behavior "Single-Page Application" (SPA) mode.
-
-Once the browser loads the application, Angular router will read the URL to determine which page it is on and display `/users/42` correctly.
-
-For "real" 404 pages such as `http://my-app.test/does-not-exist`, the server does not require any additional configuration.
-[404 pages implemented in the Angular router](guide/routing/common-router-tasks#displaying-a-404-page) will be displayed correctly.
-
-### Requesting data from a different server (CORS)
-
-Web developers may encounter a [*cross-origin resource sharing*](https://developer.mozilla.org/docs/Web/HTTP/CORS "Cross-origin resource sharing") error when making a network request to a server other than the application's own host server.
-Browsers forbid such requests unless the server explicitly permits them.
-
-There isn't anything Angular or the client application can do about these errors.
-The _server_ must be configured to accept the application's requests.
-Read about how to enable CORS for specific servers at [enable-cors.org](https://enable-cors.org/server.html "Enabling CORS server").
+* [*cross-origin resource sharing*](https://developer.mozilla.org/docs/Web/HTTP/CORS "Cross-origin resource sharing")
+* use cases
+  * make a network request -- to a -- server / != application's OWN host server
+    * requirements
+      * ⚠️server MUST explicitly permit them ⚠️ == ALL -- depends on -- server
+        * see [enable-cors.org](https://enable-cors.org/server.html "Enabling CORS server")
 
 ## Production optimizations
 
-`ng build` uses the `production` configuration unless configured otherwise. This configuration enables the following build optimization features.
+* [`ng build`](cli/build)
+  * by default, uses production optimization
 
-| Features                                                           | Details                                                                                       |
-|:---                                                                |:---                                                                                           |
-| [Ahead-of-Time (AOT) Compilation](tools/cli/aot-compiler)          | Pre-compiles Angular component templates.                                                     |
-| [Production mode](tools/cli/deployment#development-only-features) | Optimizes the application for the best runtime performance                                    |
-| Bundling                                                           | Concatenates your many application and library files into a minimum number of deployed files. |
-| Minification                                                       | Removes excess whitespace, comments, and optional tokens.                                     |
-| Mangling                                                           | Renames functions, classes, and variables to use shorter, arbitrary identifiers.              |
-| Dead code elimination                                              | Removes unreferenced modules and unused code.                                                 |
-
-See [`ng build`](cli/build) for more about CLI build options and their effects.
+| Optimization Features                                             | Details                                                                                         |
+|:------------------------------------------------------------------|:------------------------------------------------------------------------------------------------|
+| [Ahead-of-Time (AOT) Compilation](tools/cli/aot-compiler)         | Angular component templates -- are -- precompiled                                               |
+| [Production mode](tools/cli/deployment#development-only-features) | Optimizes the application / BEST runtime performance                                            |
+| Bundling                                                          | your application & library files -- are concatenated into a -- MINIMUM number of deployed files |
+| Minification                                                      | Removes excess whitespace, comments, and optional tokens.                                       |
+| Mangling                                                          | Renames functions, classes, and variables -- to use -- shorter, arbitrary identifiers           |
+| Dead code elimination                                             | Removes unreferenced modules & unused code                                                      |
 
 ### Development-only features
 
-When you run an application locally using `ng serve`, Angular uses the development configuration
-at runtime which enables:
+* == removed -- from -- production build's output
+  * Reason: 🧠extra code -> MORE size 🧠
 
-* Extra safety checks such as [`expression-changed-after-checked`](errors/NG0100) detection.
-* More detailed error messages.
-* Additional debugging utilities such as the global `ng` variable with [debugging functions](api#core-global) and [Angular DevTools](tools/devtools) support.
+* are
+  * extra safety checks
+    * _Example:_ [`expression-changed-after-checked`](errors/NG0100) detection
+  * MORE detailed error messages
+  * ADDITIONAL debugging utilities
+    * global `ng` variable -- with -- [debugging functions](api#core-global)
+    * [Angular DevTools](tools/devtools)
 
-These features are helpful during development, but they require extra code in the app, which is
-undesirable in production. To ensure these features do not negatively impact bundle size for end users, Angular CLI
-removes development-only code from the bundle when building for production.
-
-Building your application with `ng build` by default uses the `production` configuration which removes these features from the output for optimal bundle size.
+* use cases
+  * `ng serve`
 
 ## `--deploy-url`
 
