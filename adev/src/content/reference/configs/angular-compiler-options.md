@@ -1,31 +1,38 @@
 # Angular compiler options
 
-When you use [ahead-of-time compilation (AOT)](tools/cli/aot-compiler), you can control how your application is compiled by specifying Angular compiler options in the [TypeScript configuration file](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html).
+* `angularCompilerOptions`
+  * == Angular options object /
+    * == `compilerOptions` object
+    * specified | [TypeScript configuration file](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) 
+  * allows
+    * specifying your application's compilation
+  * uses
+    * [ahead-of-time compilation (AOT)](tools/cli/aot-compiler),
 
-The Angular options object, `angularCompilerOptions`, is a sibling to the `compilerOptions` object that supplies standard options to the TypeScript compiler.
+* _Example:_ [here](../../examples/angular-compiler-options)
 
-<docs-code header="tsconfig.json" path="adev/src/content/examples/angular-compiler-options/tsconfig.json" visibleRegion="angular-compiler-options"/>
+## Configuration inheritance -- with -- `extends`
 
-## Configuration inheritance with `extends`
+* | TypeScript configuration file's top-level
+  * 's level == `compilerOptions`' level == `angularCompilerOptions`' level 
+* == TypeScript compiler's `extends`
+* allows
+  * extending `angularCompilerOptions` /
+    * steps
+      * load base file's configuration options
+      * override -- by -- inheriting configuration file's options
 
-Like the TypeScript compiler, the Angular AOT compiler also supports `extends` in the `angularCompilerOptions` section of the TypeScript configuration file.
-The `extends` property is at the top level, parallel to `compilerOptions` and `angularCompilerOptions`.
+* _Example:_ [tsconfig.app.json](../../examples/angular-compiler-options/tsconfig.app.json)
 
-A TypeScript configuration can inherit settings from another file using the `extends` property.
-The configuration options from the base file are loaded first, then overridden by those in the inheriting configuration file.
-
-For example:
-
-<docs-code header="tsconfig.app.json" path="adev/src/content/examples/angular-compiler-options/tsconfig.app.json" visibleRegion="angular-compiler-options-app"/>
-
-For more information, see the [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html).
+* see [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html)
 
 ## Template options
 
-The following options are available for configuring the Angular AOT compiler.
+* == options -- to configure the -- Angular AOT compiler
 
 ### `annotationsAs`
 
+* TODO:
 Modifies how Angular-specific annotations are emitted to improve tree-shaking.
 Non-Angular annotations are not affected.
 One of `static fields` or `decorators`. The default value is `static fields`.
@@ -178,23 +185,35 @@ For library projects created with the Angular CLI, the development configuration
 
 ### `strictMetadataEmit`
 
-When `true`, reports an error to the `.metadata.json` file if `"skipMetadataEmit"` is `false`.
-Default is `false`.
-Use only when `"skipMetadataEmit"` is `false` and `"skipTemplateCodegen"` is `true`.
+* allows
+  * verifying the `.metadata.json` files / emitted for bundling -- with an -- `npm` package
+    * strict validation
+      * ⚠️if the metadata -- is used to determine the -- annotation's contents -> can emit errors / metadata ⚠️ 
+        * != use ONLY template compiler
+        * 👀if you include `@dynamic` | comment documenting the symbol -> you can suppress the error emitted👀  
 
-This option is intended to verify the `.metadata.json` files emitted for bundling with an `npm` package.
-The validation is strict and can emit errors for metadata that would never produce an error when used by the template compiler.
-You can choose to suppress the error emitted by this option for an exported symbol by including `@dynamic` in the comment documenting the symbol.
+* by default, 
+  * `false`
+  * | library projects / created with Angular CLI, `true` 
+* if `true` & `"skipMetadataEmit"=false` -> reports an error | `.metadata.json`
 
-It is valid for `.metadata.json` files to contain errors.
-The template compiler reports these errors if the metadata is used to determine the contents of an annotation.
-The metadata collector cannot predict the symbols that are designed for use in an annotation. It preemptively includes error nodes in the metadata for the exported symbols.
-The template compiler can then use the error nodes to report an error if these symbols are used.
+* use cases
+  * `"skipMetadataEmit"=false`
+  * `"skipTemplateCodegen"=true`
 
-If the client of a library intends to use a symbol in an annotation, the template compiler does not normally report this. It gets reported after the client actually uses the symbol.
-This option allows detection of these errors during the build phase of the library and is used, for example, in producing Angular libraries themselves.
-
-For library projects created with the Angular CLI, the development configuration default is `true`.
+* about symbols
+  * metadata collector 
+    * can NOT predict the symbols / designed for use | annotation
+    * preemptively includes error nodes | metadata / exported symbols
+  * template compiler
+    * if exported symbols are used -> template compiler -- , via using PREVIOUS error nodes, report an -- error
+    * if library's client 
+      * tries to use a symbol | annotation -> template compiler does NOT NORMALLY report this error
+      * AFTER using a symbol -> template compiler reports this error
+  * allows
+    * | library's build phase, detecting errors 
+  * uses
+    * produce Angular libraries themselves
 
 ### `strictInjectionParameters`
 
@@ -222,13 +241,17 @@ When `true`, reports an error if a component, directive, or pipe is not standalo
 When `true`, prints extra information while compiling templates.
 Default is `false`.
 
-## Command line options
+## CL options
 
-Most of the time, you interact with the Angular Compiler indirectly using [Angular CLI](reference/configs/angular-compiler-options). When debugging certain issues, you might find it useful to invoke the Angular Compiler directly.
-You can use the `ngc` command provided by the `@angular/compiler-cli` npm package to call the compiler from the command line.
-
-The `ngc` command is a wrapper around TypeScript's `tsc` compiler command. The Angular Compiler is primarily configured through `tsconfig.json` while Angular CLI is primarily configured through `angular.json`.
-
-Besides the configuration file, you can also use [`tsc` command line options](https://www.typescriptlang.org/docs/handbook/compiler-options.html) to configure `ngc`.
+* `ngc` command
+  * -- provided by the -- `@angular/compiler-cli` npm package
+  * allows
+    * calling the compiler -- from the -- CL
+  * wrapper around TypeScript's `tsc` compiler command 
+  * ways to configure
+    * -- through -- `tsconfig.json`
+      * != Angular CLI (`ng`)
+        * Reason: 🧠configured -- through -- `angular.json`🧠
+    * -- through -- [`tsc` CL options](https://www.typescriptlang.org/docs/handbook/compiler-options.html)
 
 [GuideI18nCommonPrepareMarkTextInComponentTemplate]: guide/i18n/prepare#mark-text-in-component-template "Mark text in component template - Prepare component for translation | Angular"
