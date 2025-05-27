@@ -1,24 +1,25 @@
 # Optimizing client application size with lightweight injection tokens
 
-This page provides a conceptual overview of a dependency injection technique that is recommended for library developers.
-Designing your library with *lightweight injection tokens* helps optimize the bundle size of client applications that use your library.
+* goal
+  * overview of lightweight injection tokens 
 
-You can manage the dependency structure among your components and injectable services to optimize bundle size by using tree-shakable providers.
-This normally ensures that if a provided component or service is never actually used by the application, the compiler can remove its code from the bundle.
-
-Due to the way Angular stores injection tokens, it is possible that such an unused component or service can end up in the bundle anyway.
-This page describes a dependency injection design pattern that supports proper tree-shaking by using lightweight injection tokens.
-
-The lightweight injection token design pattern is especially important for library developers.
-It ensures that when an application uses only some of your library's capabilities, the unused code can be eliminated from the client's application bundle.
-
-When an application uses your library, there might be some services that your library supplies which the client application doesn't use.
-In this case, the application developer should expect that service to be tree-shaken, and not contribute to the size of the compiled application.
-Because the application developer cannot know about or remedy a tree-shaking problem in the library, it is the responsibility of the library developer to do so.
-To prevent the retention of unused components, your library should use the lightweight injection token design pattern.
+* lightweight injection tokens
+  * == DI token technique
+  * uses
+    * 💡| design your library 💡
+      * Reason: 🧠
+        * if an application uses ONLY SOME of your library's capabilities -> unused code can be removed | client's application bundle🧠
+        * NO remedy can be done -- by the -- application developer 🧠
+  * allows
+    * 👀optimizing the client applications' size / use your library 👀
+      * 💡-- by using -- tree-shakable providers 💡
+        * Reason: 🧠if a provided component or service / NEVER used by the application -> compiler can remove its code | bundle🧠
+      * ⚠️if you use injection tokens (NOT lightweight) & you have component or service / NEVER used by the application -> included | bundle ⚠️
+        * Reason: 🧠way / Angular stores injection tokens🧠
 
 ## When tokens are retained
 
+* TODO:
 To better explain the condition under which token retention occurs, consider a library that provides a library-card component.
 This component contains a body and can contain an optional header:
 
@@ -69,7 +70,7 @@ In the example, the compiler retains the `LibHeaderComponent` token that occurs 
 This prevents the referenced component from being tree-shaken, even if the application does not actually use `<lib-header>` anywhere.
 If `LibHeaderComponent` 's code, template, and styles combine to become too large, including it unnecessarily can significantly increase the size of the client application.
 
-## When to use the lightweight injection token pattern
+## When to use the lightweight injection token pattern?
 
 The tree-shaking problem arises when a component is used as an injection token.
 There are two cases when that can happen:
