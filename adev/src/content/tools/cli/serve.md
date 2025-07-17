@@ -33,54 +33,52 @@ This page discusses usage and options of `@angular-devkit/build-angular:dev-serv
 
 ## Proxying to a backend server
 
-Use [proxying support](https://webpack.js.org/configuration/dev-server/#devserverproxy) to divert certain URLs to a backend server, by passing a file to the `--proxy-config` build option.
-For example, to divert all calls for `http://localhost:4200/api` to a server running on `http://localhost:3000/api`, take the following steps.
+* goal
+  * 💡Angular CLI can redirect certain URLs -- , via passing `--proxy-config`, to a -- backend server💡
+    * _Example:_ calls to `http://localhost:4200/api` be redirected -- to -- `http://localhost:3000/api`
 
-1. Create a file `proxy.conf.json` in your project's `src/` folder.
-1. Add the following content to the new proxy file:
+* ways to proxy
+  * depend -- on -- packaging tool
+    * if you use 
+      * `@angular-devkit/build-angular:browser` -> see [webpack DevServer documentation](https://webpack.js.org/configuration/dev-server/#devserverproxy)
+      * `@angular-devkit/build-angular:browser-esbuild` or `@angular-devkit/build-angular:application` -> see [Vite DevServer documentation](https://vite.dev/config/server-options#server-proxy) 
 
-    <docs-code language="json">
+### -- via -- Webpack
 
+* steps
+  1. | "src/", create "proxy.conf.json"
+    ```json
     {
-      "/api": {
-        "target": "http://localhost:3000",
-        "secure": false
-      }
+        "/api": {
+          "target": "http://localhost:3000",
+          "secure": false
+        }
     }
-
-    </docs-code>
-
-1. In the CLI configuration file, `angular.json`, add the `proxyConfig` option to the `serve` target:
-
-    <docs-code language="json">
-
-    {
-      "projects": {
-        "my-app": {
-          "architect": {
-            "serve": {
-              "builder": "@angular-devkit/build-angular:dev-server",
-              "options": {
-                "proxyConfig": "src/proxy.conf.json"
+    ```
+  1. | "angular.json"'s `serve.options`, specify `proxyConfig`
+    ```json
+      {
+        "projects": {
+          "my-app": {
+            "architect": {
+              "serve": {
+                "builder": "@angular-devkit/build-angular:dev-server",
+                "options": {
+                  "proxyConfig": "src/proxy.conf.json"
+                }
               }
             }
           }
         }
       }
-    }
+    ```
+  1. `ng serve`
 
-    </docs-code>
-
-1. To run the development server with this proxy configuration, call `ng serve`.
-
-Edit the proxy configuration file to add configuration options; following are some examples.
-For a detailed description of all options, refer to the [webpack DevServer documentation](https://webpack.js.org/configuration/dev-server/#devserverproxy) when using `@angular-devkit/build-angular:browser`, or the [Vite DevServer documentation](https://vite.dev/config/server-options#server-proxy) when using `@angular-devkit/build-angular:browser-esbuild` or `@angular-devkit/build-angular:application`.
-
-NOTE: If you edit the proxy configuration file, you must relaunch the `ng serve` process to make your changes effective.
+* ⚠️if you edit the "proxy.conf.json" -> you must relaunch the `ng serve` ⚠️
 
 ## `localhost` resolution
 
-As of Node version 17, Node will _not_ always resolve `http://localhost:<port>` to `http://127.0.0.1:<port>`
+* TODO: As of Node version 17, Node will _not_ always resolve `http://localhost:<port>` to `http://127.0.0.1:<port>`
 depending on each machine's configuration.
 
 If you get an `ECONNREFUSED` error using a proxy targeting a `localhost` URL,
