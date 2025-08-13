@@ -137,10 +137,10 @@ You can access the current `RouterState` from anywhere in the application using 
 
 Each `ActivatedRoute` in the `RouterState` provides methods to traverse up and down the route tree to get information from parent, child, and sibling routes.
 
-## Activated route
+## Activated route -- `ActivatedRoute` --
 
-The route path and parameters are available through an injected router service called the [ActivatedRoute](api/router/ActivatedRoute).
-It has a great deal of useful information including:
+* `ActivatedRoute`
+  * == injected router service 
 
 | Property        | Details |
 |:---             |:---     |
