@@ -3,52 +3,45 @@
 * Interceptors
   * == middleware / 
     * -- supported by -- `HttpClient` /
-      * kinds of interceptors
-        * functional
-          * 👀recommended to use this one 👀
-            * Reason: 🧠| complex setups, MORE predictable behavior 🧠  
-        * DI-based 
+      * functional
+        * 👀recommended to use this one 👀
+          * Reason: 🧠| complex setups, MORE predictable behavior 🧠  
+      * DI-based 
     * allows
-      * common patterns , / abstracted away from individual requests, around
-        * retrying,
-        * caching,
-        * logging,
-        * authentication
+      * retrying,
+      * caching,
+      * logging,
+      * authentication
+      * customize response parsing
+      * measure server response times & log them
+      * drive UI elements
+      * collect & batch requests / made | certain timeframe
+      * configurable deadline OR timeout
+        * if it's passed -> AUTOMATICALLY fail requests 
+      * regularly poll the server & refreshing results
+  * == functions /
+    * you can run / EACH request
+    * allows
+      * adjusting requests & responses' contents
 
-## Interceptors
+* interceptor chain
+  * == MULTIPLE interceptors /
+    * process the request OR response / EACH interceptor ⚠️1by1⚠️
+      * 1by1 == BEFORE forwarding to NEXT interceptor | chain
 
-* TODO:
-Interceptors are generally functions which you can run for each request, and have broad capabilities to affect the contents and overall flow of requests and responses. 
-You can install multiple interceptors, which form an interceptor chain where each interceptor processes the request or response before forwarding it to the next interceptor in the chain.
+## how to define?
 
-You can use interceptors to implement a variety of common patterns, such as:
-
-* Adding authentication headers to outgoing requests to a particular API.
-* Retrying failed requests with exponential backoff.
-* Caching responses for a period of time, or until invalidated by mutations.
-* Customizing the parsing of responses.
-* Measuring server response times and log them.
-* Driving UI elements such as a loading spinner while network operations are in progress.
-* Collecting and batch requests made within a certain timeframe.
-* Automatically failing requests after a configurable deadline or timeout.
-* Regularly polling the server and refreshing results.
-
-## Defining an interceptor
-
-The basic form of an interceptor is a function which receives the outgoing `HttpRequest` and a `next` function representing the next processing step in the interceptor chain.
-
-For example, this `loggingInterceptor` will log the outgoing request URL to `console.log` before forwarding the request:
-
+* TODO: 
 <docs-code language="ts">
 export function loggingInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> {
   console.log(req.url);
-  return next(req);
+  return next(req);       // NEXT step | interceptor chain
 }
 </docs-code>
 
-In order for this interceptor to actually intercept requests, you must configure `HttpClient` to use it.
+* configure `HttpClient`
 
-## Configuring interceptors
+### Configuring interceptors
 
 You declare the set of interceptors to use when configuring `HttpClient` through dependency injection, by using the `withInterceptors` feature:
 
