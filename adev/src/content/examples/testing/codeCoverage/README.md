@@ -31,7 +31,9 @@
       * Solution: `rm -rf '${local_app_data}\Chrome\Cache'`
     * Problem2: Why NOT displayed actively | "http://localhost:9877/"?
       * Attempt1: comment `jasmineHtmlReporter.suppressAll`
-      * Solution: TODO:
+      * Attempt2: add `logLevel: config.LOG_INFO,` & `port: 9877,`
+      * Solution: `ng test --watch`
+      * Reason: 🧠"angular.json" is configured specifically with `"browsers": "ChromeHeadless"`🧠
 
 ## Running end-to-end tests
 
