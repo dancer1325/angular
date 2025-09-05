@@ -32,7 +32,10 @@ module.exports = function (config) {
       ]
     },
     reporters: ['progress', 'kjhtml'],
+    port: 9877,
     browsers: ['Chrome'],
-    restartOnFileChange: true
+    restartOnFileChange: true,
+    logLevel: config.LOG_INFO,
+    singleRun: false
   });
 };

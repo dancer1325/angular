@@ -15,7 +15,7 @@
 * | MINOR Angular versions,
   * ⚠️Angular CLI -- is released separately to -- Angular ⚠️
 
-* `npm install -g`
+* `npm install -g @angular/cli`
 
 ## Basic workflow
 
@@ -25,10 +25,12 @@
   cd my-first-project
   ng serve
   ```
-* | your browser,
-  * open http://localhost:4200/
+
+* _Example:_ [here](../examples/basicWorkflow)
 
 ## Workspaces & project files
+
+* TODO: add examples
 
 * [`ng new`](cli/new)
   * creates an Angular workspace folder
@@ -55,7 +57,7 @@
 * [`ng add`](cli/add) & [`ng generate`](cli/generate) 's requirements
   * execute | workspace OR project folder
 
-* [MORE here](guide/file-structure)
+* [MORE here](../reference/configs/file-structure)
 
 ### Workspace and project configuration
 
