@@ -1,1 +1,4 @@
-Provides infrastructure for testing Angular core functionality.
+* goal
+  * infrastructure /
+    * uses
+      * test Angular core functionality

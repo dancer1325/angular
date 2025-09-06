@@ -12,8 +12,7 @@
   * fake service
   * create a [spy](https://jasmine.github.io/tutorials/your_first_suite#section-Spies)
     * spy == recommended way to mock a service
-* recommendations
-  * if there are SEVERAL 
+
 * _Example:_ [`MasterService`](../../examples/testing/services/src/app/master.service.spec.ts)
 
 * recommendations

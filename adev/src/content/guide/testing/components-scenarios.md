@@ -736,7 +736,9 @@ Here are a few more `HeroDetailComponent` tests to reinforce the point.
 
 ## Calling `compileComponents()`
 
-HELPFUL: Ignore this section if you *only* run tests with the CLI `ng test` command because the CLI compiles the application before running the tests.
+* uses
+  * ❌run tests NOT -- via -- `ng test`❌
+    * Reason:🧠 CLI compiles the application BEFORE running the tests🧠
 
 If you run tests in a **non-CLI environment**, the tests might fail with a message like this one:
 

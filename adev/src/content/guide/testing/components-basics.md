@@ -2,7 +2,7 @@
 
 * test a component approaches
   * [Component DOM testing](#component-dom-testing)
-    * == test template + TypeScript class work TOGETHER as intended
+    * == 💡test template + TypeScript class work TOGETHER as intended💡
       * == 
         * component state displays properly | appropriate times,
         * simulate user interaction / affect to the component
@@ -22,17 +22,17 @@
     * == Angular does
     * == DOM elements -- associated with the -- components 
   * test component class's interaction -- with the -- DOM
-* -- via -- `TestBed` + OTHER testing helpers
+* 💡-- via -- `TestBed` + OTHER testing helpers💡
 
 ### CLI-generated tests
 
-* `ng generate component componentName` -> 💡creates an INITIAL test file 💡
+* `ng generate component componentName` 
+  * -> 💡creates an INITIAL test file 💡
 
 * `TestBed.compileComponents`
   * asynchronous -- thanks to -- wrapped it by 
     * | old versions,
       * -- via -- [`@angular/core/testing` `waitForAsync`](api/core/testing/waitForAsync)
-        * see [waitForAsync](components-scenarios.md)
     * | NEW versions,
       * `async` JS
 

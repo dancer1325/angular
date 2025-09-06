@@ -36,7 +36,7 @@
       * Attempt6: `ng generate config karma` -> create "karma.conf.json"
       * Attempt7: `./node_modules/karma/bin/karma start`
         * == start Karma
-      * Solution: TODO:
+      * Solution: `rm -rf '${local_app_data}\Chrome\Cache'`
 
 ## Running end-to-end tests
 
