@@ -310,19 +310,17 @@ For more information on lazy loading and preloading see the dedicated guide [Laz
 
 ## Preventing unauthorized access
 
-Use route guards to prevent users from navigating to parts of an application without authorization.
-The following route guards are available in Angular:
-
-<docs-pill-row>
-  <docs-pill href="api/router/CanActivateFn" title="`canActivate`"/>
-  <docs-pill href="api/router/CanActivateChildFn" title="`canActivateChild`"/>
-  <docs-pill href="api/router/CanDeactivateFn" title="`canDeactivate`"/>
-  <docs-pill href="api/router/CanMatchFn" title="`canMatch`"/>
-  <docs-pill href="api/router/ResolveFn" title="`resolve`"/>
-  <docs-pill href="api/router/CanLoadFn" title="`canLoad`"/>
-</docs-pill-row>
-
-To use route guards, consider using [component-less routes](api/router/Route#componentless-routes) as this facilitates guarding child routes.
+* route guards
+  * prevent users from navigating -- , WITHOUT authorization, to -- application's parts
+  * built-in by Angular
+    * `canActivate`
+    * `canActivateChild`
+    * `canDeactivate`
+    * `canMatch`
+    * `resolve`
+    * `canLoad`
+  * recommendations
+    * use [component-less routes](api/router/Route#componentless-routes) as this facilitates guarding child routes.
 
 Create a file for your guard:
 
