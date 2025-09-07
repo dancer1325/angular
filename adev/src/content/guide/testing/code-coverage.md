@@ -5,7 +5,7 @@
 
 * | root of your project
   * `ng test --no-watch --code-coverage`
-    * 👀generate a coverage report | `/coverage/index.html`👀
+    * 👀generate a coverage report | "/coverage/index.html" 👀
 
 * if you want to create code-coverage reports / EVERY time you test -> set | `angular.json`
   ```

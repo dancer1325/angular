@@ -8,18 +8,15 @@
 
 * | root path,
   * `ng new codeCoverage --directory=adev/src/content/examples/testing/codeCoverage`
-
-## How to run local development server?
-
-* `ng serve`
-* | browser,
-  * open `http://localhost:4200/`
-
-## How to build?
-
-* `ng build`
-  * compile your project
-  * | `dist/`, store build artifacts
+* | "angular.json"
+  * if you want to create a coverage report | ANYTIME / you run `ng test` -> add
+    ```
+    "test": {
+      "options": {
+        "codeCoverage": true
+      }
+    }
+    ```
 
 ## Running unit tests
 
@@ -34,6 +31,12 @@
       * Attempt2: add `logLevel: config.LOG_INFO,` & `port: 9877,`
       * Solution: `ng test --watch`
       * Reason: 🧠"angular.json" is configured specifically with `"browsers": "ChromeHeadless"`🧠
+
+### coverage report
+* | root of your project
+  * `ng test --no-watch --code-coverage`
+    * check the coverage report | "/coverage/index.html"
+
 
 ## Running end-to-end tests
 
