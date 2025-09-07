@@ -1,164 +1,161 @@
-# Angular package format
+# Angular package format (APF)
 
-This document describes the Angular Package Format \(APF\).
-APF is an Angular specific specification for the structure and format of npm packages that is used by all first-party Angular packages \(`@angular/core`, `@angular/material`, etc.\) and most third-party Angular libraries.
+* APF
+  * == Angular specific specification
+    * -- about --
+      * npm packages
+        * structure
+        * format
+    * enables
+      * package can work SEAMLESSLY
+        * == compatible with the Angular's tooling
+  * uses
+    * ALL first-party Angular packages \(`@angular/core`, `@angular/material`, etc.\)
+    * MOST third-party Angular libraries
+  * 's versioning
+    * == Angular's versioning 
+    * [PRIOR to v13](https://docs.google.com/document/d/1CZC2rcpxffTDfRDs6p1cfbmKNLA6x5O-NtkJglDaBVs/preview) 
+  * support
+    * ALL commonly used development tools & workflows 
+    * optimization -- via --
+      * smaller application payload size OR
+      * faster development iteration cycle (== build time) 
+  * ways to produce packages | APF
+    * Angular CLI
+    * [ng-packagr](https://github.com/ng-packagr/ng-packagr)
+      * used -- by -- Angular CLI 
 
-APF enables a package to work seamlessly under most common scenarios that use Angular.
-Packages that use APF are compatible with the tooling offered by the Angular team as well as wider JavaScript ecosystem.
-It is recommended that third-party library developers follow the same npm package format.
+* recommendations
+  * third-party library developers follow it
 
-HELPFUL: APF is versioned along with the rest of Angular, and every major version improves the package format.
-You can find the versions of the specification prior to v13 in this [google doc](https://docs.google.com/document/d/1CZC2rcpxffTDfRDs6p1cfbmKNLA6x5O-NtkJglDaBVs/preview).
+## Reasons to use
 
-## Why specify a package format?
-
-In today's JavaScript landscape, developers consume packages in many different ways, using many different toolchains \(webpack, Rollup, esbuild, etc.\).
-These tools may understand and require different inputs - some tools may be able to process the latest ES language version, while others may benefit from directly consuming an older ES version.
-
-The Angular distribution format supports all of the commonly used development tools and workflows, and adds emphasis on optimizations that result either in smaller application payload size or faster development iteration cycle \(build time\).
-
-Developers can rely on Angular CLI and [ng-packagr](https://github.com/ng-packagr/ng-packagr) \(a build tool Angular CLI uses\) to produce packages in the Angular package format.
-See the [Creating Libraries](tools/libraries/creating-libraries) guide for more details.
+* | JavaScript landscape,
+  * developers consume packages -- via -- MANY different 
+    * ways &
+    * toolchains (webpack, Rollup, esbuild, etc.) / may process specific ES language version
 
 ## File layout
 
-The following example shows a simplified version of the `@angular/core` package's file layout, with an explanation for each file in the package.
+* _Example:_ `@angular/core` package's file layout simplified
 
-```markdown
-node_modules/@angular/core
-├── README.md
-├── package.json
-├── index.d.ts
-├── fesm2022
-│   ├── core.mjs
-│   ├── core.mjs.map
-│   ├── testing.mjs
-│   └── testing.mjs.map
-└── testing
-    └── index.d.ts
-```
+  ```markdown
+  node_modules/@angular/core
+  ├── README.md
+  ├── package.json
+  ├── index.d.ts
+  ├── fesm2022
+  │   ├── core.mjs
+  │   ├── core.mjs.map
+  │   ├── testing.mjs
+  │   └── testing.mjs.map
+  └── testing
+      └── index.d.ts
+  ```
 
-This table describes the file layout under `node_modules/@angular/core` annotated to describe the purpose of files and directories:
+| Files                                                                                                                                                     | Purpose                                                                                                                                                             |
+|:----------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `README.md`                                                                                                                                               | == Package's README <br/> uses <br/> &nbsp;&nbsp; by npmjs web UI                                                                                                   |
+| `package.json`                                                                                                                                            | == MAIN `package.json` <br/> `"exports"` mapping <br/> &nbsp;&nbsp; uses <br/> &nbsp;&nbsp; &nbsp;&nbsp; 👀by runtimes & tools -- to perform -- module resolution👀 |
+| `index.d.ts`                                                                                                                                              | MAIN entrypoint's bundled `.d.ts`                                                                                                                                   |
+| `fesm2022/` <br /> &nbsp;&nbsp;─ `core.mjs` <br /> &nbsp;&nbsp;─ `core.mjs.map` <br /> &nbsp;&nbsp;─ `testing.mjs` <br /> &nbsp;&nbsp;─ `testing.mjs.map` | == (code + source maps) \| flattened ES2022 (FESM)  format                                                                                                          |
+| `testing/`                                                                                                                                                | == "testing" entrypoint                                                                                                                                             |
+| `testing/index.d.ts`                                                                                                                                      | `@angular/core/testing` entrypoint's bundled `.d.ts`                                                                                                        |
 
-| Files                                                                                                                                                     | Purpose |
-|:---                                                                                                                                                       |:---     |
-| `README.md`                                                                                                                                               | Package README, used by npmjs web UI.                                                                                                                                                                          |
-| `package.json`                                                                                                                                            | Primary `package.json`, describing the package itself as well as all available entrypoints and code formats. This file contains the "exports" mapping used by runtimes and tools to perform module resolution. |
-| `index.d.ts`                                                                                                                                               | Bundled `.d.ts` for the primary entrypoint `@angular/core`.                                                                                                                                                    |
-| `fesm2022/` <br /> &nbsp;&nbsp;─ `core.mjs` <br /> &nbsp;&nbsp;─ `core.mjs.map` <br /> &nbsp;&nbsp;─ `testing.mjs` <br /> &nbsp;&nbsp;─ `testing.mjs.map` | Code for all entrypoints in flattened \(FESM\) ES2022 format, along with source maps.                                                                                                                           |
-| `testing/`                                                                                                                                                | Directory representing the "testing" entrypoint.                                                                                                                                                               |
-| `testing/index.d.ts`                                                                                                                                    | Bundled `.d.ts` for the `@angular/core/testing` entrypoint.                                                                                                                                                     |
+### "package.json"
 
-## `package.json`
+#### ESM declaration
 
-The primary `package.json` contains important package metadata, including the following:
-
-* It [declares](#esm-declaration) the package to be in EcmaScript Module \(ESM\) format
-* It contains an [`"exports"` field](#exports) which defines the available source code formats of all entrypoints
-* It contains [keys](#legacy-resolution-keys) which define the available source code formats of the primary `@angular/core` entrypoint, for tools which do not understand `"exports"`.
-    These keys are considered deprecated, and could be removed as the support for `"exports"` rolls out across the ecosystem.
-
-* It declares whether the package contains [side effects](#side-effects)
-
-### ESM declaration
-
-The top-level `package.json` contains the key:
-
-<docs-code language="javascript">
-
+```json, package.json
 {
   "type": "module"
 }
+```
 
-</docs-code>
+* != CommonJS modules
 
-This informs resolvers that code within the package is using EcmaScript Modules as opposed to CommonJS modules.
+#### `"exports"`
 
-### `"exports"`
+* ALL entrypoints' AVAILABLE source code formats 
+  * == .js
+    * if library want to expose static files (_Example:_ Sass mixins OR pre-compiled CSS) -> use direct routes
+      * [how to manage assets | library](tools/libraries/creating-libraries#managing-assets-in-a-library) 
 
-The `"exports"` field has the following structure:
-
-<docs-code language="javascript">
-
-"exports": {
-  "./schematics/*": {
-    "default": "./schematics/*.js"
-  },
-  "./package.json": {
-    "default": "./package.json"
-  },
-  ".": {
-    "types": "./core.d.ts",
-    "default": "./fesm2022/core.mjs"
-  },
-  "./testing": {
-    "types": "./testing/testing.d.ts",
-    "default": "./fesm2022/testing.mjs"
+```json, package.json
+{
+  "exports": {
+    "./schematics/*": {
+      "default": "./schematics/*.js"
+    },
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./core.d.ts",
+      "default": "./fesm2022/core.mjs"
+    },
+    "./testing": {
+      "types": "./testing/testing.d.ts",
+      "default": "./fesm2022/testing.mjs"
+    }
   }
 }
+```
 
-</docs-code>
+* `"."` key
+  * `@angular/core` primary entrypoint's AVAILABLE code formats 
+* `"./testing"` key
+  * `@angular/core/testing` secondary entrypoint's AVAILABLE code formats
 
-Of primary interest are the `"."` and the `"./testing"` keys, which define the available code formats for the `@angular/core` primary entrypoint and the `@angular/core/testing` secondary entrypoint, respectively.
-For each entrypoint, the available formats are:
+| Formats                   | Details                                                                         |
+|:---                       |:--------------------------------------------------------------------------------|
+| Typings \(`.d.ts` files\) | `.d.ts` files <br/> uses <br/> &nbsp;&nbsp; by TypeScript / -- depend on a -- given package |
+| `default`               | ES2022 code flattened into a single source.                                     
 
-| Formats                   | Details |
-|:---                       |:---     |
-| Typings \(`.d.ts` files\) | `.d.ts` files are used by TypeScript when depending on a given package.                                                                                                           |
-| `default`               | ES2022 code flattened into a single source.
+* tools / aware of these keys
+  * may choose BEST `"exports"`
 
-Tooling that is aware of these keys may preferentially select a desirable code format from `"exports"`.
+#### Legacy resolution keys
 
-Libraries may want to expose additional static files which are not captured by the exports of the JavaScript-based entry-points such as Sass mixins or pre-compiled CSS.
+* ⚠️deprecated⚠️
+* uses
+  * resolvers / ❌NOT support `"exports"`❌
+    * can load a specific code format
 
-For more information, see [Managing assets in a library](tools/libraries/creating-libraries#managing-assets-in-a-library).
-
-### Legacy resolution keys
-
-In addition to `"exports"`, the top-level `package.json` also defines legacy module resolution keys for resolvers that don't support `"exports"`.
-For `@angular/core` these are:
-
-<docs-code language="javascript">
-
+```json, package.json
 {
   "module": "./fesm2022/core.mjs",
   "typings": "./core.d.ts",
 }
+```
 
-</docs-code>
+#### Side effects
 
-As shown in the preceding code snippet, a module resolver can use these keys to load a specific code format.
+* [side effects](#sideeffects-flag)
 
-### Side effects
+* MOST commonly
+  ```json, package.json
+  {
+    "sideEffects": false
+  }
+  ```
 
-The last function of `package.json` is to declare whether the package has [side effects](#sideeffects-flag).
+### Entrypoints & code splitting
 
-<docs-code language="javascript">
+* packages | Angular Package Format
+  * contain
+    * 1 primary entrypoint
+    * \>= 0 secondary entrypoints
 
-{
-  "sideEffects": false
-}
-
-</docs-code>
-
-Most Angular packages should not depend on top-level side effects, and thus should include this declaration.
-
-## Entrypoints and code splitting
-
-Packages in the Angular Package Format contain one primary entrypoint and zero or more secondary entrypoints \(for example, `@angular/common/http`\).
-Entrypoints serve several functions.
-
-1. They define the module specifiers from which users import code \(for example, `@angular/core` and `@angular/core/testing`\).
-
-    Users typically perceive these entrypoints as distinct groups of symbols, with different purposes or capability.
-
-    Specific entrypoints might only be used for special purposes, such as testing.
-    Such APIs can be separated out from the primary entrypoint to reduce the chance of them being used accidentally or incorrectly.
-
-1. They define the granularity at which code can be lazily loaded.
-
-    Many modern build tools are only capable of "code splitting" \(aka lazy loading\) at the ES Module level.
-    The Angular Package Format uses primarily a single "flat" ES Module per entry point. This means that most build tooling is not able to split code with a single entry point into multiple output chunks.
+* Entrypoints' functions
+  1. TODO: They define the module specifiers from which users import code \(for example, `@angular/core` and `@angular/core/testing`\)
+     * Users typically perceive these entrypoints as distinct groups of symbols, with different purposes or capability
+     * Specific entrypoints might only be used for special purposes, such as testing.
+     * Such APIs can be separated out from the primary entrypoint to reduce the chance of them being used accidentally or incorrectly.
+  2. They define the granularity at which code can be lazily loaded
+     * Many modern build tools are only capable of "code splitting" \(aka lazy loading\) at the ES Module level
+     * The Angular Package Format uses primarily a single "flat" ES Module per entry point
+       * This means that most build tooling is not able to split code with a single entry point into multiple output chunks.
 
 The general rule for APF packages is to use entrypoints for the smallest sets of logically connected code possible.
 For example, the Angular Material package publishes each logical component or set of components as a separate entrypoint - one for Button, one for Tabs, etc.
@@ -170,42 +167,39 @@ Most libraries with a single logical purpose should be published as a single ent
 
 ### Resolution of secondary entry points
 
-Secondary entrypoints can be resolved via the `"exports"` field of the `package.json` for the package.
+* -- via -- "package.json"'s `"exports"` 
 
-## README.md
+### README.md
 
-The README file in the Markdown format that is used to display description of a package on npm and GitHub.
+* == README file / used to display description of a package | npm & GitHub
 
-Example README content of @angular/core package:
+* _Example:_ "@angular/core" package
 
-<docs-code language="html">
-
-Angular
-&equals;&equals;&equals;&equals;&equals;&equals;&equals;
-
-The sources for this package are in the main [Angular](https://github.com/angular/angular) repo.Please file issues and pull requests against that repo.
-
-License: MIT
-
-</docs-code>
+  ```.markdown, README.md
+  Angular
+  &equals;&equals;&equals;&equals;&equals;&equals;&equals;
+  
+  The sources for this package are in the main [Angular](https://github.com/angular/angular) repo.Please file issues and pull requests against that repo.
+  
+  License: MIT
+  ```
 
 ## Partial compilation
 
 Libraries in the Angular Package Format must be published in "partial compilation" mode.
-This is a compilation mode for `ngc` which produces compiled Angular code that is not tied to a specific Angular runtime version, in contrast to the full compilation used for applications, where the Angular compiler and runtime versions must match exactly.
+This is a compilation mode for `ngc` which produces compiled Angular code that is not tied to a specific Angular runtime version, 
+in contrast to the full compilation used for applications, where the Angular compiler and runtime versions must match exactly.
 
-To partially compile Angular code, use the `compilationMode` flag in the `angularCompilerOptions` property of your `tsconfig.json`:
+To partially compile Angular code, use the `compilationMode` flag in the `angularCompilerOptions` property of your ``
 
-<docs-code language="javascript">
-
+```json, tsconfig.json
 {
   …
   "angularCompilerOptions": {
     "compilationMode": "partial",
   }
 }
-
-</docs-code>
+```
 
 Partially compiled library code is then converted to fully compiled code during the application build process by the Angular CLI.
 
