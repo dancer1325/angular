@@ -1,10 +1,13 @@
 # Services
 
-* This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.0-next.0.
 * goal
   * test Angular services
-    * [WITHOUT Angular testing utilities](src/app/value.service.spec.ts)
-    * [/ have service dependencies](src/app/master.service.spec.ts)
+    * [ValueService](src/app/value.service.ts)
+      * [WITHOUT Angular testing utilities](src/app/value.service.spec.ts)
+      * [WITH Angular testing utilities](src/app/value.service.testbed.spec.ts)
+    * [/ have service dependencies](src/app/master.service.ts)
+      * [WITHOUT Angular testing utilities](src/app/master.service.spec.ts)
+      * [WITH Angular testing utilities](src/app/master.service.testbed.spec.ts)
 
 ## How has it been created?
 

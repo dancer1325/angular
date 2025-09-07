@@ -1,7 +1,7 @@
 import {ValueService} from './value.service';
 
 // NO Angular Testing utilities used
-describe('ValueService - no TestBed', () => {
+describe('ValueService -- WITHOUT Angular testing support', () => {
   let service: ValueService;
   beforeEach(() => {
     service = new ValueService();
